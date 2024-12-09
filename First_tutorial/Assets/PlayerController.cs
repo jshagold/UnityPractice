@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    //[SerializeField] EnemyManager enemyManager;
-    //EnemyManager enemyManager; // cache
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

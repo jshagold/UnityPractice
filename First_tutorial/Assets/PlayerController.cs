@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
         //enemyManager = FindObjectOfType<EnemyManager>();
         //enemyManager = FindAnyObjectByType<EnemyManager>();
         //enemyManager.AttackAll();
+
+
+
     }
 
     // Update is called once per frame

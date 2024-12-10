@@ -7,6 +7,9 @@ public class PlayerController : MonoBehaviour
     Rigidbody rb; // cache
     private bool isGround = true;
 
+    // 특정 대상 감지 1.
+    EnemyManager enemyManager;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -15,10 +18,39 @@ public class PlayerController : MonoBehaviour
         Debug.Log(transform.position);
 
         rb = GetComponent<Rigidbody>();
+
+        // 특정 대상 감지 1.
+        enemyManager = FindAnyObjectByType<EnemyManager>();
     }
 
     // Update is called once per frame
     void Update()
+    {
+        Movement();
+
+        // 특정 대상 감지 1.
+        //foreach (var item in enemyManager.Enemies)
+        //{
+        //    float distance = Vector3.Distance(transform.position, item.transform.position);
+        //    if(distance <= 3f)
+        //    {
+        //        item.Attack();
+        //    }
+        //}
+
+        // 특정 대상 감지 2.
+        Collider[] colliders = Physics.OverlapSphere(transform.position, 5f);
+        foreach (Collider collider in colliders)
+        {
+            if(collider.gameObject.tag == "Enemy")
+            {
+                collider.GetComponent<EnemyController>().Attack();
+            }
+        }
+
+    }
+
+    void Movement()
     {
         // 프레임마다 속도가 다르다. 어떤 프레임은 0.1초가 걸리고 어떤건 0.3초가 걸리기도 한다.
         //Debug.Log(Time.deltaTime);
@@ -64,5 +96,10 @@ public class PlayerController : MonoBehaviour
         {
             isGround = true;
         }
+    }
+
+    public void Warning()
+    {
+        Debug.Log("Warning!!!");
     }
 }

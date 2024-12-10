@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
 
-    [SerializeField] GameObject enemyPrefab;
 
     // Script로 GameObject 검색하는 방법들
 
@@ -14,7 +13,15 @@ public class EnemyManager : MonoBehaviour
     //[SerializeField] private EnemyController[] enemyControllers;
 
 
-    //private List<EnemyController> enemyControllers = new List<EnemyController>();
+    [SerializeField] GameObject enemyPrefab;
+    private List<EnemyController> enemyControllers = new List<EnemyController>();
+
+    public List<EnemyController> Enemies {
+        get
+        {
+            return enemyControllers;
+        }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -23,12 +30,14 @@ public class EnemyManager : MonoBehaviour
 
         Debug.Log(gameObject.name);
 
-
+        // 프리팹으로 적군 오브젝트 생성.
         for(int i = 0; i < 4; i++)
         {
-            Instantiate(enemyPrefab, this.gameObject.transform);
+            GameObject gameObject = Instantiate(enemyPrefab, this.gameObject.transform);
+            EnemyController enemyController = gameObject.GetComponent<EnemyController>();
+            enemyControllers.Add(enemyController);
         }
-        
+
 
 
 

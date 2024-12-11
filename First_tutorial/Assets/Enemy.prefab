@@ -109,7 +109,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1.95
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6710180692053909816
@@ -124,6 +124,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c120be6dc9e128e49b0268674931b8b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &7925910972356816613
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,7 +140,7 @@ GameObject:
   - component: {fileID: 1118254972988606723}
   - component: {fileID: 1220268584586657742}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -152,7 +155,7 @@ Transform:
   m_GameObject: {fileID: 7925910972356816613}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalPosition: {x: 0, y: 0.71809703, z: 1}
   m_LocalScale: {x: 0.5061755, y: 0.34627062, z: 1.5186476}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -33,7 +33,10 @@ public class EnemyManager : MonoBehaviour
         // 프리팹으로 적군 오브젝트 생성.
         for(int i = 0; i < 4; i++)
         {
-            GameObject gameObject = Instantiate(enemyPrefab, this.gameObject.transform);
+            var extra = this.gameObject.transform;
+            extra.position += new Vector3(1,0,0);
+            GameObject gameObject = Instantiate(enemyPrefab, extra);
+            gameObject.name = $"prefab{i}";
             EnemyController enemyController = gameObject.GetComponent<EnemyController>();
             enemyControllers.Add(enemyController);
         }

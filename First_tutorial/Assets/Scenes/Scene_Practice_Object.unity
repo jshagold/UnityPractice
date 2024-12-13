@@ -252,10 +252,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
-    - target: {fileID: 2656811766864392306, guid: d329316377730be4c991ac536b2e3e69, type: 3}
-      propertyPath: m_Height
-      value: 1.95
-      objectReference: {fileID: 0}
     - target: {fileID: 6631633312536878631, guid: d329316377730be4c991ac536b2e3e69, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.8989389
@@ -295,10 +291,6 @@ PrefabInstance:
     - target: {fileID: 6631633312536878631, guid: d329316377730be4c991ac536b2e3e69, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6710180692053909816, guid: d329316377730be4c991ac536b2e3e69, type: 3}
-      propertyPath: layerMask.m_Bits
-      value: 64
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

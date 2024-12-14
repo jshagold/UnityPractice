@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Rendering;
 
 public class EnemyController : MonoBehaviour
@@ -8,8 +9,12 @@ public class EnemyController : MonoBehaviour
     //private int indexMove;
     //private bool isFinished = false;
 
+    // [·ÎÄÃ, ±Û·Î¹ú ÁÂÇ¥°è]
+    //[SerializeField] GameObject objChild;
 
-    [SerializeField] GameObject objChild;
+    // [NavMesh] 
+    NavMeshAgent agent; // cache
+    PlayerController playerController; // cache
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,9 +29,15 @@ public class EnemyController : MonoBehaviour
         //transform.position = transform.TransformPoint(5, 0, 0);
         
         // ·ÎÄÃ ÁÂÇ¥°è ÀÌµ¿ (·ÎÄÃÁÂÇ¥°è -> ±Û·Î¹úÁÂÇ¥°è·Î º¯È¯ÇØ¼­ ÀÌµ¿)
-        objChild.transform.position = transform.TransformPoint(5, 0, 0);
+        //objChild.transform.position = transform.TransformPoint(5, 0, 0);
         // ±Û·Î¹ú ÁÂÇ¥°è ÀÌµ¿
-        objChild.transform.position = new Vector3(5, 0, 0);
+        //objChild.transform.position = new Vector3(5, 0, 0);
+    
+
+        //[NavMesh]
+        agent = GetComponent<NavMeshAgent>();
+        playerController = FindAnyObjectByType<PlayerController>();
+
     }
 
 
@@ -48,9 +59,9 @@ public class EnemyController : MonoBehaviour
         //{
         //    transform.Translate(0, 0, 1);
         //}
-            
 
 
+        agent.SetDestination(playerController.transform.position);
 
     }
 

@@ -24,7 +24,6 @@ public class EnemyManager : MonoBehaviour
     }
 
 
-    [SerializeField] Transform targetPos;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -42,7 +41,6 @@ public class EnemyManager : MonoBehaviour
             gameObject.name = $"prefab{i}";
             EnemyController enemyController = gameObject.GetComponent<EnemyController>();
             enemyControllers.Add(enemyController);
-            enemyController.SetInit(targetPos);
         }
 
 

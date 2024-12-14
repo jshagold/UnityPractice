@@ -6,7 +6,13 @@ public class EnemyController : MonoBehaviour
 
     //PlayerController playerController; // cache 1
 
-    [SerializeField] LayerMask layerMask;
+    // [Layer Mask]
+    //[SerializeField] LayerMask layerMask;
+
+
+    private Vector3 originPos;
+    [SerializeField] Transform targetPos;
+    private float factor;
 
 
     //[삼각함수 이동] 
@@ -18,13 +24,13 @@ public class EnemyController : MonoBehaviour
         //playerController = FindAnyObjectByType<PlayerController>();
 
         // [LayerMask]
-        layerMask = 1 << LayerMask.NameToLayer("Player"); // Unity에서 6번 레이어가 Player
-        layerMask = 1 << 6; // 0000 0000 0000 0000 0000 0000 0010 0000
-                            //layerMask = 1 << 0 | 1 << 6; // 0000 0000 0000 0000 0000 0000 0000 0001 // 1 << 0
-                            // 0000 0000 0000 0000 0000 0000 0010 0000 // 1 << 6
-                            // 0000 0000 0000 0000 0000 0000 0010 0001 // 1 << 0 | 1 << 6
+        //layerMask = 1 << LayerMask.NameToLayer("Player"); // Unity에서 6번 레이어가 Player
+        //layerMask = 1 << 6; // 0000 0000 0000 0000 0000 0000 0010 0000
+        //                    //layerMask = 1 << 0 | 1 << 6; // 0000 0000 0000 0000 0000 0000 0000 0001 // 1 << 0
+        //                    // 0000 0000 0000 0000 0000 0000 0010 0000 // 1 << 6
+        //                    // 0000 0000 0000 0000 0000 0000 0010 0001 // 1 << 0 | 1 << 6
 
-
+        originPos = transform.position;
 
     }
 
@@ -68,14 +74,27 @@ public class EnemyController : MonoBehaviour
 
 
         // [삼각함수 이동] - Raidan
-        Debug.Log(Mathf.Cos(Mathf.Deg2Rad * 60)); // 0.5 출력
-        //transform.position = new Vector3(Mathf.Cos(Mathf.Deg2Rad * degree), transform.position.y, 0);
-        transform.position = new Vector3(Mathf.Cos(Mathf.Deg2Rad * degree), transform.position.y, Mathf.Sin(Mathf.Deg2Rad * degree));
-        degree++;
+        //Debug.Log(Mathf.Cos(Mathf.Deg2Rad * 60)); // 0.5 출력
+        ////transform.position = new Vector3(Mathf.Cos(Mathf.Deg2Rad * degree), transform.position.y, 0);
+        //transform.position = new Vector3(Mathf.Cos(Mathf.Deg2Rad * degree), transform.position.y, Mathf.Sin(Mathf.Deg2Rad * degree));
+        //degree++;
+
+
+        // [선형보간 이동] 
+        factor += Time.deltaTime;
+        transform.position = Vector3.Lerp(originPos, targetPos.position, factor);
+
+
     }
 
     public void Attack()
     {
         Debug.Log($"Enemy Attack ()");
+    }
+
+
+    public void SetInit(Transform targetPos)
+    {
+        this.targetPos = targetPos;
     }
 }

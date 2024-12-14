@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     // 특정 대상 감지 1.
     EnemyManager enemyManager;
 
+    CameraShake cameraShake; // cache
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -21,6 +23,8 @@ public class PlayerController : MonoBehaviour
 
         // 특정 대상 감지 1.
         enemyManager = FindAnyObjectByType<EnemyManager>();
+
+        cameraShake = FindAnyObjectByType<CameraShake>();
     }
 
     // Update is called once per frame
@@ -126,5 +130,11 @@ public class PlayerController : MonoBehaviour
     public void Warning()
     {
         Debug.Log("Warning!!!");
+    }
+
+    public void Attack()
+    {
+        Debug.Log("Player Attack!");
+        cameraShake.Shake(0.1f, 0.01f);
     }
 }

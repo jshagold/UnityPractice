@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
-    [SerializeField] private float speed = 10f;
+    //[SerializeField] private float speed = 10f;
     Rigidbody rb; // cache
     private bool isGround = true;
 

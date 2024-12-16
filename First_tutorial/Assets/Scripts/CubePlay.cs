@@ -6,21 +6,30 @@ public class CubePlay : MonoBehaviour
     private Animator animator; // cache
     private bool isAttack = false;
 
+    // [Sound]
     //private CubeSoundPlay cubeSoundPlay; // cache
-    private SoundManager soundManager; // cache
+    //private SoundManager soundManager; // cache
+
+
+    //[SerializeField] private GameObject effectPrefab;
+    [SerializeField] private Transform effectPos;
+    private EffectManager effectManager; // cache
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         animator = GetComponent<Animator>();
 
-
+        //[Sound]
         //cubeSoundPlay = GetComponent<CubeSoundPlay>();
-        soundManager = FindAnyObjectByType<SoundManager>();
+        //soundManager = FindAnyObjectByType<SoundManager>();
+        //soundManager.PlaySound(2, false);
+        //Invoke("FadeOutSound", 1f);
 
-        soundManager.PlaySound(2, false);
-        Invoke("FadeOutSound", 1f);
 
+        //Instantiate(effectPrefab, effectPos);
+        effectManager = FindAnyObjectByType<EffectManager>();
+        effectManager.PlayEffect(0, effectPos);
     }
 
     // Update is called once per frame
@@ -48,8 +57,9 @@ public class CubePlay : MonoBehaviour
         animator.Play("Attack");
         StartCoroutine(C_AttackStateFinish());
 
+        //[Sound]
         //cubeSoundPlay.PlaySound(1, true);
-        soundManager.PlaySound(1, true);
+        //soundManager.PlaySound(1, true);
     }
 
     private IEnumerator C_AttackStateFinish()
@@ -65,8 +75,9 @@ public class CubePlay : MonoBehaviour
         {
             animator.Play("Move");
 
+            //[Sound]
             //cubeSoundPlay.PlaySound(0, false);
-            soundManager.PlaySound(0, false);
+            //soundManager.PlaySound(0, false);
         }
     }
 
@@ -79,8 +90,9 @@ public class CubePlay : MonoBehaviour
     }
 
 
-    private void FadeOutSound()
-    {
-        soundManager.Fadeout(2);
-    }
+    //[Sound]
+    //private void FadeOutSound()
+    //{
+    //    soundManager.Fadeout(2);
+    //}
 }

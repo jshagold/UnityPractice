@@ -1,0 +1,27 @@
+[단축키]
+shift + alt + a = 활성화/비활성화
+
+
+
+
+[tip]
+- Instantiate(GameObject original, Transform parent)로 Prefab 지정 가능
+
+- GetComponent 와 FindAnyObjectByType 차이
+GetComponent는 Unity엔진에서 Component로 붙어있는 경우에 검색해서 할당
+FindAnyObjectByType은 Component가 아니라 모든 객체에서 검색해서 할당한다.
+
+- Invoke(string methodName, float time)
+time시간 뒤에 methodName의 method를 호출
+
+- Script 실행순서 지정
+Project Settings > Script Execution Order 에서 실행순서를 지정할 수 있다.
+
+
+- SoundFree 사이트에서 저작권이 없어진 무료 음원 다운가능
+
+- NormalMap-Online 사이트에서 노멀맵 생성 테스트 가능
+
+- FSM
+
+- reflection

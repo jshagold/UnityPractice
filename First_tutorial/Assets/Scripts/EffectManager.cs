@@ -25,6 +25,7 @@ public class EffectManager : MonoBehaviour
         if(effectPrefabs.Length > index)
         {
             GameObject obj = Instantiate(effectPrefabs[index], parent);
+            obj.transform.localPosition = Vector3.zero;
             StartCoroutine(C_DestoryEffect(obj, destoryTime[index]));
         }
     }

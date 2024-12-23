@@ -60,3 +60,9 @@ POT 크기가 아닌 이미지는 NPOT 이라고 부른다.
 * Rect Transform
 * stretch
 
+- Layout
+* Layout Group (vertical, horizontal, grid)
+* Layout Element
+* Scroll View
+* Content Size Fitter
+

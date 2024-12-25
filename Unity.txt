@@ -2,6 +2,8 @@
 shift + alt + a = 활성화/비활성화
 ctrl + m + h = 선택영역 접기
 stretch/anchor 화면에서 alt = 적용
+ctrl + tab = tab 변경
+ctrl + . = 드라이버 아이콘 실행 (생성자 생성 등 기타 기능 들어있음)
 
 
 [tip]
@@ -55,6 +57,7 @@ POT 크기가 아닌 이미지는 NPOT 이라고 부른다.
 
 - Canvas - Render Mode
 
+- Button Component
 
 - Anchor
 * Rect Transform

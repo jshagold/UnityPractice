@@ -3,8 +3,9 @@ shift + alt + a = 활성화/비활성화
 ctrl + m + h = 선택영역 접기
 stretch/anchor 화면에서 alt = 적용
 ctrl + tab = tab 변경
-ctrl + . = 드라이버 아이콘 실행 (생성자 생성 등 기타 기능 들어있음)
-
+ctrl + . = 드라이버 / 툴팁 아이콘 실행 (생성자 생성 등 기타 기능 들어있음)
+ctrl + shift + b = Build profiles 창 열기
+ctrl + , = 코드찾기
 
 [tip]
 - Instantiate(GameObject original, Transform parent)로 Prefab 지정 가능
@@ -44,6 +45,7 @@ POT 크기가 아닌 이미지는 NPOT 이라고 부른다.
 
 - Sprite Atlas
 
+- TextureType -> Sprite / SpriteMode -> Multiple -> Open Sprite Editor
 
 [UGUI]
 <2d ui>
@@ -68,4 +70,6 @@ POT 크기가 아닌 이미지는 NPOT 이라고 부른다.
 * Layout Element
 * Scroll View
 * Content Size Fitter
+
+- obj 순서바꾸기 (SetAsLastSibling())
 

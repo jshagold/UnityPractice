@@ -2,13 +2,18 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ObjectPoolManager : MonoBehaviour
+public class ObjectPoolManager : ManagerBase
 {
     private Dictionary<int, List<GameObject>> dics = new Dictionary<int, List<GameObject>>();
 
     public void SetInit()
     {
     }
+    private void Awake()
+    {
+        DontDestroy<ObjectPoolManager>();
+    }
+
     public GameObject GetObjectByPrefab(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation)
     {
         int hashCode = prefab.GetHashCode();

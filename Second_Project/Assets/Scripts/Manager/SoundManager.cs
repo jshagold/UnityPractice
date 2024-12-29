@@ -2,7 +2,7 @@ using NUnit.Framework.Constraints;
 using System.Collections;
 using UnityEngine;
 
-public class SoundManager : MonoBehaviour
+public class SoundManager : ManagerBase
 {
 
     private AudioSource[] audioSources; // cache
@@ -10,6 +10,10 @@ public class SoundManager : MonoBehaviour
 
     public void SetInit()
     {
+    }
+    private void Awake()
+    {
+        DontDestroy<SoundManager>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

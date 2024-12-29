@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class EffectManager : MonoBehaviour
+public class EffectManager : ManagerBase
 {
     [SerializeField] private GameObject[] effectPrefabs;
     [SerializeField] private float[] destoryTime;
@@ -9,18 +9,11 @@ public class EffectManager : MonoBehaviour
     public void SetInit()
     {
     }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
-
+        DontDestroy<EffectManager>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void PlayEffect(int index, Transform parent)
     {

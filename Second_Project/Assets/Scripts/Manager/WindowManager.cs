@@ -13,7 +13,7 @@ public class WindowInfo
     }
 }
 
-public class WindowManager : MonoBehaviour
+public class WindowManager : ManagerBase
 {
     private List<WindowInfo> lists = new List<WindowInfo>();
 
@@ -54,6 +54,10 @@ public class WindowManager : MonoBehaviour
         GameObject obj = Instantiate(prefab, parent);
         lists.Add(new WindowInfo(prefab, obj));
         return obj;
+    }
+    private void Awake()
+    {
+        DontDestroy<WindowManager>();
     }
 
     public void SetInit()

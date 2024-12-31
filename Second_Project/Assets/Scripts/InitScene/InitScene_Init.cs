@@ -6,36 +6,51 @@ using UnityEngine.SceneManagement;
 
 public class InitScene_Init : MonoBehaviour
 {
+    private static bool isInit = false;
+
+
     private int PROGRESS_VALUE = 5;
     private int progressAddValue = 0;
 
 
-    private SystemManager systemManager; // cache
-    private ObjectPoolManager objectPoolManager; // cache
-    private EffectManager effectManager; // cache
-    private SoundManager soundManager; // cache
-    private WindowManager windowManager; // cache
+    //private SystemManager systemManager; // cache
+    //private ObjectPoolManager objectPoolManager; // cache
+    //private EffectManager effectManager; // cache
+    //private SoundManager soundManager; // cache
+    //private WindowManager windowManager; // cache
     private InitScene_UI initSceneUI; // cache
 
 
     private void Awake()
     {
+        initSceneUI = FindAnyObjectByType<InitScene_UI>();
+     
+        //if (!isInit)
+        //{
+        //    isInit = true;
+        //    systemManager = new GameObject("SystemManager").AddComponent<SystemManager>();
+        //    Debug.Log("InitScene_Init IsInit: " + systemManager.IsInit);
+        //    objectPoolManager = new GameObject("ObjectPoolManager").AddComponent<ObjectPoolManager>();
+        //    effectManager = new GameObject("EffectManager").AddComponent<EffectManager>();
+        //    soundManager = new GameObject("SoundManager").AddComponent<SoundManager>();
+        //    windowManager = new GameObject("WindowManager").AddComponent<WindowManager>();
+        //}
+        //else
+        //{
+        //    systemManager = FindAnyObjectByType<SystemManager>();
+        //    Debug.Log("InitScene_Init IsInit: " + systemManager.IsInit);
+        //    objectPoolManager = FindAnyObjectByType<ObjectPoolManager>();
+        //    effectManager = FindAnyObjectByType<EffectManager>();
+        //    soundManager = FindAnyObjectByType<SoundManager>();
+        //    windowManager = FindAnyObjectByType<WindowManager>();
+        //}
 
-        SystemManager[] sysManagers = FindObjectsByType<SystemManager>(FindObjectsSortMode.None);
-        Debug.Log("InitScene_Init Length: " + sysManagers.Length);
 
     }
 
     private IEnumerator Start()
     {
         yield return null;
-        systemManager = FindAnyObjectByType<SystemManager>();
-        Debug.Log("InitScene_Init IsInit: " + systemManager.IsInit);
-        objectPoolManager = FindAnyObjectByType<ObjectPoolManager>();
-        effectManager = FindAnyObjectByType<EffectManager>();
-        soundManager = FindAnyObjectByType<SoundManager>();
-        windowManager = FindAnyObjectByType<WindowManager>();
-        initSceneUI = FindAnyObjectByType<InitScene_UI>();
 
         StartCoroutine(C_Manager());
     }
@@ -68,28 +83,29 @@ public class InitScene_Init : MonoBehaviour
 
     private void SystemManagerInit()
     {
-        systemManager.SetInit();
+        //systemManager.SetInit();
+        SystemManager.Instance.SetInit();
     }
 
     private void ObjectPoolManagerInit()
     {
-        objectPoolManager.SetInit();
+        //objectPoolManager.SetInit();
 
     }
 
     private void EffectManagerInit()
     {
-        effectManager.SetInit();
+        //effectManager.SetInit();
     }
 
     private void SoundManagerInit()
     {
-        soundManager.SetInit();
+        //soundManager.SetInit();
     }
 
     private void WindowManagerInit()
     {
-        windowManager.SetInit();
+        //windowManager.SetInit();
     }
 
     private void LoadScene()

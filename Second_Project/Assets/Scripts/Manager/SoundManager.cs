@@ -19,11 +19,11 @@ public class SoundManager : ManagerBase
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        audioSources = new AudioSource[audioClips.Length];
-        for (int i = 0; i < audioSources.Length; i++)
-        {
-            audioSources[i] = gameObject.AddComponent<AudioSource>();
-        }
+        //audioSources = new AudioSource[audioClips.Length];
+        //for (int i = 0; i < audioSources.Length; i++)
+        //{
+        //    audioSources[i] = gameObject.AddComponent<AudioSource>();
+        //}
     }
 
 

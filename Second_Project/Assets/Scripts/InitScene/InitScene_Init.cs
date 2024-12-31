@@ -13,11 +13,13 @@ public class InitScene_Init : MonoBehaviour
     private int progressAddValue = 0;
 
 
-    //private SystemManager systemManager; // cache
-    //private ObjectPoolManager objectPoolManager; // cache
-    //private EffectManager effectManager; // cache
-    //private SoundManager soundManager; // cache
-    //private WindowManager windowManager; // cache
+    private SystemManager systemManager; // cache
+    private ObjectPoolManager objectPoolManager; // cache
+    private EffectManager effectManager; // cache
+    private SoundManager soundManager; // cache
+    private WindowManager windowManager; // cache
+    private SceneLoadManager sceneLoadManager;
+
     private InitScene_UI initSceneUI; // cache
 
 
@@ -25,27 +27,27 @@ public class InitScene_Init : MonoBehaviour
     {
         initSceneUI = FindAnyObjectByType<InitScene_UI>();
      
-        //if (!isInit)
-        //{
-        //    isInit = true;
-        //    systemManager = new GameObject("SystemManager").AddComponent<SystemManager>();
-        //    Debug.Log("InitScene_Init IsInit: " + systemManager.IsInit);
-        //    objectPoolManager = new GameObject("ObjectPoolManager").AddComponent<ObjectPoolManager>();
-        //    effectManager = new GameObject("EffectManager").AddComponent<EffectManager>();
-        //    soundManager = new GameObject("SoundManager").AddComponent<SoundManager>();
-        //    windowManager = new GameObject("WindowManager").AddComponent<WindowManager>();
-        //}
-        //else
-        //{
-        //    systemManager = FindAnyObjectByType<SystemManager>();
-        //    Debug.Log("InitScene_Init IsInit: " + systemManager.IsInit);
-        //    objectPoolManager = FindAnyObjectByType<ObjectPoolManager>();
-        //    effectManager = FindAnyObjectByType<EffectManager>();
-        //    soundManager = FindAnyObjectByType<SoundManager>();
-        //    windowManager = FindAnyObjectByType<WindowManager>();
-        //}
-
-
+        if (!isInit)
+        {
+            isInit = true;
+            systemManager = new GameObject("SystemManager").AddComponent<SystemManager>();
+            Debug.Log("InitScene_Init IsInit: " + systemManager.IsInit);
+            objectPoolManager = new GameObject("ObjectPoolManager").AddComponent<ObjectPoolManager>();
+            effectManager = new GameObject("EffectManager").AddComponent<EffectManager>();
+            soundManager = new GameObject("SoundManager").AddComponent<SoundManager>();
+            windowManager = new GameObject("WindowManager").AddComponent<WindowManager>();
+            sceneLoadManager = new GameObject("SceneLoadManager").AddComponent<SceneLoadManager>();
+        }
+        else
+        {
+            systemManager = FindAnyObjectByType<SystemManager>();
+            Debug.Log("InitScene_Init IsInit: " + systemManager.IsInit);
+            objectPoolManager = FindAnyObjectByType<ObjectPoolManager>();
+            effectManager = FindAnyObjectByType<EffectManager>();
+            soundManager = FindAnyObjectByType<SoundManager>();
+            windowManager = FindAnyObjectByType<WindowManager>();
+            sceneLoadManager = FindAnyObjectByType<SceneLoadManager>();
+        }
     }
 
     private IEnumerator Start()
@@ -64,6 +66,7 @@ public class InitScene_Init : MonoBehaviour
             EffectManagerInit,
             SoundManagerInit,
             WindowManagerInit,
+            SceneLoadManagerInit,
             LoadScene,
         };
         PROGRESS_VALUE = actions.Count;
@@ -83,34 +86,39 @@ public class InitScene_Init : MonoBehaviour
 
     private void SystemManagerInit()
     {
-        //systemManager.SetInit();
-        SystemManager.Instance.SetInit();
+        systemManager.SetInit();
+        //SystemManager.Instance.SetInit();
     }
 
     private void ObjectPoolManagerInit()
     {
-        //objectPoolManager.SetInit();
+        objectPoolManager.SetInit();
 
     }
 
     private void EffectManagerInit()
     {
-        //effectManager.SetInit();
+        effectManager.SetInit();
     }
 
     private void SoundManagerInit()
     {
-        //soundManager.SetInit();
+        soundManager.SetInit();
     }
 
     private void WindowManagerInit()
     {
-        //windowManager.SetInit();
+        windowManager.SetInit();
+    }
+
+    private void SceneLoadManagerInit()
+    {
+        sceneLoadManager.SetInit();
     }
 
     private void LoadScene()
     {
-        SceneManager.LoadScene(SCENE_TYPE.Lobby.ToString());
+        sceneLoadManager.SceneLoad(SCENE_TYPE.Lobby);
     }
 }
 

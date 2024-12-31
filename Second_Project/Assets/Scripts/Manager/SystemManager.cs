@@ -16,6 +16,7 @@ public class SystemManager : ManagerBase
             return instance;
         }
     }
+
     public bool IsInit { get; set; } = false;
 
     private void Awake()

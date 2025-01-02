@@ -21,9 +21,18 @@ namespace TemporaryServer.Controllers
 
     public class HomeController : Controller
     {
-
+        [HttpPost]
         public IActionResult Index()
         {
+            string json = string.Empty;
+
+            using (var reader = new StreamReader(Request.Body))
+            {
+                reader.ReadToEnd();
+            }
+
+
+
             UserInfo userInfo = new UserInfo(3, "John");
             string packet = JsonConvert.SerializeObject(userInfo);
 

@@ -109,7 +109,16 @@ public class InitScene_Init : MonoBehaviour
     private void NetworkManagerInit()
     {
         networkManager.SetInit(apiUrl: Config.SERVER_API_URL);
-        networkManager.SendPacket();
+
+        ApplicationConfigSendPacket applicationConfigSendPacket
+            = new ApplicationConfigSendPacket(
+                PacketName.ApplicationConfig,
+                Config.E_ENVIRONMENT_TYPE,
+                ApplicationConfigSendPacket.E_OS_TYPE,
+                Config.APP_VERSION
+                );
+
+        networkManager.SendPacket(applicationConfigSendPacket);
     }
 
     private void SceneLoadManagerInit()

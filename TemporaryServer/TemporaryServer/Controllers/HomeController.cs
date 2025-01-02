@@ -22,20 +22,20 @@ namespace TemporaryServer.Controllers
     public class HomeController : Controller
     {
         [HttpPost]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             string json = string.Empty;
 
             using (var reader = new StreamReader(Request.Body))
             {
-                reader.ReadToEnd();
+                json = await reader.ReadToEndAsync();
             }
 
+            ApplicationConfigReceivePacket? applicationConfigReceivePacket = JsonConvert.DeserializeObject<ApplicationConfigReceivePacket>(json);
 
+            ApplicationConfigSendPacket applicationConfigSendPacket = new ApplicationConfigSendPacket(applicationConfigReceivePacket.PacketName, 200, "https://loaclhost:8080/");
 
-            UserInfo userInfo = new UserInfo(3, "John");
-            string packet = JsonConvert.SerializeObject(userInfo);
-
+            string packet = JsonConvert.SerializeObject(applicationConfigSendPacket);
             return Content(packet);
         }
 

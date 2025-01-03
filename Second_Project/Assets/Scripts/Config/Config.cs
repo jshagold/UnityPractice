@@ -18,13 +18,13 @@ public class Config
 
 
 #if DEV
-    public const SERVER_API_URL = "https://localhost:8888/";
+    public const SERVER_APP_CONFIG_URL = "https://localhost:8888/";
 #elif STAGE
-    public const SERVER_API_URL = "https://localhost:8888/";
+    public const SERVER_APP_CONFIG_URL = "https://localhost:8888/";
 #elif LIVE
-    public const SERVER_API_URL = "https://localhost:8888/";
+    public const SERVER_APP_CONFIG_URL = "https://localhost:8888/";
 #else
-    public const SERVER_API_URL = "https://localhost:8888/";
+    public const SERVER_APP_CONFIG_URL = "https://localhost:8888/";
 #endif
 
 

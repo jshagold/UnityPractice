@@ -13,30 +13,32 @@ public class CertHandler : CertificateHandler
 
 public class NetworkManager : ManagerBase
 {
-    private string apiUrl;
-	
 	private void Awake()
 	{
 		DontDestroy<NetworkManager>();
 	}
 
-	public void SetInit(string apiUrl)
+	public void SetInit()
 	{
-        this.apiUrl = apiUrl;
 	}
 
-    public void SendPacket(SendPacketBase sendPacketBase)
-    {
-        StartCoroutine(C_SendPacket(sendPacketBase));
-    }
+    //public void SendPacket(SendPacketBase sendPacketBase)
+    //{
+    //    StartCoroutine(C_SendPacket(sendPacketBase));
+    //}
 
-    public IEnumerator C_SendPacket(SendPacketBase sendPacketBase)
+    public IEnumerator C_SendPacket<T>(SendPacketBase sendPacketBase) where T : ReceivePacketBase
     {
         string packet = JsonUtility.ToJson(sendPacketBase);
         Debug.Log("[NetworkManager Send Packet]" + packet);
 
-        using (UnityWebRequest request = UnityWebRequest.PostWwwForm(this.apiUrl, packet))
+        using (UnityWebRequest request = UnityWebRequest.PostWwwForm(sendPacketBase.Url, packet))
         {
+            byte[] bytes = new System.Text.UTF8Encoding().GetBytes(packet);
+            request.uploadHandler = new UploadHandlerRaw(bytes);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
             // HTTPS 통신을 위한 보안 설정
             request.certificateHandler = new CertHandler();
 
@@ -45,6 +47,7 @@ public class NetworkManager : ManagerBase
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError("Error: " + request.error);
+                yield return null;
             }
             else
             {
@@ -52,24 +55,10 @@ public class NetworkManager : ManagerBase
                 string jsonData = request.downloadHandler.text;
                 Debug.Log("Received Data: " + jsonData);
 
-                ApplicationConfigReceivePacket applicationConfigReceivePacket 
-                    = JsonUtility.FromJson<ApplicationConfigReceivePacket>(jsonData);
-
-                Debug.Log("Final Received Data: " + jsonData);
-
-                // 여기서부터 JSON 데이터를 원하는 방식으로 처리하면 된다.
-                // 예를 들어, JSON 데이터를 C#객체로 변환하려면 JsonUtility.FromJson<T>()를 사용한다.
-                // 예: YourDataObject data = JsonUtility.FromJson<YourDataObject>(jsonData);
+                T receivePacket = JsonUtility.FromJson<T>(jsonData);
+                yield return receivePacket;
             }
         }
-
-        byte[] bytes = new System.Text.UTF8Encoding().GetBytes(packet);
-        request.uploadHandler = new UploadHandlerRaw(bytes);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-
-        
     }
 
 }

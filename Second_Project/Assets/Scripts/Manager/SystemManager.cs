@@ -19,6 +19,8 @@ public class SystemManager : ManagerBase
 
     public bool IsInit { get; set; } = false;
 
+    public string ApiUrl { get; set; } = string.Empty;
+
     private void Awake()
     {
         DontDestroy<SystemManager>();

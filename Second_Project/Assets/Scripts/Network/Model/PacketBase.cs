@@ -1,16 +1,18 @@
 public class SendPacketBase
 {
+    public string Url;
     public string PacketName;
 
-    public SendPacketBase(PACKET_NAME_TYPE packetName)
+    public SendPacketBase(string Url, PACKET_NAME_TYPE packetName)
     {
-        PacketName = packetName.ToString();
+        this.Url = Url;
+        this.PacketName = packetName.ToString();
     }
 }
 
 public class ReceivePacketBase
 {
-    public readonly int ReturnCode;
+    public int ReturnCode;
 
     public ReceivePacketBase(int returnCode)
     {

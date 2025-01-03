@@ -30,3 +30,9 @@ public enum OS_TYPE
     Android = 1,
     IOS = 2,
 }
+
+public enum RETURN_CODE
+{
+    Success = 200,
+    Error = -1,
+}

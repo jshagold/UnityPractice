@@ -22,9 +22,9 @@ namespace TemporaryServer.Models
 
     public class ApplicationConfigSendPacket : SendPacketBase
     {
-        public readonly string ApiUrl;
+        public string ApiUrl;
 
-        public ApplicationConfigSendPacket(string packetName, int returnCode, string apiUrl) : base(packetName, returnCode)
+        public ApplicationConfigSendPacket(PACKET_NAME_TYPE packetName, RETURN_CODE returnCode, string apiUrl) : base(packetName, returnCode)
         {
             ApiUrl = apiUrl;
         }

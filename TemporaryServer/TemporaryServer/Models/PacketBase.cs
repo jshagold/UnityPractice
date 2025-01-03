@@ -13,11 +13,12 @@
     public class SendPacketBase
     {
         public string PacketName;
-        public readonly int ReturnCode;
+        public int ReturnCode;
 
-        public SendPacketBase(string packetName, int returnCode)
+        public SendPacketBase(PACKET_NAME_TYPE packetName, RETURN_CODE returnCode)
         {
-            ReturnCode = returnCode;
+            PacketName = packetName.ToString();
+            ReturnCode = (int)returnCode;
         }
     }
 }

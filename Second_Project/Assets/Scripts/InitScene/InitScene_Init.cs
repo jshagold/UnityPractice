@@ -54,6 +54,19 @@ public class InitScene_Init : MonoBehaviour
 
     private IEnumerator C_Manager()
     {
+        IEnumerator enumerator = NetworkManagerInit();
+        yield return StartCoroutine(enumerator);
+        bool isNetworkManagerSuccess = (bool)enumerator.Current;
+        if (isNetworkManagerSuccess)
+        {
+            Debug.Log("네트워크 성공");
+        }
+        else
+        {
+            Debug.Log("네트워크 오류, popup open");
+            yield break;
+        }
+
         List<Action> actions = new List<Action>
         {
             SystemManagerInit,
@@ -61,7 +74,6 @@ public class InitScene_Init : MonoBehaviour
             EffectManagerInit,
             SoundManagerInit,
             WindowManagerInit,
-            NetworkManagerInit,
             SceneLoadManagerInit,
             LoadScene,
         };
@@ -106,19 +118,33 @@ public class InitScene_Init : MonoBehaviour
         windowManager.SetInit();
     }
 
-    private void NetworkManagerInit()
+    private IEnumerator NetworkManagerInit()
     {
-        networkManager.SetInit(apiUrl: Config.SERVER_API_URL);
+        networkManager.SetInit();
 
         ApplicationConfigSendPacket applicationConfigSendPacket
             = new ApplicationConfigSendPacket(
+                Config.SERVER_APP_CONFIG_URL,
                 PacketName.ApplicationConfig,
                 Config.E_ENVIRONMENT_TYPE,
                 ApplicationConfigSendPacket.E_OS_TYPE,
                 Config.APP_VERSION
                 );
 
-        networkManager.SendPacket(applicationConfigSendPacket);
+        IEnumerator enumerator = networkManager.C_SendPacket<ApplicationConfigReceivePacket>(applicationConfigSendPacket);
+        yield return StartCoroutine(enumerator);
+        ApplicationConfigReceivePacket receivePacket = enumerator.Current as ApplicationConfigReceivePacket;
+        if(receivePacket != null && receivePacket.ReturnCode == (int)RETURN_CODE.Success)
+        {
+            SystemManager.Instance.ApiUrl = receivePacket.ApiUrl;
+            yield return true;
+        }
+        else
+        {
+            yield return false;
+        }
+
+
     }
 
     private void SceneLoadManagerInit()

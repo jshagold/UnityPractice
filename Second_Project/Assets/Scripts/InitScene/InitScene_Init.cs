@@ -54,19 +54,27 @@ public class InitScene_Init : MonoBehaviour
 
     private IEnumerator C_Manager()
     {
-        IEnumerator enumerator = NetworkManagerInit();
-        yield return StartCoroutine(enumerator);
-        bool isNetworkManagerSuccess = (bool)enumerator.Current;
-        if (isNetworkManagerSuccess)
-        {
-            Debug.Log("네트워크 성공");
-        }
-        else
-        {
-            Debug.Log("네트워크 오류, popup open");
-            yield break;
-        }
 
+        NetworkManagerInit();
+        yield return new WaitForSeconds(0.1f);
+        SetProgress();
+
+        //IEnumerator enumerator = NetworkManagerInit();
+        //yield return StartCoroutine(enumerator);
+        //bool isNetworkManagerSuccess = (bool)enumerator.Current;
+        //if (isNetworkManagerSuccess)
+        //{
+        //    Debug.Log("네트워크 성공");
+        //}
+        //else
+        //{
+        //    Debug.Log("네트워크 오류, popup open");
+        //    yield break;
+        //}
+    }
+
+    private IEnumerator EtcManager()
+    {
         List<Action> actions = new List<Action>
         {
             SystemManagerInit,
@@ -118,7 +126,7 @@ public class InitScene_Init : MonoBehaviour
         windowManager.SetInit();
     }
 
-    private IEnumerator NetworkManagerInit()
+    private void NetworkManagerInit()
     {
         networkManager.SetInit();
 
@@ -131,20 +139,36 @@ public class InitScene_Init : MonoBehaviour
                 Config.APP_VERSION
                 );
 
-        IEnumerator enumerator = networkManager.C_SendPacket<ApplicationConfigReceivePacket>(applicationConfigSendPacket);
-        yield return StartCoroutine(enumerator);
-        ApplicationConfigReceivePacket receivePacket = enumerator.Current as ApplicationConfigReceivePacket;
-        if(receivePacket != null && receivePacket.ReturnCode == (int)RETURN_CODE.Success)
+
+        networkManager.C_SendPacket<ApplicationConfigReceivePacket>(applicationConfigSendPacket, AppConfig);
+
+        //IEnumerator enumerator = networkManager.C_SendPacket<ApplicationConfigReceivePacket>(applicationConfigSendPacket);
+        //yield return StartCoroutine(enumerator);
+        //ApplicationConfigReceivePacket receivePacket = enumerator.Current as ApplicationConfigReceivePacket;
+        //if(receivePacket != null && receivePacket.ReturnCode == (int)RETURN_CODE.Success)
+        //{
+        //    SystemManager.Instance.ApiUrl = receivePacket.ApiUrl;
+        //    yield return true;
+        //}
+        //else
+        //{
+        //    yield return false;
+        //}
+    }
+
+    private void AppConfig(ReceivePacketBase receivePacketBase)
+    {
+        ApplicationConfigReceivePacket receivePacket = receivePacketBase as ApplicationConfigReceivePacket;
+        if (receivePacket != null && receivePacket.ReturnCode == (int)RETURN_CODE.Success)
         {
             SystemManager.Instance.ApiUrl = receivePacket.ApiUrl;
-            yield return true;
+            Debug.Log("성공"); // 그다음 순서를 여기서 실행
+            StartCoroutine(EtcManager());
         }
         else
         {
-            yield return false;
+            Debug.Log("에러"); // 에러팝업 띄우고 종료
         }
-
-
     }
 
     private void SceneLoadManagerInit()

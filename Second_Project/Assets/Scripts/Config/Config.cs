@@ -7,24 +7,24 @@ public class Config
 
 
 #if DEV
-    public const ENVIRONMENT_TYPE E_ENVIRONMENT_TYPE = E_ENVIRONMENT_TYPE.Dev;
+    public const ENVIRONMENT_TYPE E_ENVIRONMENT_TYPE = ENVIRONMENT_TYPE.Dev;
 #elif STAGE
-    public const ENVIRONMENT_TYPE E_ENVIRONMENT_TYPE = E_ENVIRONMENT_TYPE.Stage;
+    public const ENVIRONMENT_TYPE E_ENVIRONMENT_TYPE = ENVIRONMENT_TYPE.Stage;
 #elif LIVE
-    public const ENVIRONMENT_TYPE E_ENVIRONMENT_TYPE = E_ENVIRONMENT_TYPE.Live;
+    public const ENVIRONMENT_TYPE E_ENVIRONMENT_TYPE = ENVIRONMENT_TYPE.Live;
 #else
-    public const ENVIRONMENT_TYPE E_ENVIRONMENT_TYPE = E_ENVIRONMENT_TYPE.Dev;
+    public const ENVIRONMENT_TYPE E_ENVIRONMENT_TYPE = ENVIRONMENT_TYPE.Dev;
 #endif
 
 
 #if DEV
-    public const SERVER_APP_CONFIG_URL = "https://localhost:8888/";
+    public const string SERVER_APP_CONFIG_URL = "https://localhost:7105/";
 #elif STAGE
-    public const SERVER_APP_CONFIG_URL = "https://localhost:8888/";
+    public const string SERVER_APP_CONFIG_URL = "https://localhost:7105/";
 #elif LIVE
-    public const SERVER_APP_CONFIG_URL = "https://localhost:8888/";
+    public const string SERVER_APP_CONFIG_URL = "https://localhost:7105/";
 #else
-    public const SERVER_APP_CONFIG_URL = "https://localhost:8888/";
+    public const string SERVER_APP_CONFIG_URL = "https://localhost:7105/";
 #endif
 
 

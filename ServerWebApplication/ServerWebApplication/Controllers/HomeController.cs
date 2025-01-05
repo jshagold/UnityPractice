@@ -1,12 +1,11 @@
 using System.Diagnostics;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ServerWebApplication.Models;
 using TemporaryServer.Models;
 
-namespace TemporaryServer.Controllers
+namespace ServerWebApplication.Controllers
 {
-
     public class UserInfo
     {
         public readonly int userId;
@@ -19,17 +18,15 @@ namespace TemporaryServer.Controllers
         }
     }
 
-    /*
-     [Server]
-     */
     public class HomeController : Controller
     {
+
         [HttpPost]
         public async Task<IActionResult> Index()
         {
 
             // 빈값 에러 처리
-            if(Request.ContentLength == 0)
+            if (Request.ContentLength == 0)
             {
                 SendPacketBase packet = new SendPacketBase(PACKET_NAME_TYPE.None, RETURN_CODE.Error);
                 string sendData = JsonConvert.SerializeObject(packet);
@@ -45,9 +42,9 @@ namespace TemporaryServer.Controllers
             ReceivePacketBase? receivePacketBase = JsonConvert.DeserializeObject<ReceivePacketBase>(json);
 
             SendPacketBase sendPacketBase = null;
-            if(receivePacketBase != null && Enum.TryParse(receivePacketBase.PacketName, out PACKET_NAME_TYPE type))
+            if (receivePacketBase != null && Enum.TryParse(receivePacketBase.PacketName, out PACKET_NAME_TYPE type))
             {
-                switch(type)
+                switch (type)
                 {
                     case PACKET_NAME_TYPE.ApplicationConfig:
                         sendPacketBase = ApplicationConfig(json);
@@ -74,7 +71,7 @@ namespace TemporaryServer.Controllers
         {
             ApplicationConfigReceivePacket? applicationConfigReceivePacket = JsonConvert.DeserializeObject<ApplicationConfigReceivePacket>(json);
 
-            if(applicationConfigReceivePacket == null)
+            if (applicationConfigReceivePacket == null)
             {
                 return new SendPacketBase(PACKET_NAME_TYPE.None, RETURN_CODE.Error);
             }
@@ -108,5 +105,10 @@ namespace TemporaryServer.Controllers
             return applicationConfigSendPacket;
         }
 
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }

@@ -143,9 +143,9 @@ public class InitScene_Init : MonoBehaviour
         ApplicationConfigSendPacket applicationConfigSendPacket
             = new ApplicationConfigSendPacket(
                 Config.SERVER_APP_CONFIG_URL,
-                PacketName.ApplicationConfig,
+                PACKET_NAME_TYPE.ApplicationConfig,
                 Config.E_ENVIRONMENT_TYPE,
-                ApplicationConfigSendPacket.E_OS_TYPE,
+                Config.E_OS_TYPE,
                 Config.APP_VERSION
                 );
 

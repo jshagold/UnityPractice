@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class InitScene_Init : MonoBehaviour
 {
+    [SerializeField] private GameObject prefabPopupMessage;
+    [SerializeField] private Transform parentPopupMessage;
+
+
     private static bool isInit = false;
 
 
@@ -17,6 +21,7 @@ public class InitScene_Init : MonoBehaviour
     private EffectManager effectManager; // cache
     private SoundManager soundManager; // cache
     private WindowManager windowManager; // cache
+    private NetworkManager networkManager; // cache
 
     private InitScene_UI initSceneUI; // cache
 
@@ -32,6 +37,7 @@ public class InitScene_Init : MonoBehaviour
             effectManager = new GameObject("EffectManager").AddComponent<EffectManager>();
             soundManager = new GameObject("SoundManager").AddComponent<SoundManager>();
             windowManager = new GameObject("WindowManager").AddComponent<WindowManager>();
+            networkManager = new GameObject("NetworkManager").AddComponent<NetworkManager>();
         }
         else
         {
@@ -39,6 +45,7 @@ public class InitScene_Init : MonoBehaviour
             effectManager = FindAnyObjectByType<EffectManager>();
             soundManager = FindAnyObjectByType<SoundManager>();
             windowManager = FindAnyObjectByType<WindowManager>();
+            networkManager = FindAnyObjectByType<NetworkManager>();
         }
     }
 
@@ -50,6 +57,33 @@ public class InitScene_Init : MonoBehaviour
     }
 
     private IEnumerator C_Manager()
+    {
+
+        NetworkManagerInit();
+
+        IEnumerator enumerator = NetworkManagerInit();
+        yield return StartCoroutine(enumerator);
+        bool isNetworkManagerSuccess = (bool)enumerator.Current;
+        if (!isNetworkManagerSuccess)
+        {
+            Debug.Log("네트워크 오류, popup open");
+            GameObject objPopupMessage = Instantiate(prefabPopupMessage, parentPopupMessage);
+
+            PopupMessageInfo popupMessageInfo = new PopupMessageInfo(POPUP_MESSAGE_TYPE.ONE_BUTTON, "서버오류", "서버오류 발생");
+            PopupMessage popupMessage = objPopupMessage.GetComponent<PopupMessage>();
+            popupMessage.OpenMessage(popupMessageInfo, null, () =>
+            {
+                // finish app
+                Application.Quit();
+            });
+
+            yield break;
+        }
+
+        yield return StartCoroutine(EtcManager());
+    }
+
+    private IEnumerator EtcManager()
     {
         List<Action> actions = new List<Action>
         {
@@ -101,6 +135,51 @@ public class InitScene_Init : MonoBehaviour
     {
         windowManager.SetInit();
     }
+
+    private IEnumerator NetworkManagerInit()
+    {
+        networkManager.SetInit();
+
+        ApplicationConfigSendPacket applicationConfigSendPacket
+            = new ApplicationConfigSendPacket(
+                Config.SERVER_APP_CONFIG_URL,
+                PacketName.ApplicationConfig,
+                Config.E_ENVIRONMENT_TYPE,
+                ApplicationConfigSendPacket.E_OS_TYPE,
+                Config.APP_VERSION
+                );
+
+
+        //networkManager.C_SendPacket<ApplicationConfigReceivePacket>(applicationConfigSendPacket, AppConfig);
+
+        IEnumerator enumerator = networkManager.C_SendPacket<ApplicationConfigReceivePacket>(applicationConfigSendPacket);
+        yield return StartCoroutine(enumerator);
+        ApplicationConfigReceivePacket receivePacket = enumerator.Current as ApplicationConfigReceivePacket;
+        if (receivePacket != null && receivePacket.ReturnCode == (int)RETURN_CODE.Success)
+        {
+            SystemManager.Instance.ApiUrl = receivePacket.ApiUrl;
+            yield return true;
+        }
+        else
+        {
+            yield return false;
+        }
+    }
+
+    //private void AppConfig(ReceivePacketBase receivePacketBase)
+    //{
+    //    ApplicationConfigReceivePacket receivePacket = receivePacketBase as ApplicationConfigReceivePacket;
+    //    if (receivePacket != null && receivePacket.ReturnCode == (int)RETURN_CODE.Success)
+    //    {
+    //        SystemManager.Instance.ApiUrl = receivePacket.ApiUrl;
+    //        Debug.Log("성공"); // 그다음 순서를 여기서 실행
+    //        StartCoroutine(EtcManager());
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("에러"); // 에러팝업 띄우고 종료
+    //    }
+    //}
 
     private void SceneLoadManagerInit()
     {

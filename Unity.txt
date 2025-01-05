@@ -1,11 +1,17 @@
 [단축키]
+<Unity>
 shift + alt + a = 활성화/비활성화
-ctrl + m + h = 선택영역 접기
 stretch/anchor 화면에서 alt = 적용
+
+<Visual Studio>
+ctrl + m + h = 선택영역 접기
 ctrl + tab = tab 변경
 ctrl + . = 드라이버 / 툴팁 아이콘 실행 (생성자 생성 등 기타 기능 들어있음)
 ctrl + shift + b = Build profiles 창 열기
 ctrl + , = 코드찾기
+shift + f12 = 참조 찾기 (코드 사용된 장소 찾기)
+
+
 
 [tip]
 - Instantiate(GameObject original, Transform parent)로 Prefab 지정 가능
@@ -85,3 +91,13 @@ POT 크기가 아닌 이미지는 NPOT 이라고 부른다.
 - Object 검색은 Awake에서 하는게 낫다.
 
 - Editor 라는 이름으로 folder를 만들면 Unity build시 제외된다.
+
+- Project Settings -> Player -> Script Compilation -> Scripting Define Symbols에서 build type config설정한다.
+- Project Settings -> Player -> Version에서 버전관리를 한다.
+
+
+- yield break / yield return 차이
+ 
+
+
+

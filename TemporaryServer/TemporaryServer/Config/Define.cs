@@ -1,21 +1,7 @@
-//public class PacketName
-//{
-//    public const string ApplicationConfig = "ApplicationConfig";
-//}
-
-public enum PACKET_NAME_TYPE
+﻿public enum PACKET_NAME_TYPE
 {
+    None,
     ApplicationConfig,
-}
-
-
-
-public enum SCENE_TYPE
-{
-    Init,
-    Lobby,
-    Loading,
-    InGame,
 }
 
 public enum ENVIRONMENT_TYPE

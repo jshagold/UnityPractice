@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class InitScene_Init : MonoBehaviour
 {
     [SerializeField] private GameObject prefabPopupMessage;
+    [SerializeField] private GameObject prefabPopupInputMessage;
     [SerializeField] private Transform parentPopupMessage;
 
 
@@ -53,12 +54,29 @@ public class InitScene_Init : MonoBehaviour
     {
         yield return null;
 
-        StartCoroutine(C_Manager());
+        DevelopmentIdPopup();
+    }
+
+    private void DevelopmentIdPopup()
+    {
+        GameObject objPopupInputMessage = Instantiate(prefabPopupInputMessage, parentPopupMessage);
+        PopupMessageInfo popupMessageInfo = new PopupMessageInfo(POPUP_MESSAGE_TYPE.TWO_BUTTON, "Development Id", "put id for test");
+        PopupInputMessage popupInputMessage = objPopupInputMessage.GetComponent<PopupInputMessage>();
+        popupInputMessage.OpenMessage(popupMessageInfo, SystemManager.Instance.DevelopmentId,
+            () =>
+            {
+                StartCoroutine(C_Manager());
+            },
+            (string inputFieldValue) =>
+            {
+                SystemManager.Instance.DevelopmentId = inputFieldValue;
+                StartCoroutine(C_Manager());
+            }
+        );
     }
 
     private IEnumerator C_Manager()
     {
-
         NetworkManagerInit();
 
         IEnumerator enumerator = NetworkManagerInit();
@@ -78,6 +96,11 @@ public class InitScene_Init : MonoBehaviour
             });
 
             yield break;
+        }
+
+        if(SystemManager.Instance.dEVELOPMENT_ID_AUTHORITY == DEVELOPMENT_ID_AUTHORITY.None)
+        {
+            // Á¡°Ë
         }
 
         yield return StartCoroutine(EtcManager());
@@ -146,7 +169,8 @@ public class InitScene_Init : MonoBehaviour
                 PACKET_NAME_TYPE.ApplicationConfig,
                 Config.E_ENVIRONMENT_TYPE,
                 Config.E_OS_TYPE,
-                Config.APP_VERSION
+                Config.APP_VERSION,
+                SystemManager.Instance.DevelopmentId
                 );
 
 
@@ -158,6 +182,7 @@ public class InitScene_Init : MonoBehaviour
         if (receivePacket != null && receivePacket.ReturnCode == (int)RETURN_CODE.Success)
         {
             SystemManager.Instance.ApiUrl = receivePacket.ApiUrl;
+            SystemManager.Instance.dEVELOPMENT_ID_AUTHORITY = (DEVELOPMENT_ID_AUTHORITY)receivePacket.DevelopmentIdAuthority;
             yield return true;
         }
         else

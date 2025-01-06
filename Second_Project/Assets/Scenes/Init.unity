@@ -998,6 +998,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aae9d465b54f7c144900e67ff3ae3312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabPopupMessage: {fileID: 4488543405760472474, guid: cb2a4ff63b6edc844afe5b0d81ad1da1, type: 3}
+  parentPopupMessage: {fileID: 1289103952}
 --- !u!4 &1464658286
 Transform:
   m_ObjectHideFlags: 0

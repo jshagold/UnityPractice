@@ -7,21 +7,25 @@ public class ApplicationConfigSendPacket : SendPacketBase
     public int E_ENVIRONMENT_TYPE;
     public int E_OS_TYPE;
     public string AppVersion;
+    public string DevelopmentId;
 
-    public ApplicationConfigSendPacket(string url, PACKET_NAME_TYPE packetName, ENVIRONMENT_TYPE e_ENVIRONMENT_TYPE, OS_TYPE e_OS_TYPE, string appVersion) : base(url, packetName)
+    public ApplicationConfigSendPacket(string url, PACKET_NAME_TYPE packetName, ENVIRONMENT_TYPE e_ENVIRONMENT_TYPE, OS_TYPE e_OS_TYPE, string appVersion, string developmentId) : base(url, packetName)
     {
-        E_ENVIRONMENT_TYPE = (int)e_ENVIRONMENT_TYPE;
-        E_OS_TYPE = (int)e_OS_TYPE;
-        AppVersion = appVersion;
+        this.E_ENVIRONMENT_TYPE = (int)e_ENVIRONMENT_TYPE;
+        this.E_OS_TYPE = (int)e_OS_TYPE;
+        this.AppVersion = appVersion;
+        this.DevelopmentId = developmentId;
     }
 }
 
 public class ApplicationConfigReceivePacket : ReceivePacketBase
 {
     public string ApiUrl;
+    public int DevelopmentIdAuthority;
 
-    public ApplicationConfigReceivePacket(int returnCode, string apiUrl) : base(returnCode)
+    public ApplicationConfigReceivePacket(int returnCode, string apiUrl, int developmentIdAuthority) : base(returnCode)
     {
-        ApiUrl = apiUrl;
+        this.ApiUrl = apiUrl;
+        this.DevelopmentIdAuthority = developmentIdAuthority;
     }
 }

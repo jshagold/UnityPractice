@@ -2,6 +2,7 @@
 <Unity>
 shift + alt + a = 활성화/비활성화
 stretch/anchor 화면에서 alt = 적용
+ctrl + d = object복제
 
 <Visual Studio>
 ctrl + m + h = 선택영역 접기

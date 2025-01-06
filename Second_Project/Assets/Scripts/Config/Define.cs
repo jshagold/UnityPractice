@@ -36,3 +36,10 @@ public enum RETURN_CODE
     Success = 200,
     Error = -1,
 }
+
+public enum DEVELOPMENT_ID_AUTHORITY
+{
+    None = 0,
+    Tester = 1,
+    Master = 2,
+}

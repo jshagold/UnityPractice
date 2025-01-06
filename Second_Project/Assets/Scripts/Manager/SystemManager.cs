@@ -21,6 +21,20 @@ public class SystemManager : ManagerBase
 
     public string ApiUrl { get; set; } = string.Empty;
 
+    public string DevelopmentId 
+    {
+        get 
+        {
+            return PlayerPrefs.GetString("DevelopmentId");
+        } 
+        set
+        {
+            PlayerPrefs.SetString("DevelopmentId", value);
+        }
+    }
+
+    public DEVELOPMENT_ID_AUTHORITY dEVELOPMENT_ID_AUTHORITY { get; set; } = DEVELOPMENT_ID_AUTHORITY.None;
+
     private void Awake()
     {
         DontDestroy<SystemManager>();

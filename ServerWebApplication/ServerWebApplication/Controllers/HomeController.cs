@@ -69,15 +69,16 @@ namespace ServerWebApplication.Controllers
 
         private SendPacketBase ApplicationConfig(string json)
         {
-            ApplicationConfigReceivePacket? applicationConfigReceivePacket = JsonConvert.DeserializeObject<ApplicationConfigReceivePacket>(json);
+            ApplicationConfigReceivePacket? receivePacket = JsonConvert.DeserializeObject<ApplicationConfigReceivePacket>(json);
 
-            if (applicationConfigReceivePacket == null)
+            if (receivePacket == null)
             {
                 return new SendPacketBase(PACKET_NAME_TYPE.None, RETURN_CODE.Error);
             }
 
+            // Api Url
             string apiUrl = string.Empty;
-            switch ((ENVIRONMENT_TYPE)applicationConfigReceivePacket.E_ENVIRONMENT_TYPE)
+            switch ((ENVIRONMENT_TYPE)receivePacket.E_ENVIRONMENT_TYPE)
             {
                 case ENVIRONMENT_TYPE.Dev:
                     apiUrl = "https://localhost:5000";
@@ -93,14 +94,20 @@ namespace ServerWebApplication.Controllers
                     break;
             }
 
+            // 권한 설정
+            DEVELOPMENT_ID_AUTHORITY dEVELOPMENT_ID_AUTHORITY = DEVELOPMENT_ID_AUTHORITY.None;
+            if(receivePacket.DevelopmentId == "test123")
+            {
+                dEVELOPMENT_ID_AUTHORITY = DEVELOPMENT_ID_AUTHORITY.Tester;
+            }
 
             PACKET_NAME_TYPE packetNameType = PACKET_NAME_TYPE.None;
-            if (Enum.TryParse(applicationConfigReceivePacket.PacketName, out PACKET_NAME_TYPE type))
+            if (Enum.TryParse(receivePacket.PacketName, out PACKET_NAME_TYPE type))
             {
                 packetNameType = type;
             }
 
-            ApplicationConfigSendPacket applicationConfigSendPacket = new ApplicationConfigSendPacket(packetNameType, RETURN_CODE.Success, apiUrl);
+            ApplicationConfigSendPacket applicationConfigSendPacket = new ApplicationConfigSendPacket(packetNameType, RETURN_CODE.Success, apiUrl, dEVELOPMENT_ID_AUTHORITY);
 
             return applicationConfigSendPacket;
         }

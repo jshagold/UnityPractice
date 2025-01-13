@@ -101,9 +101,47 @@ public class InitScene_Init : MonoBehaviour
         if(SystemManager.Instance.dEVELOPMENT_ID_AUTHORITY == DEVELOPMENT_ID_AUTHORITY.None)
         {
             // 점검
+            IEnumerator eMaintenance = MaintenancePacket();
+            yield return StartCoroutine(eMaintenance);
+            MaintenanceReceivePacket maintenanceReceivePacket = eMaintenance.Current as MaintenanceReceivePacket;
+            if (maintenanceReceivePacket != null && maintenanceReceivePacket.IsMaintenance)
+            {
+                GameObject objPopupMessage = Instantiate(prefabPopupMessage, parentPopupMessage);
+
+                PopupMessageInfo popupMessageInfo = new PopupMessageInfo(POPUP_MESSAGE_TYPE.ONE_BUTTON, maintenanceReceivePacket.Title, maintenanceReceivePacket.Contents);
+                PopupMessage popupMessage = objPopupMessage.GetComponent<PopupMessage>();
+                popupMessage.OpenMessage(popupMessageInfo, null, () =>
+                {
+                    // finish app
+                    Debug.Log("점검으로 인한 앱 종료");
+                    Application.Quit();
+                });
+
+                yield break;
+
+            }
+
         }
 
         yield return StartCoroutine(EtcManager());
+    }
+
+    private IEnumerator MaintenancePacket()
+    {
+        MaintenanceSendPacket sendPacket = new MaintenanceSendPacket(
+                SystemManager.Instance.ApiUrl,
+                PACKET_NAME_TYPE.Maintenance,
+                Config.E_ENVIRONMENT_TYPE,
+                Config.E_OS_TYPE,
+                Config.APP_VERSION,
+                Application.systemLanguage
+                );
+
+
+        IEnumerator enumerator = networkManager.C_SendPacket<MaintenanceReceivePacket>(sendPacket);
+        yield return StartCoroutine(enumerator);
+        yield return enumerator.Current;
+        
     }
 
     private IEnumerator EtcManager()

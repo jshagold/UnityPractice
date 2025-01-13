@@ -6,6 +6,7 @@
 public enum PACKET_NAME_TYPE
 {
     ApplicationConfig,
+    Maintenance,
 }
 
 

@@ -2,6 +2,7 @@
 {
     None,
     ApplicationConfig,
+    Maintenance,
 }
 
 public enum ENVIRONMENT_TYPE
@@ -28,4 +29,10 @@ public enum DEVELOPMENT_ID_AUTHORITY
     None = 0,
     Tester = 1,
     Master = 2,
+}
+
+public enum LANGUAGE_TYPE
+{
+    English = 10,
+    Korean = 23,
 }

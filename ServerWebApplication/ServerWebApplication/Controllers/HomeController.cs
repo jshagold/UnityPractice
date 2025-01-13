@@ -49,6 +49,9 @@ namespace ServerWebApplication.Controllers
                     case PACKET_NAME_TYPE.ApplicationConfig:
                         sendPacketBase = ApplicationConfig(json);
                         break;
+                    case PACKET_NAME_TYPE.Maintenance:
+                        sendPacketBase = Maintenance(json);
+                        break;
                     default:
                         {
                             SendPacketBase packet = new SendPacketBase(PACKET_NAME_TYPE.None, RETURN_CODE.Error);
@@ -67,13 +70,76 @@ namespace ServerWebApplication.Controllers
             return Content(JsonConvert.SerializeObject(sendPacketBase));
         }
 
+        private SendPacketBase Maintenance(string json)
+        {
+            MaintenanceReceivePacket? receivePacket = JsonConvert.DeserializeObject<MaintenanceReceivePacket>(json);
+
+            if (receivePacket == null)
+            {
+                return new SendPacketBase(PACKET_NAME_TYPE.Maintenance, RETURN_CODE.Error);
+            }
+
+            bool isMaintenance = false;
+            if(CompareVersions(receivePacket.AppVersion, "1.0.0") <= 0)
+            {
+                isMaintenance = true;
+            }
+
+            string title = string.Empty;
+            string contents = string.Empty;
+            if ((LANGUAGE_TYPE)receivePacket.languageType == LANGUAGE_TYPE.English)
+            {
+                title = "Maintenance";
+                contents = "Regular inspection is underway. (AM 11:00 ~ PM 01:00)";
+            }
+            else if ((LANGUAGE_TYPE)receivePacket.languageType == LANGUAGE_TYPE.Korean)
+            {
+                title = "점검";
+                contents = "정기점검중이다. (AM 11:00 ~ PM 01:00)";
+            }
+
+
+            PACKET_NAME_TYPE packetNameType = PACKET_NAME_TYPE.None;
+            if (Enum.TryParse(receivePacket.PacketName, out PACKET_NAME_TYPE type))
+            {
+                packetNameType = type;
+            }
+
+            MaintenanceSendPacket sendPacket = new MaintenanceSendPacket(packetNameType, RETURN_CODE.Success, isMaintenance, title, contents);
+
+            return sendPacket;
+        }
+
+        private int CompareVersions(string version1, string version2)
+        {
+            string[] parts1 = version1.Split('.');
+            string[] parts2 = version2.Split('.');
+
+            for (int i = 0; i < Math.Max(parts1.Length, parts2.Length); i++)
+            {
+                int num1 = (i < parts1.Length) ? int.Parse(parts1[i]) : 0;
+                int num2 = (i < parts2.Length) ? int.Parse(parts2[i]) : 0;
+
+                if (num1 < num2)
+                {
+                    return -1;
+                }
+                else if (num1 > num2)
+                {
+                    return 1;
+                }
+            }
+
+            return 0; // versions are equal
+        }
+            
         private SendPacketBase ApplicationConfig(string json)
         {
             ApplicationConfigReceivePacket? receivePacket = JsonConvert.DeserializeObject<ApplicationConfigReceivePacket>(json);
 
             if (receivePacket == null)
             {
-                return new SendPacketBase(PACKET_NAME_TYPE.None, RETURN_CODE.Error);
+                return new SendPacketBase(PACKET_NAME_TYPE.ApplicationConfig, RETURN_CODE.Error);
             }
 
             // Api Url

@@ -25,7 +25,7 @@ namespace ServerWebApplication.Controllers
         public async Task<IActionResult> Index()
         {
 
-            // ºó°ª ¿¡·¯ Ã³¸®
+            // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
             if (Request.ContentLength == 0)
             {
                 SendPacketBase packet = new SendPacketBase(PACKET_NAME_TYPE.None, RETURN_CODE.Error);
@@ -94,8 +94,8 @@ namespace ServerWebApplication.Controllers
             }
             else if ((LANGUAGE_TYPE)receivePacket.languageType == LANGUAGE_TYPE.Korean)
             {
-                title = "Á¡°Ë";
-                contents = "Á¤±âÁ¡°ËÁßÀÌ´Ù. (AM 11:00 ~ PM 01:00)";
+                title = "ï¿½ï¿½ï¿½ï¿½";
+                contents = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½. (AM 11:00 ~ PM 01:00)";
             }
 
 
@@ -160,7 +160,7 @@ namespace ServerWebApplication.Controllers
                     break;
             }
 
-            // ±ÇÇÑ ¼³Á¤
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             DEVELOPMENT_ID_AUTHORITY dEVELOPMENT_ID_AUTHORITY = DEVELOPMENT_ID_AUTHORITY.None;
             if(receivePacket.DevelopmentId == "test123")
             {

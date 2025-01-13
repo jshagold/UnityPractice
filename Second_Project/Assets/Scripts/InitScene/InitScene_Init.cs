@@ -84,10 +84,10 @@ public class InitScene_Init : MonoBehaviour
         bool isNetworkManagerSuccess = (bool)enumerator.Current;
         if (!isNetworkManagerSuccess)
         {
-            Debug.Log("³×Æ®¿öÅ© ¿À·ù, popup open");
+            Debug.Log("ï¿½ï¿½Æ®ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½, popup open");
             GameObject objPopupMessage = Instantiate(prefabPopupMessage, parentPopupMessage);
 
-            PopupMessageInfo popupMessageInfo = new PopupMessageInfo(POPUP_MESSAGE_TYPE.ONE_BUTTON, "¼­¹ö¿À·ù", "¼­¹ö¿À·ù ¹ß»ý");
+            PopupMessageInfo popupMessageInfo = new PopupMessageInfo(POPUP_MESSAGE_TYPE.ONE_BUTTON, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½");
             PopupMessage popupMessage = objPopupMessage.GetComponent<PopupMessage>();
             popupMessage.OpenMessage(popupMessageInfo, null, () =>
             {
@@ -100,8 +100,8 @@ public class InitScene_Init : MonoBehaviour
 
         if(SystemManager.Instance.dEVELOPMENT_ID_AUTHORITY == DEVELOPMENT_ID_AUTHORITY.None)
         {
-            // Á¡°Ë
-            // ÇØ´ç ÆÐÅ¶¿¡¼­ ¿À·ù°¡ ¹ß»ýÇØµµ, °è¼Ó ÁøÇàÇÏµµ·Ï Ã³¸®ÇØ¾ß ÇÑ´Ù.
+            // ï¿½ï¿½ï¿½ï¿½
+            // ï¿½Ø´ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Øµï¿½, ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Ñ´ï¿½.
             IEnumerator eMaintenance = MaintenancePacket();
             yield return StartCoroutine(eMaintenance);
             MaintenanceReceivePacket maintenanceReceivePacket = eMaintenance.Current as MaintenanceReceivePacket;
@@ -114,7 +114,7 @@ public class InitScene_Init : MonoBehaviour
                 popupMessage.OpenMessage(popupMessageInfo, null, () =>
                 {
                     // finish app
-                    Debug.Log("Á¡°ËÀ¸·Î ÀÎÇÑ ¾Û Á¾·á");
+                    Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
                     Application.Quit();
                 });
 
@@ -236,12 +236,12 @@ public class InitScene_Init : MonoBehaviour
     //    if (receivePacket != null && receivePacket.ReturnCode == (int)RETURN_CODE.Success)
     //    {
     //        SystemManager.Instance.ApiUrl = receivePacket.ApiUrl;
-    //        Debug.Log("¼º°ø"); // ±×´ÙÀ½ ¼ø¼­¸¦ ¿©±â¼­ ½ÇÇà
+    //        Debug.Log("ï¿½ï¿½ï¿½ï¿½"); // ï¿½×´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½
     //        StartCoroutine(EtcManager());
     //    }
     //    else
     //    {
-    //        Debug.Log("¿¡·¯"); // ¿¡·¯ÆË¾÷ ¶ç¿ì°í Á¾·á
+    //        Debug.Log("ï¿½ï¿½ï¿½ï¿½"); // ï¿½ï¿½ï¿½ï¿½ï¿½Ë¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     //    }
     //}
 

@@ -1,16 +1,16 @@
 {
   "levelCurves" : [
-    { "level": 0, "maxExp": 999, "hp": 100.0, "attack": 1, "defense": 1 },
-    { "level": 1, "maxExp": 100, "hp": 100.0, "attack": 10, "defense": 10 },
-    { "level": 2, "maxExp": 120, "hp": 100.0, "attack": 11, "defense": 11 },
-    { "level": 3, "maxExp": 156, "hp": 100.0, "attack": 12, "defense": 12 },
-    { "level": 4, "maxExp": 218, "hp": 100.0, "attack": 13, "defense": 13 },
-    { "level": 5, "maxExp": 328, "hp": 100.0, "attack": 14, "defense": 14 },
-    { "level": 6, "maxExp": 524, "hp": 100.0, "attack": 15, "defense": 15 },
-    { "level": 7, "maxExp": 891, "hp": 100.0, "attack": 16, "defense": 16 },
-    { "level": 8, "maxExp": 1604, "hp": 100.0, "attack": 17, "defense": 17 },
-    { "level": 9, "maxExp": 3047, "hp": 100.0, "attack": 18, "defense": 18 },
-    { "level": 10, "maxExp": 6095, "hp": 100.0, "attack": 19, "defense": 19 }
+    { "level": 0, "maxExp": 999, "hp": 100.0, "attack": 1, "defense": 1, "speed" : 0 },
+    { "level": 1, "maxExp": 100, "hp": 100.0, "attack": 10, "defense": 10, "speed" : 1.0 },
+    { "level": 2, "maxExp": 120, "hp": 100.0, "attack": 11, "defense": 11, "speed" : 1.0 },
+    { "level": 3, "maxExp": 156, "hp": 100.0, "attack": 12, "defense": 12, "speed" : 1.0 },
+    { "level": 4, "maxExp": 218, "hp": 100.0, "attack": 13, "defense": 13, "speed" : 1.0 },
+    { "level": 5, "maxExp": 328, "hp": 100.0, "attack": 14, "defense": 14, "speed" : 1.0 },
+    { "level": 6, "maxExp": 524, "hp": 100.0, "attack": 15, "defense": 15, "speed" : 1.0 },
+    { "level": 7, "maxExp": 891, "hp": 100.0, "attack": 16, "defense": 16, "speed" : 1.0 },
+    { "level": 8, "maxExp": 1604, "hp": 100.0, "attack": 17, "defense": 17, "speed" : 1.0 },
+    { "level": 9, "maxExp": 3047, "hp": 100.0, "attack": 18, "defense": 18, "speed" : 1.0 },
+    { "level": 10, "maxExp": 6095, "hp": 100.0, "attack": 19, "defense": 19, "speed" : 1.0 }
   ],
 
   "minimumEvolutionLevel" : 5,

@@ -1,0 +1,42 @@
+{
+    // Skill
+    "skillType": [
+        "active", // 액티브 스킬
+        "passive" // 패시브 스킬
+    ],
+    "skillEffectType": [
+        "StatMul", // 스탯에 값을 곱셈
+        "StatPlus", // 스탯에 값을 덧셈
+        "Damage" // 데미지
+    ],
+
+
+    // Character
+    "characterType": [  // 캐릭터 종족 유형
+        "human",    // 인간
+        "animal",   // 동물
+        "machine"   // 기계
+    ],
+
+    "charcaterKeyword": [ // 캐릭터 키워드
+
+    ],
+
+    "characterFaction": [   // 캐릭터 진영
+        "player",   // 유저 캐릭터
+        "ally", // 아군
+        "enemy",    // 적
+        "neutral"   // 중립
+    ],
+
+    "characterStat": [ // 캐릭터 스탯
+        "level", // 레벨
+        "currentExp", // 현재 경험치
+        "health", // 체력 %단위
+        "strength", // 힘
+        "toughness", // 강인함
+        "agility", // 속도 1.0 , 2.0
+        "evasionRate", // 회피율 %단위 -> 추후 집중력 이라는 수치로 대체
+        "criticalRate" // 치명타율 %단위 -> 추후 집중력 이라는 수치로 대체
+    ]
+}

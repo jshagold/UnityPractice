@@ -1,0 +1,60 @@
+//// 전투 ////
+
+// 초기 세팅
+[player_character]
+playerHP = hp + item_hp + skill_hp
+playerATK = attack + item_attack + skill_hp
+playerDefense = defense + item_defense + skill_defense
+playerSpeed = speed + item_speed + skill_speed
+
+[enemy_character]
+enemyHP = hp + item_hp + skill_hp
+enemyATK = attack + item_attack + skill_hp
+enemyDefense = defense + item_defense + skill_defense
+enemySpeed = speed + item_speed + skill_speed
+
+
+// 전투
+turn = 1
+
+while (playerHP > 0 and enemyHP > 0)
+    print("--- TURN " + turn + " ---")
+
+    if(playerSpeed >= enemySpeed)
+        // 1. 플레이어 행동
+        selected_skill = player_skills.get(id)
+        damage = playerATK * selected_skill.power
+        enemyHP -= damage - enemyDefense
+        print("Player hits " + damage + " ⇒ Enemy HP " + enemyHP)
+
+        if enemyHP <= 0
+            break // 승리
+
+        // 2. 적 행동
+        selected_skill = enemy_skills.get(id)
+        damage = enemyATK * selected_skill.power
+        playerHP -= damage - playerDefense
+        print("Enemy hits " + damage + " ⇒ Player HP " + playerHP)
+    else
+        // 1. 적 행동
+        selected_skill = enemy_skills.get(id)
+        damage = enemyATK * selected_skill.power
+        playerHP -= damage - playerDefense
+        print("Enemy hits " + damage + " ⇒ Player HP " + playerHP)
+
+        if playerHP <= 0
+            break // 패배
+
+        // 2. 플레이어 행동
+        selected_skill = player_skills.get(id)
+        damage = playerATK * selected_skill.power
+        enemyHP -= damage - enemyDefense
+        print("Player hits " + damage + " ⇒ Enemy HP " + enemyHP)
+        
+    turn += 1
+
+// 결과 판정
+if playerHP > 0
+    print("Victory!!")
+else
+    print("Defeat..")

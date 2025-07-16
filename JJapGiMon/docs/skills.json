@@ -1,0 +1,4 @@
+[
+  { "id": 1, "name" : "basic_attack", "power" : 1.0, "levelReq" : 1 },
+  { "id": 2, "name" : "strong_attack", "power" : 1.1, "levelReq" : 3 }
+]

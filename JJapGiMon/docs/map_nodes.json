@@ -1,0 +1,5 @@
+[
+  { "type" : "BATTLE", "weight" : 2 },
+  { "type" : "EVENT", "weight" : 1 },
+  { "type" : "BOSS", "weight" : 1 }
+]

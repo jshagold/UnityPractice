@@ -1,0 +1,32 @@
+{
+    "equip": { // 장비
+        "id": "int",
+        "defaultName": "string", // 기본 이름 (사용자가 설정 안한 경우)
+        "name": "string", // Nullable 사용자가 설정한 이름
+        "description": "string", // Nullable 장비 설명 
+
+        "type": "string", // Enum
+        "tier": "int",
+        "state": "string", // Enum (상,중,하) 장비상태
+        "stat": {
+            "level": "int", // Nullable 레벨
+            "health": "double", // Nullable 체력 %단위
+            "strength": "int", // Nullable 힘
+            "toughness": "int", // Nullable 강인함
+            "agility": "double", // Nullable 속도 1.0 , 2.0
+            "evasionRate": "double", // Nullable 회피율 %단위 -> 추후 집중력 이라는 수치로 대체
+            "criticalRate": "double" // Nullable 치명타율 %단위 -> 추후 집중력 이라는 수치로 대체
+        }
+    }
+
+    "item": { // 소비 아이템
+        "id": "int",
+        "defaultName": "string", // 기본 이름 (사용자가 설정 안한 경우)
+        "name": "string", // Nullable 사용자가 설정한 이름
+        "description": "string", // Nullable 아이템 설명
+
+        "type": "string", // Enum
+        "count": "int"
+    }
+    
+}

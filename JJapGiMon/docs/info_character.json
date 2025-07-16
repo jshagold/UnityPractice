@@ -1,0 +1,43 @@
+{
+	"id": "int",
+	"defaultName": "string", // 기본 이름 (사용자가 설정 안한 경우)
+	"name": "string", // 사용자가 설정한 이름
+
+	"characterSprite": "", // 썸네일
+	"characterPrefab": "", // 인게임 프리팹
+
+	// info
+	"type": "string", // Enum(인간, 동물, 기계) 분류 
+	"evolutionStage": "int", // 진화, 성장 단계
+	"keyword": [ "string" ], // Enum 키워드 list
+	"faction": "string", // Enum(Player, Ally, Enemy, Neutral)
+
+	// stat
+	"level": "int", // 레벨
+	"currentExp": "int", // 현재 경험치
+	"health": "double", // 체력 %단위
+	"strength": "int", // 힘
+	"toughness": "int", // 강인함
+	"agility": "double", // 속도 1.0 , 2.0
+	"evasionRate": "double", // 회피율 %단위 -> 추후 집중력 이라는 수치로 대체
+	"criticalRate": "double", // 치명타율 %단위 -> 추후 집중력 이라는 수치로 대체
+
+	// skill
+	"skill": {
+		"active_main": "int", // skill_id
+		"active_sub1": "int", // skill_id, Nullable
+		"active_sub2": "int", // skill_id, Nullable
+		"passive": [ "int" ] // skill_id
+	},
+
+	// equipment, item
+	"item": {
+		"equip": { // 장비
+			"main": "int", // item_equip_id, Nullable
+			"top": "int", // item_equip_id, Nullable
+			"middle": "int", // item_equip_id, Nullable
+			"bottom": "int" // item_equip_id, Nullable
+		},
+		"item": "int" // item_item_id, Nullable
+	}
+}

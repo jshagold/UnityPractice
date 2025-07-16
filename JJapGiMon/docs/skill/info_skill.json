@@ -1,0 +1,15 @@
+﻿{
+	"id": "int",
+	"defaultName": "string", // 기본 이름 (사용자가 설정 안한 경우)
+	"name": "string", // Nullable 사용자가 설정한 이름
+	"description": "string", // Nullable 스킬 설명
+
+	"skillType": "string", // Enum(active, passive)
+	"effects": [ // 적용되어야 하는 효과 list
+		{
+			"type": "string", // Enum 계산에 적용될 타입 (ex. statMul-스탯곱셈, damage-데미지효과, 등등)
+			"stat": "string", // Enum 적용할 스탯
+			"value": "double" // 적용할 수치
+		}
+	]
+}

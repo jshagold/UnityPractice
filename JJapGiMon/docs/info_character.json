@@ -1,26 +1,26 @@
-{
+ï»¿{
 	"id": "int",
-	"defaultName": "string", // ±âº» ÀÌ¸§ (»ç¿ëÀÚ°¡ ¼³Á¤ ¾ÈÇÑ °æ¿ì)
-	"name": "string", // »ç¿ëÀÚ°¡ ¼³Á¤ÇÑ ÀÌ¸§
+	"defaultName": "string", // ê¸°ë³¸ ì´ë¦„ (ì‚¬ìš©ìê°€ ì„¤ì • ì•ˆí•œ ê²½ìš°)
+	"name": "string", // ì‚¬ìš©ìê°€ ì„¤ì •í•œ ì´ë¦„
 
-	"characterSprite": "", // ½æ³×ÀÏ
-	"characterPrefab": "", // ÀÎ°ÔÀÓ ÇÁ¸®ÆÕ
+	"characterSprite": "", // ì¸ë„¤ì¼
+	"characterPrefab": "", // ì¸ê²Œì„ í”„ë¦¬íŒ¹
 
 	// info
-	"type": "string", // Enum(ÀÎ°£, µ¿¹°, ±â°è) ºĞ·ù 
-	"evolutionStage": "int", // ÁøÈ­, ¼ºÀå ´Ü°è
-	"keyword": [ "string" ], // Enum Å°¿öµå list
+	"type": "string", // Enum(ì¸ê°„, ë™ë¬¼, ê¸°ê³„) ë¶„ë¥˜ 
+	"evolutionStage": "int", // ì§„í™”, ì„±ì¥ ë‹¨ê³„
+	"keyword": [ "string" ], // Enum í‚¤ì›Œë“œ list
 	"faction": "string", // Enum(Player, Ally, Enemy, Neutral)
 
 	// stat
-	"level": "int", // ·¹º§
-	"currentExp": "int", // ÇöÀç °æÇèÄ¡
-	"health": "double", // Ã¼·Â %´ÜÀ§
-	"strength": "int", // Èû
-	"toughness": "int", // °­ÀÎÇÔ
-	"agility": "double", // ¼Óµµ 1.0 , 2.0
-	"evasionRate": "double", // È¸ÇÇÀ² %´ÜÀ§ -> ÃßÈÄ ÁıÁß·Â ÀÌ¶ó´Â ¼öÄ¡·Î ´ëÃ¼
-	"criticalRate": "double", // Ä¡¸íÅ¸À² %´ÜÀ§ -> ÃßÈÄ ÁıÁß·Â ÀÌ¶ó´Â ¼öÄ¡·Î ´ëÃ¼
+	"level": "int", // ë ˆë²¨
+	"currentExp": "int", // í˜„ì¬ ê²½í—˜ì¹˜
+	"health": "double", // ì²´ë ¥ %ë‹¨ìœ„
+	"strength": "int", // í˜
+	"toughness": "int", // ê°•ì¸í•¨
+	"agility": "double", // ì†ë„ 1.0 , 2.0
+	"evasionRate": "double", // íšŒí”¼ìœ¨ %ë‹¨ìœ„ -> ì¶”í›„ ì§‘ì¤‘ë ¥ ì´ë¼ëŠ” ìˆ˜ì¹˜ë¡œ ëŒ€ì²´
+	"criticalRate": "double", // ì¹˜ëª…íƒ€ìœ¨ %ë‹¨ìœ„ -> ì¶”í›„ ì§‘ì¤‘ë ¥ ì´ë¼ëŠ” ìˆ˜ì¹˜ë¡œ ëŒ€ì²´
 
 	// skill
 	"skill": {
@@ -32,7 +32,7 @@
 
 	// equipment, item
 	"item": {
-		"equip": { // Àåºñ
+		"equip": { // ì¥ë¹„
 			"main": "int", // item_equip_id, Nullable
 			"top": "int", // item_equip_id, Nullable
 			"middle": "int", // item_equip_id, Nullable

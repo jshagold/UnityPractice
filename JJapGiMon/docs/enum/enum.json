@@ -9,6 +9,9 @@
         "StatPlus", // 스탯에 값을 덧셈
         "Damage" // 데미지
     ],
+    "skillCostType": [
+        "health"
+    ],
 
 
     // Character

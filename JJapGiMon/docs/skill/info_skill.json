@@ -5,6 +5,9 @@
 	"description": "string", // Nullable 스킬 설명
 
 	"skillType": "string", // Enum(active, passive)
+	"cost": { // Nullable 사용 조건
+		"health": "double" // Enum(skillCostType) Nullable 체력사용
+	},
 	"effects": [ // 적용되어야 하는 효과 list
 		{
 			"type": "string", // Enum 계산에 적용될 타입 (ex. statMul-스탯곱셈, damage-데미지효과, 등등)

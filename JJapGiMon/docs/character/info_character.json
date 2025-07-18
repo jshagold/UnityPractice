@@ -9,7 +9,7 @@
 	// info
 	"type": "string", // Enum(인간, 동물, 기계) 분류 
 	"evolutionStage": "int", // 진화, 성장 단계
-	"keyword": [ "string" ], // Enum 키워드 list
+	"keyword": [ "int" ], // 키워드 id list
 	"faction": "string", // Enum(Player, Ally, Enemy, Neutral)
 
 	// stat

@@ -1,12 +1,92 @@
 ﻿[
     // 플레이어 캐릭터
     {
+        "id": 1,
+        "defaultName": "주인공",   // 기본 이름
+        "name": "테스트_캐릭터",  // 사용자 입력 이름
 
+        "characterSprite": "", // 썸네일
+        "characterPrefab": "", // 인게임 프리팹
+
+        // info
+        "type": "characterType.Animal", //분류 
+        "evolutionStage": 1, // 진화, 성장 단계
+        "keyword": [ 1, 2 ], // keyword.id
+        "faction": "characterFaction.Player",   // 진영
+
+        // stat
+        "level": 1, // 레벨
+        "currentExp": 0, // 현재 경험치
+        "health": 100.0, // 체력 %단위
+        "strength": 10, // 힘
+        "toughness": 10, // 강인함
+        "agility": 1.0, // 속도
+        "evasionRate": 30.0, // 회피율
+        "criticalRate": 30.0, // 치명타율
+
+        // skill
+        "skill": {
+            "active_main": 1, // skill_active.id
+            "active_sub1": 2, // skill_active.id
+            "active_sub2": null, // skill_active.id
+            "passive": [ 1 ] // skill_passive.id
+        },
+
+        // equipment, item
+        "item": {
+            "equip": { // 장비
+                "main": null, // item_equip_id
+                "top": null, // item_equip_id
+                "middle": null, // item_equip_id
+                "bottom": null // item_equip_id
+            },
+            "item": [] // item_item_id
+        }
     },
 
 
     // 보스 캐릭터
     {
+        "id": 2,
+        "defaultName": "보스", // 기본 이름
+        "name": "테스트_캐릭터_보스", // 사용자 입력 이름
 
+        "characterSprite": "", // 썸네일
+        "characterPrefab": "", // 인게임 프리팹
+
+        // info
+        "type": "characterType.Animal", //분류 
+        "evolutionStage": 2, // 진화, 성장 단계
+        "keyword": [ 3 ], // keyword.id
+        "faction": "characterFaction.Enemy", // 진영
+
+        // stat
+        "level": 3, // 레벨
+        "currentExp": 0, // 현재 경험치
+        "health": 100.0, // 체력 %단위
+        "strength": 12, // 힘
+        "toughness": 12, // 강인함
+        "agility": 1.0, // 속도
+        "evasionRate": 30.0, // 회피율
+        "criticalRate": 30.0, // 치명타율
+
+        // skill
+        "skill": {
+            "active_main": 1, // skill_active.id
+            "active_sub1": 2, // skill_active.id
+            "active_sub2": 3, // skill_active.id
+            "passive": [ 2 ] // skill_passive.id
+        },
+
+        // equipment, item
+        "item": {
+            "equip": { // 장비
+                "main": null, // item_equip_id
+                "top": null, // item_equip_id
+                "middle": null, // item_equip_id
+                "bottom": null // item_equip_id
+            },
+            "item": [] // item_item_id
+        }
     }
 ]

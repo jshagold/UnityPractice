@@ -1,107 +1,112 @@
-[
-    {
-        "id": 1,
-        "defaultName": "normal",
-        "name": "평범함",
-        "description": "아무런 변화가 없다",
-        "skillType": "passive",
-        "cost": null,
-        "effects": []
-    },
+{
+    "skill_passive": [
+        {
+            "id": 1,
+            "defaultName": "normal",
+            "name": "평범함",
+            "description": "아무런 변화가 없다",
+            "skillType": "skillType.Passive",
+            "cost": null,
+            "effects": []
+        },
 
-    {
-        "id": 2,
-        "defaultName": "faster",
-        "name": "날램",
-        "description": "속도가 $value 배 만큼 빨라진다",
-        "skillType": "passive",
-        "cost": null,
-        "effects": [
-            {
-                "type": "StatMul", // Enum
-                "stat": "agility",
-                "value": "1.1"
-            }
-        ]
-    },
+        {
+            "id": 2,
+            "defaultName": "faster",
+            "name": "날램",
+            "description": "속도가 $value 배 만큼 빨라진다",
+            "skillType": "skillType.Passive",
+            "cost": null,
+            "effects": [
+                {
+                    "type": "skillEffectType.StatMul", // Enum
+                    "stat": "characterStat.Agility",
+                    "value": 1.1
+                }
+            ]
+        },
 
-    {
-        "id": 3,
-        "defaultName": "turtle",
-        "name": "거북이",
-        "description": "느리지만 튼튼하다.",
-        "skillType": "passive",
-        "cost": null,
-        "effects": [
-            {
-                "type": "StatMul", // Enum
-                "stat": "agility",
-                "value": "0.9"
+        {
+            "id": 3,
+            "defaultName": "turtle",
+            "name": "거북이",
+            "description": "느리지만 튼튼하다.",
+            "skillType": "skillType.Passive",
+            "cost": null,
+            "effects": [
+                {
+                    "type": "skillEffectType.StatMul",
+                    "stat": "characterStat.Agility",
+                    "value": 0.9
+                },
+                {
+                    "type": "skillEffectType.StatPlus",
+                    "stat": "characterStat.Toughness",
+                    "value": 10
+                }
+            ]
+        }
+    ],
+
+    "skill_active": [
+        {
+            "id": 1,
+            "defaultName": "basic_attack",
+            "name": "기본 공격",
+            "description": "기본적인 공격",
+            "skillType": "skillType.Active",
+            "cost": {
+                "health": 0.1
             },
-            {
-                "type": "StatPlus", // Enum
-                "stat": "toughness",
-                "value": "10"
-            }
-        ]
-    },
-
-    {
-        "id": 4,
-        "defaultName": "basic_attack",
-        "name": "기본 공격",
-        "description": "기본적인 공격",
-        "skillType": "active",
-        "cost": {
-            "health": 0.1
+            "effects": [
+                {
+                    "type": "skillEffectType.Damage",
+                    "power": 1.0,
+                    "hitsPerCast": 1
+                }
+            ]
         },
-        "effects": [
-            {
-                "type": "Damage", // Enum
-                "power": "1.0",
-                "hitsPerCast": "1"
-            }
-        ]
-    },
 
-    {
-        "id": 5,
-        "defaultName": "double attack",
-        "name": "두번 때리기",
-        "description": "한대칠걸 약한 두대로 친다.",
-        "skillType": "active",
-        "cost": {
-            "health": 0.1
-        },
-        "effects": [
-            {
-                "type": "Damage", // Enum
-                "power": "0.5",
-                "hitsPerCast": "2"
-            }
-        ]
-    },
-
-    {
-        "id": 6,
-        "defaultName": "strong attack",
-        "name": "세게 때리기",
-        "description": "세게 친다. 동작이 크다",
-        "skillType": "active",
-        "cost": {
-            "health": 0.15
-        },
-        "effects": [
-            {
-                "type": "Damage", // Enum
-                "power": "1.5",
-                "hitsPerCast": "1"
+        {
+            "id": 2,
+            "defaultName": "double attack",
+            "name": "두번 때리기",
+            "description": "한대칠걸 약한 두대로 친다.",
+            "skillType": "skillType.Active",
+            "cost": {
+                "health": 0.1
             },
-            {
-                "type": "StatMul", // Enum
-                "stat": "agility",
-                "value": "0.9"
-            }
-        ]
-    }
-]
+            "effects": [
+                {
+                    "type": "skillEffectType.Damage",
+                    "power": 0.5,
+                    "hitsPerCast": 2
+                }
+            ]
+        },
+
+        {
+            "id": 3,
+            "defaultName": "strong attack",
+            "name": "세게 때리기",
+            "description": "세게 친다. 동작이 크다",
+            "skillType": "skillType.Active",
+            "cost": {
+                "health": 0.15
+            },
+            "effects": [
+                {
+                    "type": "skillEffectType.Damage",
+                    "power": 1.5,
+                    "hitsPerCast": 1
+                },
+                {
+                    "type": "skillEffectType.StatMul",
+                    "stat": "characterStat.Agility",
+                    "value": 0.9
+                }
+            ]
+        }
+    ]
+
+}

@@ -1,0 +1,20 @@
+﻿[
+    {
+        "id": 1, // 키워드 id
+        "name": "주인공", // 키워드 이름
+        "description": "주인공만 가짐", // 키워드 설명
+        "effects": null
+    },
+    {
+        "id": 2, // 키워드 id
+        "name": "인간", // 키워드 이름
+        "description": "인간임", // 키워드 설명
+        "effects": null
+    },
+    {
+        "id": 3, // 키워드 id
+        "name": "보스", // 키워드 이름
+        "description": "보스만 가짐", // 키워드 설명
+        "effects": null
+    }
+]

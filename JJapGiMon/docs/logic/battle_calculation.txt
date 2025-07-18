@@ -1,1 +1,48 @@
-﻿
+﻿[전투 수치 관련 항목]
+힘, 강인함, 속도, 스킬계수데미지, 스킬고정데미지, 키워드, 장비, qte공격, qte수비
+
+
+
+[변수]
+힘 = str
+강인함 = def
+공격 밸런스 계수 = strVar
+수비 밸런스 계수 = defVar
+스킬 계수 데미지 = scalingD
+스킬 고정 데미지 = fixedD
+장비 계수 = equip
+qte 배율 = qteVar (1.1)
+QTE 성공 여부 = qtePF
+마지막 확률 변수 = randVar (0.95 ~ 1.05)
+
+
+
+
+
+[전투 계산 순서]
+** 스킬의 effect 리스트순서대로 loop **
+1. 스탯, 밸런스 계산
+2. 스킬 계산
+3. QTE 성공/실패 계산
+4. 마지막 확률 변수 계산
+
+
+
+[effect별 계산 - 공격시]
+1. 스탯 계산
+	raw = (str * strVar) - (def * defVar)
+	statPhase = if(raw <= 0) 10 else raw
+
+2. 스킬 계산
+	skillPhase = raw*scalingD + fixedD
+
+3. QTE 성공/실패 계산
+	qtePhase = if(qtePF) skillPhase * qteVar else skillPhase
+
+4. 마지막 확률 변수 계산
+	finalDamage = qtePhase * randVar
+
+
+
+
+

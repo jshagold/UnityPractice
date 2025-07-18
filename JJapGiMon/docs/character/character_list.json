@@ -17,7 +17,7 @@
         // stat
         "level": 1, // 레벨
         "currentExp": 0, // 현재 경험치
-        "health": 100.0, // 체력 %단위
+        "health": 1000, // 체력 %단위
         "strength": 10, // 힘
         "toughness": 10, // 강인함
         "agility": 1.0, // 속도
@@ -63,7 +63,7 @@
         // stat
         "level": 3, // 레벨
         "currentExp": 0, // 현재 경험치
-        "health": 100.0, // 체력 %단위
+        "health": 10000, // 체력 %단위
         "strength": 12, // 힘
         "toughness": 12, // 강인함
         "agility": 1.0, // 속도

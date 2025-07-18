@@ -61,8 +61,10 @@
             "effects": [
                 {
                     "type": "skillEffectType.Damage",
-                    "power": 1.0,
-                    "hitsPerCast": 1
+                    "damage": {
+                        "fixedDamage": 0, // 고정 데미지
+                        "scalingDamage": 1.0 // 계수 데미지
+                    }
                 }
             ]
         },
@@ -79,8 +81,17 @@
             "effects": [
                 {
                     "type": "skillEffectType.Damage",
-                    "power": 0.5,
-                    "hitsPerCast": 2
+                    "damage": {
+                        "fixedDamage": 1, // 고정 데미지
+                        "scalingDamage": 0.5 // 계수 데미지
+                    }
+                },
+                {
+                    "type": "skillEffectType.Damage",
+                    "damage": {
+                        "fixedDamage": 1, // 고정 데미지
+                        "scalingDamage": 0.5 // 계수 데미지
+                    }
                 }
             ]
         },
@@ -97,8 +108,10 @@
             "effects": [
                 {
                     "type": "skillEffectType.Damage",
-                    "power": 1.5,
-                    "hitsPerCast": 1
+                    "damage": {
+                        "fixedDamage": 0, // 고정 데미지
+                        "scalingDamage": 1.5 // 계수 데미지
+                    }
                 },
                 {
                     "type": "skillEffectType.StatMul",

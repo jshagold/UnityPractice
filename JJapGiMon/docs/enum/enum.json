@@ -1,39 +1,38 @@
 ﻿{
     // Skill
-    "skillType": [
+    "skillType": [  // Enum
         "active", // 액티브 스킬
         "passive" // 패시브 스킬
     ],
-    "skillEffectType": [
+    "skillEffectType": [    // Enum
         "StatMul", // 스탯에 값을 곱셈
         "StatPlus", // 스탯에 값을 덧셈
-        "DamageMul", // 데미지 계수
-        "DamagePlus" // 고정 데미지
+        "Damage" // 데미지
     ],
-    "skillCostType": [
+    "skillCostType": [  // Enum
         "health"
     ],
 
 
     // Character
-    "characterType": [  // 캐릭터 종족 유형
+    "characterType": [  // Enum 캐릭터 종족 유형
         "human",    // 인간
         "animal",   // 동물
         "machine"   // 기계
     ],
 
-    "charcaterKeyword": [ // 캐릭터 키워드
+    "charcaterKeyword": [ // Sealed Class 캐릭터 키워드
         "JooInnGong"
     ],
 
-    "characterFaction": [   // 캐릭터 진영
+    "characterFaction": [   // Enum 캐릭터 진영
         "player",   // 유저 캐릭터
         "ally", // 아군
         "enemy",    // 적
         "neutral"   // 중립
     ],
 
-    "characterStat": [ // 캐릭터 스탯
+    "characterStat": [ // Enum 캐릭터 스탯
         "level", // 레벨
         "currentExp", // 현재 경험치
         "health", // 체력 %단위

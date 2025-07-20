@@ -1,8 +1,7 @@
 ﻿{
 	"id": "int",
-	"defaultName": "string", // 기본 이름 (사용자가 설정 안한 경우)
-	"name": "string", // Nullable 사용자가 설정한 이름
-	"description": "string", // Nullable 스킬 설명
+	"skillName": "string", // 스킬 이름
+	"description": "string", // Nullable 스킬 설명/ cpfur
 
 	"skillType": "string", // Enum(active, passive)
 	"cost": { // Nullable 사용 조건
@@ -20,5 +19,3 @@
 		}
 	]
 }
-
-

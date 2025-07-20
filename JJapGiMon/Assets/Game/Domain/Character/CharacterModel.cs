@@ -21,7 +21,7 @@ public class CharacterModel
     public string DisplayName => SaveData.name;
     public int level => SaveData.level;
     public double MaxHp => 100.0;
-    public double CurrentHp => SaveData.currentHp;
+    //public double CurrentHp => SaveData.currentHp;
     public int AttackPower => _statCalc.CalcAttack(level);
     public int DefensePower => _statCalc.CalcDefense(level);
     public double CurrentSpeed => _statCalc.CalcSpeed(level);

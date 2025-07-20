@@ -1,5 +1,5 @@
 ﻿{
-	"id": "int",
+	"id": "string",
 	"defaultName": "string", // 기본 이름 (사용자가 설정 안한 경우)
 	"name": "string", // 사용자가 설정한 이름
 
@@ -30,7 +30,7 @@
 		"passive": [ "int" ] // skill_id
 	},
 
-	// equipment, item
+	// equipment, item -> 2차에 추가
 	"item": {
 		"equip": { // 장비
 			"main": "int", // item_equip_id, Nullable

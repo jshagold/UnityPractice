@@ -23,4 +23,9 @@ public class CharacterStats
         this.evasionRate = evasionRate;
         this.criticalRate = criticalRate;
     }
+
+    public CharacterStats Clone()
+    {
+        return (CharacterStats)MemberwiseClone ();
+    }
 }

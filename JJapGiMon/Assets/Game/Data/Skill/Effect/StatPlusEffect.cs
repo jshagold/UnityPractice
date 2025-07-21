@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 
 public class StatPlusEffect : ISkillEffect
 {
@@ -12,30 +11,12 @@ public class StatPlusEffect : ISkillEffect
 
         switch (targetStat)
         {
-            case CharacterStatType.Level:
-                {
-                    int n = Convert.ToInt32(value);
-                    int convertLevel = stat.level + n;
-
-                    _stat.level = convertLevel;
-                    break;
-                }
-
             case CharacterStatType.Health:
                 {
                     int n = Convert.ToInt32(value);
                     int convertHealth = stat.health + n;
 
                     _stat.health = convertHealth;
-                    break;
-                }
-
-            case CharacterStatType.Exp:
-                {
-                    int n = Convert.ToInt32(value);
-                    int convertExp = stat.currentExp + n;
-
-                    _stat.health = convertExp;
                     break;
                 }
 

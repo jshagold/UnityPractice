@@ -1,11 +1,13 @@
-public sealed record CharacterType(int Id, string Name)
+ï»¿public sealed record CharacterType(int Id, string Name)
 {
-    // ÀÎ°£
-    public static readonly CharacterType Human = new(1, "ÀÎ°£");
+    // ì¸ê°„
+    public static readonly CharacterType Human = new(1, "ì¸ê°„");
     
-    // µ¿¹°
-    public static readonly CharacterType Animal = new(2, "µ¿¹°");
+    // ë™ë¬¼
+    public static readonly CharacterType Animal = new(2, "ë™ë¬¼");
     
-    // ±â°è
-    public static readonly CharacterType Machine = new(3, "±â°è");
+    // ê¸°ê³„
+    public static readonly CharacterType Machine = new(3, "ê¸°ê³„");
+
+    
 }

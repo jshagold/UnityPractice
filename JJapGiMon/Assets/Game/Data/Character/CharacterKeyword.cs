@@ -1,0 +1,1 @@
+public record CharacterKeyword(int Id, string Name) { }

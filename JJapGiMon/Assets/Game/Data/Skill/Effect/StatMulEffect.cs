@@ -1,24 +1,16 @@
 using System;
-using Unity.VisualScripting;
 
 public class StatMulEffect : ISkillEffect
 {
     private CharacterStats _stat;
-
+    private int _level;
+    private int _exp;
 
     public StatMulEffect(CharacterStats stat, CharacterStatType targetStat, float value) {
         _stat = stat;
         
         switch (targetStat)
         {
-            case CharacterStatType.Level:
-                {
-                    int n = Convert.ToInt32(value);
-                    int convertLevel = stat.level * n;
-
-                    _stat.level = convertLevel;
-                    break;
-                }
 
             case CharacterStatType.Health:
                 {
@@ -26,15 +18,6 @@ public class StatMulEffect : ISkillEffect
                     int convertHealth = stat.health * n;
 
                     _stat.health = convertHealth;
-                    break;
-                }
-
-            case CharacterStatType.Exp:
-                {
-                    int n = Convert.ToInt32(value);
-                    int convertExp = stat.currentExp * n;
-
-                    _stat.health = convertExp;
                     break;
                 }
 
@@ -82,24 +65,6 @@ public class StatMulEffect : ISkillEffect
 
         }
 
-    }
-
-    private CharacterStats CalculLevel(CharacterStats stat, double value)
-    {
-        int n = Convert.ToInt32(value);
-        int convertLevel = stat.level * n;
-        CharacterStats newStat = new CharacterStats(
-            level: convertLevel,
-            currentExp: stat.currentExp,
-            health: stat.health,
-            strength: stat.strength,
-            toughness: stat.toughness,
-            agility: stat.agility,
-            evasionRate: stat.evasionRate,
-            criticalRate: stat.criticalRate
-        );
-
-        return newStat;
     }
 
     public CharacterStats GetStat()

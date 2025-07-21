@@ -1,0 +1,34 @@
+﻿CharacterData, CharacterSaveData  ->  CharacterModel  ->  CharacterView(Presentation)
+
+
+
+✅ CharacterModel에 포함하는 계산
+캐릭터 자신의 상태와 관련된 계산
+	- 스탯 총합
+	- 장비, 스킬, 버프 포함한 최종 스탯
+	- 경험치 / 레벨업 처리
+	- 체력 변화 (회복, 피해)
+	- 자기 자신 기준의 속성 판정 (ex. 치명타 확률, 회피 확률)
+	- 공격력, 방어력 계산
+
+✅ CharacterModel에 포함하지 않는 계산
+상대와의 상호작용
+	- 데미지 처리 (상대와의 상호작용이 필요한 경우)
+	- 전투 판정 (전투 시스템이 담당)
+	- 게임 규칙에 따른 효과 (ex. 턴제 시스템, 상태이상 등)
+	- UI 업데이트
+
+
+✅ 추천 구조
+	- CharacterModel → 자기 스탯, 경험치, 체력 관련 계산
+	- CombatService / BattleManager → 전투 중 상호작용, 데미지 처리
+	- CharacterView → 애니메이션, 이펙트
+
+
+
+
+
+
+
+✅ 한줄 정리
+“CharacterModel은 자기 자신 기준의 계산까지만, 외부와 상호작용하는 부분은 전투 시스템이나 별도의 서비스로 분리”

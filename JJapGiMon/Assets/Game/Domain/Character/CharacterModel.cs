@@ -1,29 +1,65 @@
+ï»¿using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEditor.Overlays;
-using UnityEditor.U2D.Animation;
 using UnityEngine;
 
 public class CharacterModel
 {
-    public CharacterData Template { get; }
+    public CharacterData TemplateData { get; }
     public CharacterSaveData SaveData { get; private set; }
 
-    private readonly StatCalculator _statCalc; // ½ºÅÈ Àü¿ë °è»ê±â
+    private readonly StatCalculator _statCalc; // ìŠ¤íƒ¯ ì „ìš© ê³„ì‚°ê¸°
 
     public CharacterModel(CharacterData characterData, CharacterSaveData characterSaveData)
     {
-
-        int level = characterSaveData.level;
-
-        this.Template = characterData;
-        this.SaveData = characterSaveData;
+        TemplateData = characterData;
+        SaveData = characterSaveData;
+        _statCalc = new StatCalculator(this);
     }
 
-    public string DisplayName => SaveData.name;
-    public int level => SaveData.level;
-    public double MaxHp => 100.0;
-    //public double CurrentHp => SaveData.currentHp;
-    public int AttackPower => _statCalc.CalcAttack(level);
-    public int DefensePower => _statCalc.CalcDefense(level);
-    public double CurrentSpeed => _statCalc.CalcSpeed(level);
+    // --- ì½ê¸° ì „ìš© Property --- //
+
+    public string DisplayName => string.IsNullOrEmpty(SaveData.name) ? TemplateData.CharacterName : SaveData.name;
+    public int Level => SaveData.level;
     public int CurrentExp => SaveData.currentExp;
+    public CharacterType CharacterType => SaveData.CharacterType;
+    public int EvolutionStage => SaveData.EvolutionStage;
+    public CharacterFaction Faction => SaveData.Faction;
+    public List<CharacterKeyword> KeywordList => SaveData.KeywordList;
+
+
+    // Current Stats Strength, toughness, agility, evasionRate, criticalRate
+    public int CurrentHp => SaveData.currentHealth;
+    public CharacterStats DefaultStat => _statCalc.GetDefaultStatByLevel(Level);
+
+    // Skill List
+
+    public SkillData? _MainSkill => SaveData.MainSkill;
+
+    
+    public SkillData? Sub1Skill => SaveData.Sub1Skill;
+    public SkillData? Sub2Skill => SaveData.Sub2Skill;
+
+
+
+
+
+    // --- ë„ë©”ì¸ ë™ì‘(ë¹„ì¦ˆë‹ˆìŠ¤ ê·œì¹™) --- ///
+
+
+
+    // Skill
+    public void AddMainSkill(SkillData Skill)
+    {
+        if (MainSkill == null)
+        {
+            MainSkill = Skill;
+        }
+    }
+
+    public void RemoveMainSkill(SkillData skill)
+    {
+        MainSkill = null;
+    }
+
 }

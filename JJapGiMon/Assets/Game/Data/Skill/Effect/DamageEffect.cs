@@ -1,6 +1,3 @@
-using System;
-using Unity.VisualScripting;
-
 public class DamageEffect : ISkillEffect
 {
     private float skillPhaseDamage = 0f;

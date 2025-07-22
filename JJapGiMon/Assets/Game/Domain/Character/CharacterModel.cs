@@ -88,6 +88,11 @@ public class CharacterModel
     }
 
     // Stat
+    public void ApplyDefaultStat()
+    {
+        _currentStat = DefaultStat;
+    }
+
     public void ApplyPhase0()
     {
         Phase0Stat = DefaultStat.Clone();

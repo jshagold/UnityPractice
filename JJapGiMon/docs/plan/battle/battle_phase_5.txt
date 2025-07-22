@@ -29,7 +29,7 @@ QTE 성공 여부 = qtePF
 [effect별 계산 - 공격시]
 1. 스탯 계산
 	raw = (str * strVar) - (def * defVar)
-	statPhase = if(raw <= 0) 10 else raw
+	statPhase = if(raw <= 0) 0 else raw
 
 2. 스킬 계산
 	skillPhase = statPhase*scalingD + fixedD

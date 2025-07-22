@@ -122,7 +122,7 @@ public class BattleManager : MonoBehaviour
     {
 
 
-        yield return Phase7();
+        yield break;
     }
 
 

@@ -24,7 +24,7 @@ public class DamageCalculator
     private Random rand = new();
 
 
-    public DamageCalculator(StageDifficulty difficulty, CharacterStats stat, Damage dmg, bool qte)
+    public DamageCalculator(StageDifficulty difficulty)
     {
         switch (difficulty)
         {
@@ -39,13 +39,7 @@ public class DamageCalculator
                 break;
         }
 
-        Str = stat.strength;
-        Def = stat.toughness;
-
-        Damage = dmg;
-
-        QteState = qte;
-        QteValue = 1.2f;
+        
     }
 
     // --- 계산식 --- ///
@@ -53,6 +47,18 @@ public class DamageCalculator
     // 2. 스킬 계산
     // 3. QTE 성공/실패 계산
     // 4. 마지막 확률 변수 계산
+    public void SetState(CharacterStats stat, Damage dmg, bool qte)
+    {
+        Str = stat.strength;
+        Def = stat.toughness;
+
+        Damage = dmg;
+
+        QteState = qte;
+
+        // todo QteValue 지정해야함
+        QteValue = 1.2f;
+    }
 
     public float StatCalculatePhase() {
         float raw = (Str * StrValue) - (Def * DefValue);

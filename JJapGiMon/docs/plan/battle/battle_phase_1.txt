@@ -3,16 +3,5 @@
 
 
 [적이 공격할 아군을 선택하는 순서]
-1. 가중치가 높은 순서대로 캐릭터가 무작위로 캐릭터를 하나 선택
-
-
-[적군 가중치 항목]
-* 키워드 keywordVar
-	- 보스
-
-* 스탯 statVar
-	- 속도 spd
-	- 힘 str
-
-[적군 가중치 계산]
-spd * statVar + str * statVar + keywordVar * keyword_element
+1. 적 캐릭터가 스킬을 무작위로 하나 선택
+2. 적 캐릭터가 무작위로 아군 캐릭터를 하나 선택

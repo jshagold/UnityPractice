@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using NUnit.Framework;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class BattleManager : MonoBehaviour
 {
@@ -64,7 +66,42 @@ public class BattleManager : MonoBehaviour
     // --- Phase 0 --- //
     IEnumerator Phase0()
     {
+        //[상태로직 계산 순서]
+        //1. 플레이어 캐릭터
+        //	1. 캐릭터 스탯
+        //	2. 패시브 스킬
+        //	3. 장비
+        //	4. 아이템(유물)
+        //	5. 디버프
 
+        //2. 적 캐릭터
+        //	1. 캐릭터 스탯
+        //	2. 패시브 스킬
+        //	3. 장비
+        //	4. 디버프
+
+
+        // 플레이어 패시브
+        foreach (var player in players)
+        {
+            player.ApplyPhase0();
+
+            foreach(var effect in player.PassiveList.SelectMany(passive => passive.effects))
+            {
+                player.ApplyStat(effect);
+            }
+        }
+
+        // 적 패시브
+        foreach(var enemy in enemies)
+        {
+            enemy.ApplyPhase0();
+
+            foreach (var effect in enemy.PassiveList.SelectMany(passive => passive.effects))
+            {
+                enemy.ApplyStat(effect);
+            }
+        }
 
         yield return Phase1();
     }
@@ -72,7 +109,11 @@ public class BattleManager : MonoBehaviour
     // --- Phase 1 --- //
     IEnumerator Phase1()
     {
-
+        // 무작위로 선택
+        foreach(var enemy in enemies)
+        {
+            
+        }
 
         yield return Phase2();
     }

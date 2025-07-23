@@ -49,9 +49,7 @@ public class CharacterModel
     public CharacterStats CurrentStat => _currentStat;
 
     // Skill List
-
-
-    public SkillData? MainSkill
+    public SkillData MainSkill
     {
         get => SaveData.MainSkill;
         private set => SaveData.MainSkill = value;

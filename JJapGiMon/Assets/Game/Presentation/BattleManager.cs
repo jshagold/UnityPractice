@@ -42,7 +42,7 @@ public class BattleManager : MonoBehaviour
 
     // --- 전투 로직 --- ///
     // 1. Phase0 - 캐릭터 상태 로직 계산
-    // 2. Phase1 - 적 캐릭터가 아군 캐릭터를 지정하고 공격스킬 지정
+    // 2. Phase1 - 적 캐릭터가 공격스킬을 지정하고 아군 캐릭터를 지정
     // 3. Phase2 - 플레이어가 공격 타겟을 지정 (플레이어 캐릭터 선택, 타깃 선택, 스킬 선택, 반복, 모든 캐릭터 지정후 준비 완료)
     // 4. Phase3 - [데미지 페이즈 시작] 캐릭터들의 속도에 따라서 공격 / 수비를 결정. 속도 수치가 높은 캐릭터가 먼저 공격. 속도가 똑같다면 무작위 캐릭터 우선.
     // 5. Phase4 - [데미지 페이즈] QTE 행동.
@@ -109,10 +109,27 @@ public class BattleManager : MonoBehaviour
     // --- Phase 1 --- //
     IEnumerator Phase1()
     {
-        // 무작위로 선택
+        
         foreach(var enemy in enemies)
         {
+            // 1. 적 캐릭터가 공격 스킬을 선택.
+            SkillData? randomSkill;
+            var pool = new List<SkillData>(3);
+            if (enemy.MainSkill != null) pool.Add(enemy.MainSkill);
+            if (enemy.Sub1Skill != null) pool.Add(enemy.Sub1Skill);
+            if (enemy.Sub2Skill != null) pool.Add(enemy.Sub2Skill);
 
+            if(pool.Count > 0)
+            {
+                randomSkill = pool[Random.Range(0, pool.Count)];
+            } 
+            else
+            {
+                randomSkill = null;
+            }
+
+            // 2. 적 캐릭터가 스킬에 따른 공격 타겟을 선택.
+            
         }
 
         yield return Phase2();

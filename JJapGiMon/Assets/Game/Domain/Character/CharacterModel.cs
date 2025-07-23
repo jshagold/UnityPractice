@@ -67,6 +67,8 @@ public class CharacterModel
         private set => SaveData.Sub2Skill = value;
     }
 
+    public List<SkillData?> PassiveList => SaveData.PassiveList;
+
 
 
 
@@ -105,8 +107,11 @@ public class CharacterModel
         _currentStat = Phase5Stat;
     }
 
-    public void ApplyStat(ISkillEffect skillEffect, CharacterStatType targetStat, float value)
+    public void ApplyStat(SkillEffect skillEffect)
     {
+        CharacterStatType? targetStat = skillEffect.statType;
+        float value = skillEffect.value;
+
         switch (skillEffect)
         {
             case StatMulEffect:
@@ -248,5 +253,14 @@ public class CharacterModel
     public void RemoveSub2Skill()
     {
         MainSkill = null;
+    }
+
+    public void AddPassiveSkill(SkillData skill)
+    {
+        PassiveList.Add(skill);
+    }
+    public void RemovePassiveSkill(SkillData skill)
+    {
+        PassiveList.Remove(skill);
     }
 }

@@ -10,6 +10,6 @@ public class SkillData : ScriptableObject
 
     public SkillType skillType;
 
-    public readonly List<ISkillEffect> effects;
+    public readonly List<SkillEffect> effects;
 
 }

@@ -112,7 +112,7 @@ public class BattleManager : MonoBehaviour
         // 무작위로 선택
         foreach(var enemy in enemies)
         {
-            
+
         }
 
         yield return Phase2();

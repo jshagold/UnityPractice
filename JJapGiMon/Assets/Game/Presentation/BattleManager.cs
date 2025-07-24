@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using NUnit.Framework;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
+using static UnityEngine.GraphicsBuffer;
 
 public class BattleManager : MonoBehaviour
 {
@@ -16,6 +16,8 @@ public class BattleManager : MonoBehaviour
 
     // --- 상태값 --- //
     private bool battleRunning;
+    // 적의 공격 타겟 리스트
+    private List<BattleTarget> enemyTargets = new();
 
     // --- 1. 초기화 --- //
     public void SetupBattle(List<string> playerIdList, List<string> enemyIdList)
@@ -63,23 +65,9 @@ public class BattleManager : MonoBehaviour
         EndBattle();
     }
 
-    // --- Phase 0 --- //
+    // --- Phase 0 캐릭터 상태 로직 계산 --- //
     IEnumerator Phase0()
     {
-        //[상태로직 계산 순서]
-        //1. 플레이어 캐릭터
-        //	1. 캐릭터 스탯
-        //	2. 패시브 스킬
-        //	3. 장비
-        //	4. 아이템(유물)
-        //	5. 디버프
-
-        //2. 적 캐릭터
-        //	1. 캐릭터 스탯
-        //	2. 패시브 스킬
-        //	3. 장비
-        //	4. 디버프
-
 
         // 플레이어 패시브
         foreach (var player in players)
@@ -92,6 +80,10 @@ public class BattleManager : MonoBehaviour
             }
         }
 
+        // 플레이어 장비
+        // 플레이어 아이템
+        // 플레이어 디버프
+
         // 적 패시브
         foreach(var enemy in enemies)
         {
@@ -103,14 +95,17 @@ public class BattleManager : MonoBehaviour
             }
         }
 
+        // 적 장비
+        // 적 아이템
+        // 적 디버프
+
         yield return Phase1();
     }
 
-    // --- Phase 1 --- //
+    // --- Phase 1 적 캐릭터가 공격스킬을 지정하고 아군 캐릭터를 지정 --- //
     IEnumerator Phase1()
     {
-        
-        foreach(var enemy in enemies)
+        foreach (var enemy in enemies)
         {
             // 1. 적 캐릭터가 공격 스킬을 선택.
             ActiveSkill? randomSkill;
@@ -129,21 +124,58 @@ public class BattleManager : MonoBehaviour
             }
 
             // 2. 적 캐릭터가 스킬에 따른 공격 타겟을 선택.
-            
+            List<CharacterModel> targetList = players.OrderBy(_ => Random.value).Take(randomSkill.TargetCount).ToList();
+
+            BattleTarget pair = new(enemy, randomSkill, targetList);
+            enemyTargets.Add(pair);
         }
 
         yield return Phase2();
     }
 
-    // --- Phase 2 --- //
+    // --- Phase 2 플레이어가 공격 타겟을 지정 --- //
     IEnumerator Phase2()
     {
+        // 1. 아군 캐릭터 선택
+        // 캐릭터 선택 UI 표시// BattleUI.Instance.OpenPlayerSelector(players);
+        // 캐릭터 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasAllySelection);
+        //CharacterModel caster = BattleUI.Instance.PopAllySelection();
+        CharacterModel caster;
+
+        // 2. 캐릭터의 스킬 선택
+        // 스킬 선택 UI 표시//BattleUI.Instance.OpenSkillPanel(caster);
+        // 스킬 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasSkillSelection);
+        //ActiveSkill chosenSkill = BattleUI.Instance.PopSkillSelection();
+        ActiveSkill chosenSkill = new();
+
+
+        // 3. 아군 캐릭터의 타겟 선택
+        List<CharacterModel> targets = new();
+        
+        switch (chosenSkill.TargetCount)
+        {
+            case 1:
+                // 적 선택 UI 표시//BattleUI.Instance.OpenEnemySelector(enemies);
+                // 적 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasEnemySelection);
+                //targets.Add(BattleUI.Instance.PopEnemySelection());
+                break;
+
+            case 2:
+                for()
+                {
+
+                }
+                break;
+
+            case 3:
+                break;
+        }
 
 
         yield return Phase3();
     }
 
-    // --- Phase 3 --- //
+    // --- Phase 3 [데미지 페이즈] 캐릭터들의 속도에 따라서 공격 / 수비를 결정. --- //
     IEnumerator Phase3()
     {
 

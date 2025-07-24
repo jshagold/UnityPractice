@@ -19,9 +19,9 @@ public class CharacterData : ScriptableObject
     public int currentExp;
     public CharacterStats CharacterStat;
 
-    public SkillData MainSkill;
-    public SkillData Sub1Skill;
-    public SkillData Sub2Skill;
-    public List<SkillData> PassiveList;
+    public ActiveSkill MainSkill;
+    public ActiveSkill Sub1Skill;
+    public ActiveSkill Sub2Skill;
+    public List<PassiveSkill> PassiveList;
 
 }

@@ -4,13 +4,13 @@ public abstract class BattleCommand
 {
     public StageDifficulty Difficulty { get; }
     public BattleTarget BattlePair { get; }
-    public SkillData Skill { get; }
+    public ActiveSkill ActiveSkill { get; }
     public bool QteSucceeded { get; }
 
-    protected BattleCommand(StageDifficulty difficulty, BattleTarget battlePair, SkillData skill, bool qte) {
+    protected BattleCommand(StageDifficulty difficulty, BattleTarget battlePair, ActiveSkill activeSkill, bool qte) {
         Difficulty = difficulty;
         BattlePair = battlePair;
-        Skill = skill;
+        ActiveSkill = activeSkill;
         QteSucceeded = qte;
     }
 

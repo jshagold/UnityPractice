@@ -13,7 +13,7 @@ public class DamageCalculator
     private float DefValue;
 
     // 스킬
-    private SkillData Skill;
+    private ActiveSkill ActiveSkill;
 
     // QTE 성공여부
     private bool QteState;
@@ -47,12 +47,12 @@ public class DamageCalculator
     // 2. 스킬 계산
     // 3. QTE 성공/실패 계산
     // 4. 마지막 확률 변수 계산
-    public void SetState(CharacterStats stat, SkillData skill, bool qte)
+    public void SetState(CharacterStats stat, ActiveSkill skill, bool qte)
     {
         Str = stat.strength;
         Def = stat.toughness;
 
-        Skill = skill;
+        ActiveSkill = skill;
 
         QteState = qte;
 

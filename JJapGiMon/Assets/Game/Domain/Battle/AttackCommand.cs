@@ -4,7 +4,7 @@ public sealed class AttackCommand : BattleCommand
 {
     private DamageCalculator DmgCalculator;
 
-    public AttackCommand(StageDifficulty difficulty, BattleTarget battlePair, SkillData skill, bool qte) : base(difficulty, battlePair, skill, qte) 
+    public AttackCommand(StageDifficulty difficulty, BattleTarget battlePair, ActiveSkill activeSkill, bool qte) : base(difficulty, battlePair, activeSkill, qte) 
     {
         DmgCalculator = new DamageCalculator(Difficulty);
     }
@@ -15,7 +15,7 @@ public sealed class AttackCommand : BattleCommand
 
         foreach (var target in BattlePair.Targets)
         {
-            DmgCalculator.SetState(target.CurrentStat, Skill, QteSucceeded);
+            DmgCalculator.SetState(target.CurrentStat, ActiveSkill, QteSucceeded);
         }
     }
 }

@@ -1,0 +1,1 @@
+public record SkillCost(SkillCostType CostType, float CostValue) { }

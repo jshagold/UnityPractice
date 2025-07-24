@@ -19,8 +19,8 @@ public class CharacterSaveData
     public int currentExp;
     public int currentHealth;
 
-    public SkillData MainSkill;
-    public SkillData Sub1Skill;
-    public SkillData Sub2Skill;
-    public List<SkillData> PassiveList;
+    public ActiveSkill MainSkill;
+    public ActiveSkill Sub1Skill;
+    public ActiveSkill Sub2Skill;
+    public List<PassiveSkill> PassiveList;
 }

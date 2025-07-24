@@ -49,23 +49,23 @@ public class CharacterModel
     public CharacterStats CurrentStat => _currentStat;
 
     // Skill List
-    public SkillData MainSkill
+    public ActiveSkill MainSkill
     {
         get => SaveData.MainSkill;
         private set => SaveData.MainSkill = value;
     }
-    public SkillData? Sub1Skill
+    public ActiveSkill? Sub1Skill
     {
         get => SaveData.Sub1Skill;
         private set => SaveData.Sub1Skill = value;
     }
-    public SkillData? Sub2Skill
+    public ActiveSkill? Sub2Skill
     {
         get => SaveData.Sub2Skill;
         private set => SaveData.Sub2Skill = value;
     }
 
-    public List<SkillData?> PassiveList => SaveData.PassiveList;
+    public List<PassiveSkill?> PassiveList => SaveData.PassiveList;
 
 
 
@@ -227,7 +227,7 @@ public class CharacterModel
     }
 
     // Skill
-    public void AddMainSkill(SkillData skill)
+    public void AddMainSkill(ActiveSkill skill)
     {
         MainSkill = skill;
     }
@@ -236,7 +236,7 @@ public class CharacterModel
         MainSkill = null;
     }
 
-    public void AddSub1Skill(SkillData skill)
+    public void AddSub1Skill(ActiveSkill skill)
     {
         MainSkill = skill;
     }
@@ -244,7 +244,7 @@ public class CharacterModel
     {
         MainSkill = null;
     }
-    public void AddSub2Skill(SkillData skill)
+    public void AddSub2Skill(ActiveSkill skill)
     {
         MainSkill = skill;
     }
@@ -253,11 +253,11 @@ public class CharacterModel
         MainSkill = null;
     }
 
-    public void AddPassiveSkill(SkillData skill)
+    public void AddPassiveSkill(PassiveSkill skill)
     {
         PassiveList.Add(skill);
     }
-    public void RemovePassiveSkill(SkillData skill)
+    public void RemovePassiveSkill(PassiveSkill skill)
     {
         PassiveList.Remove(skill);
     }

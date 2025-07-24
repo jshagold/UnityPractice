@@ -113,8 +113,8 @@ public class BattleManager : MonoBehaviour
         foreach(var enemy in enemies)
         {
             // 1. 적 캐릭터가 공격 스킬을 선택.
-            SkillData? randomSkill;
-            var pool = new List<SkillData>(3);
+            ActiveSkill? randomSkill;
+            var pool = new List<ActiveSkill>(3);
             if (enemy.MainSkill != null) pool.Add(enemy.MainSkill);
             if (enemy.Sub1Skill != null) pool.Add(enemy.Sub1Skill);
             if (enemy.Sub2Skill != null) pool.Add(enemy.Sub2Skill);

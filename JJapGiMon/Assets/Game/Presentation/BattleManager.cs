@@ -12,12 +12,13 @@ public class BattleManager : MonoBehaviour
     private List<CharacterModel> players = new();
     private List<CharacterModel> enemies = new();
 
-    private Queue<CharacterModel> turnQueue = new();
 
     // --- 상태값 --- //
     private bool battleRunning;
     // 적의 공격 타겟 리스트
     private List<BattleTarget> enemyTargets = new();
+    private List<BattleTarget> playerTargets = new();
+    private List<BattleTarget> battleOrderList= new();
 
     // --- 1. 초기화 --- //
     public void SetupBattle(List<string> playerIdList, List<string> enemyIdList)
@@ -46,9 +47,9 @@ public class BattleManager : MonoBehaviour
     // 1. Phase0 - 캐릭터 상태 로직 계산
     // 2. Phase1 - 적 캐릭터가 공격스킬을 지정하고 아군 캐릭터를 지정
     // 3. Phase2 - 플레이어가 공격 타겟을 지정 (플레이어 캐릭터 선택, 타깃 선택, 스킬 선택, 반복, 모든 캐릭터 지정후 준비 완료)
-    // 4. Phase3 - [데미지 페이즈 시작] 캐릭터들의 속도에 따라서 공격 / 수비를 결정. 속도 수치가 높은 캐릭터가 먼저 공격. 속도가 똑같다면 무작위 캐릭터 우선.
-    // 5. Phase4 - [데미지 페이즈] QTE 행동.
-    // 6. Phase5 - [데미지 페이즈 종료] 데미지 계산
+    // 4. Phase3 - 캐릭터들의 속도에 따라서 공격 / 수비를 결정. 속도 수치가 높은 캐릭터가 먼저 공격. 속도가 똑같다면 무작위 캐릭터 우선.
+    // 5. Phase4 - QTE 행동.
+    // 6. Phase5 - 데미지 계산
     // 7. Phase6 - 데미지 계산후 캐릭터 상태 변경 (사망 등등)
     // 8. Phase7 - 모든 아군 또는 모든 적군 캐릭터가 죽었다면 전투 종료. 전투 종료가 아니라면 다음 턴(Phase0 부터 재시작)으로.
 
@@ -68,6 +69,7 @@ public class BattleManager : MonoBehaviour
     // --- Phase 0 캐릭터 상태 로직 계산 --- //
     IEnumerator Phase0()
     {
+        battleOrderList.Clear();
 
         // 플레이어 패시브
         foreach (var player in players)
@@ -136,62 +138,72 @@ public class BattleManager : MonoBehaviour
     // --- Phase 2 플레이어가 공격 타겟을 지정 --- //
     IEnumerator Phase2()
     {
-        // 1. 아군 캐릭터 선택
-        // 캐릭터 선택 UI 표시// BattleUI.Instance.OpenPlayerSelector(players);
-        // 캐릭터 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasAllySelection);
-        //CharacterModel caster = BattleUI.Instance.PopAllySelection();
-        CharacterModel caster;
-
-        // 2. 캐릭터의 스킬 선택
-        // 스킬 선택 UI 표시//BattleUI.Instance.OpenSkillPanel(caster);
-        // 스킬 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasSkillSelection);
-        //ActiveSkill chosenSkill = BattleUI.Instance.PopSkillSelection();
-        ActiveSkill chosenSkill = new();
-
-
-        // 3. 아군 캐릭터의 타겟 선택
-        List<CharacterModel> targets = new();
-        
-        switch (chosenSkill.TargetCount)
+        for (int size=0; size<players.Count; size++)
         {
-            case 1:
-                // 적 선택 UI 표시//BattleUI.Instance.OpenEnemySelector(enemies);
-                // 적 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasEnemySelection);
-                //targets.Add(BattleUI.Instance.PopEnemySelection());
-                break;
+            // 1. 아군 캐릭터 선택
+            // 캐릭터 선택 UI 표시// BattleUI.Instance.OpenPlayerSelector(players);
+            // 캐릭터 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasAllySelection);
+            //CharacterModel caster = BattleUI.Instance.PopAllySelection();
+            CharacterModel caster;
 
-            case 2:
-                for()
-                {
+            // 2. 캐릭터의 스킬 선택
+            // 스킬 선택 UI 표시//BattleUI.Instance.OpenSkillPanel(caster);
+            // 스킬 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasSkillSelection);
+            //ActiveSkill chosenSkill = BattleUI.Instance.PopSkillSelection();
+            ActiveSkill chosenSkill = new();
 
-                }
-                break;
 
-            case 3:
-                break;
+            // 3. 아군 캐릭터의 타겟 선택
+            List<CharacterModel> targets = new();
+
+            switch (chosenSkill.TargetCount)
+            {
+                case 1:
+                    // 적 선택 UI 표시//BattleUI.Instance.OpenEnemySelector(enemies);
+                    // 적 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasEnemySelection);
+                    //targets.Add(BattleUI.Instance.PopEnemySelection());
+                    break;
+
+                case 2:
+                    for (int i = 0; i < 2; i++)
+                    {
+                        // 적 선택 UI 표시//BattleUI.Instance.OpenEnemySelector(enemies);
+                        // 적 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasEnemySelection);
+                        //targets.Add(BattleUI.Instance.PopEnemySelection());
+                    }
+                    break;
+
+                case 3:
+                    break;
+            }
+
+            BattleTarget pair = new BattleTarget(caster, chosenSkill, targets);
+            playerTargets.Add(pair);
         }
-
 
         yield return Phase3();
     }
 
-    // --- Phase 3 [데미지 페이즈] 캐릭터들의 속도에 따라서 공격 / 수비를 결정. --- //
+    // --- Phase 3 캐릭터들의 속도에 따라서 공격 / 수비를 결정. --- //
     IEnumerator Phase3()
     {
-
+        battleOrderList = playerTargets.Concat(enemyTargets).OrderBy( character => character.Caster.CurrentStat.agility ).ToList();
 
         yield return Phase4();
     }
 
-    // --- Phase 4 --- //
+    // --- Phase 4 QTE 행동 --- //
     IEnumerator Phase4()
     {
-
+        foreach (var item in battleOrderList)
+        {
+            
+        }
 
         yield return Phase5();
     }
 
-    // --- Phase 5 --- //
+    // --- Phase 5 데미지 계산 --- //
     IEnumerator Phase5()
     {
 
@@ -199,7 +211,7 @@ public class BattleManager : MonoBehaviour
         yield return Phase6();
     }
 
-    // --- Phase 6 --- //
+    // --- Phase 6 캐릭터 상태 변경 --- //
     IEnumerator Phase6()
     {
 
@@ -207,7 +219,7 @@ public class BattleManager : MonoBehaviour
         yield return Phase7();
     }
 
-    // --- Phase 7 --- //
+    // --- Phase 7 전투 종료 판별 --- //
     IEnumerator Phase7()
     {
 

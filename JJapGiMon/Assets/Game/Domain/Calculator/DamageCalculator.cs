@@ -13,7 +13,7 @@ public class DamageCalculator
     private float DefValue;
 
     // 스킬
-    private ActiveSkill ActiveSkill;
+    private Damage SkillDamage;
 
     // QTE 성공여부
     private bool QteState;
@@ -47,12 +47,12 @@ public class DamageCalculator
     // 2. 스킬 계산
     // 3. QTE 성공/실패 계산
     // 4. 마지막 확률 변수 계산
-    public void SetState(CharacterStats stat, ActiveSkill skill, bool qte)
+    public void SetState(CharacterStats stat, Damage damage, bool qte)
     {
         Str = stat.strength;
         Def = stat.toughness;
 
-        ActiveSkill = skill;
+        SkillDamage = damage;
 
         QteState = qte;
 
@@ -73,7 +73,7 @@ public class DamageCalculator
 
     public float SkillCalculatePhase(float statPhase)
     {
-        return (statPhase * Damage.scalingDamage) + Damage.fixedDamage;
+        return (statPhase * SkillDamage.scalingDamage) + SkillDamage.fixedDamage;
     }
 
     public float QteCalculatePhase(float skillPhase)
@@ -95,8 +95,9 @@ public class DamageCalculator
         return Convert.ToInt32(qtePhase * RandValue);
     }
 
-    public int CalculateDamage()
+    public int CalculateDamage(CharacterStats stat, Damage damage, bool qte)
     {
+        SetState(stat, damage, qte);
         float statPhase = StatCalculatePhase();
         float skillPhase = SkillCalculatePhase(statPhase);
         float qtePhase = QteCalculatePhase(skillPhase);

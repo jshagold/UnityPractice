@@ -1,1 +1,1 @@
-public record StatDamageEffect(CharacterStatType? statType, float value, Damage? damage) : SkillEffect(statType, value, damage);
+public record DamageEffect(CharacterStatType? statType, float value, Damage? damage) : SkillEffect(statType, value, damage);

@@ -12,35 +12,34 @@ public class BattleManager : MonoBehaviour
     private List<CharacterModel> players = new();
     private List<CharacterModel> enemies = new();
 
+    // --- 계산기 --- //
+    private DamageCalculator dmgCalculator;
 
     // --- 상태값 --- //
     private bool battleRunning;
+    private StageEndType stageEndType = StageEndType.NOTYET;
     // 적의 공격 타겟 리스트
     private List<BattleTarget> enemyTargets = new();
     private List<BattleTarget> playerTargets = new();
     private List<BattleTarget> battleOrderList= new();
 
     // --- 1. 초기화 --- //
-    public void SetupBattle(List<string> playerIdList, List<string> enemyIdList)
+    public void SetupBattle(List<string> playerIdList, List<string> enemyIdList, StageDifficulty difficulty)
     {
 
         CharacterFactory characterFactory = new CharacterFactory();
 
+        dmgCalculator = new(StageDifficulty.Normal);
         players = playerIdList.Select(id => characterFactory.Create(id)).ToList();
         enemies = enemyIdList.Select(id => characterFactory.Create(id)).ToList();
 
 
-        BuildTurnQueue();
         battleRunning = true;
 
         StartCoroutine(TurnLoop());
     }
 
-    void BuildTurnQueue()
-    {
-        var allCharacter = players.Concat(enemies).OrderByDescending(c => c.CurrentStat.agility);
-        turnQueue = new Queue<CharacterModel>(allCharacter);
-    }
+    
 
 
     // --- 전투 로직 --- ///
@@ -138,54 +137,29 @@ public class BattleManager : MonoBehaviour
     // --- Phase 2 플레이어가 공격 타겟을 지정 --- //
     IEnumerator Phase2()
     {
-        for (int size=0; size<players.Count; size++)
-        {
-            // 1. 아군 캐릭터 선택
-            // 캐릭터 선택 UI 표시// BattleUI.Instance.OpenPlayerSelector(players);
-            // 캐릭터 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasAllySelection);
-            //CharacterModel caster = BattleUI.Instance.PopAllySelection();
-            CharacterModel caster;
+        // 아군 캐릭터 선택 -> 캐릭터 스킬 선택 -> 타겟 선택 => 모든 캐릭터 선택할때까지 반복
 
-            // 2. 캐릭터의 스킬 선택
-            // 스킬 선택 UI 표시//BattleUI.Instance.OpenSkillPanel(caster);
-            // 스킬 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasSkillSelection);
-            //ActiveSkill chosenSkill = BattleUI.Instance.PopSkillSelection();
-            ActiveSkill chosenSkill = new();
+        // BattleUI.Instance.OpenPlayerSelector(players);
+        //yield return new WaitUntil(() => BattleUI.Instance.IsFinishSelect);
 
 
-            // 3. 아군 캐릭터의 타겟 선택
-            List<CharacterModel> targets = new();
+        //CharacterModel caster = BattleUI.Instance.PopAllySelection();
+        CharacterModel caster;
+        //ActiveSkill chosenSkill = BattleUI.Instance.PopSkillSelection();
+        ActiveSkill chosenSkill = new();
+        //List<CharacterModel> targets = BattleUI.Instance.PopEnemySelection();
+        List<CharacterModel> targets = new();
 
-            switch (chosenSkill.TargetCount)
-            {
-                case 1:
-                    // 적 선택 UI 표시//BattleUI.Instance.OpenEnemySelector(enemies);
-                    // 적 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasEnemySelection);
-                    //targets.Add(BattleUI.Instance.PopEnemySelection());
-                    break;
+        BattleTarget pair = new BattleTarget(caster, chosenSkill, targets);
+        playerTargets.Add(pair);
 
-                case 2:
-                    for (int i = 0; i < 2; i++)
-                    {
-                        // 적 선택 UI 표시//BattleUI.Instance.OpenEnemySelector(enemies);
-                        // 적 선택 완료//yield return new WaitUntil(() => BattleUI.Instance.HasEnemySelection);
-                        //targets.Add(BattleUI.Instance.PopEnemySelection());
-                    }
-                    break;
-
-                case 3:
-                    break;
-            }
-
-            BattleTarget pair = new BattleTarget(caster, chosenSkill, targets);
-            playerTargets.Add(pair);
-        }
 
         yield return Phase3();
     }
 
     // --- Phase 3 캐릭터들의 속도에 따라서 공격 / 수비를 결정. --- //
     IEnumerator Phase3()
+
     {
         battleOrderList = playerTargets.Concat(enemyTargets).OrderBy( character => character.Caster.CurrentStat.agility ).ToList();
 
@@ -195,9 +169,17 @@ public class BattleManager : MonoBehaviour
     // --- Phase 4 QTE 행동 --- //
     IEnumerator Phase4()
     {
-        foreach (var item in battleOrderList)
+        foreach (var battlePair in battleOrderList)
         {
-            
+            List<DamageEffect> dmgEffect = battlePair.Skill.effects.OfType<DamageEffect>().ToList();
+            int hitCount = dmgEffect.Count;
+            //yield return new WaitUntil(() => BattleUI.Instance.IsFinishSelect);
+            //List<bool> qteList = BattleUI.Instance.PopQTEResultBySkill();
+            List<bool> qteList = new List<bool>(hitCount);
+
+            List<(DamageEffect dmgEffect, bool qte)> paired = dmgEffect.Zip(qteList, (d, q) => (d, q)).ToList();
+
+            battlePair.SetDmgQtePair(paired);
         }
 
         yield return Phase5();
@@ -206,7 +188,19 @@ public class BattleManager : MonoBehaviour
     // --- Phase 5 데미지 계산 --- //
     IEnumerator Phase5()
     {
+        foreach (var battlePair in battleOrderList)
+        {
+            foreach (var dmgQtePair in battlePair.DmgQtePair) 
+            {
+                int damagePower = dmgCalculator.CalculateDamage(
+                    stat: battlePair.Caster.CurrentStat,
+                    damage: dmgQtePair.dmgEffect.damage,
+                    qte: dmgQtePair.qte
+                );
 
+                battlePair.Targets.ForEach(target => target.TakeDamage(damagePower));
+            }
+        }
 
         yield return Phase6();
     }
@@ -214,7 +208,8 @@ public class BattleManager : MonoBehaviour
     // --- Phase 6 캐릭터 상태 변경 --- //
     IEnumerator Phase6()
     {
-
+        bool playerAllDead = players.All(player => player.IsDead);
+        bool enemyAllDead = enemies.All(enemy => enemy.IsDead);
 
         yield return Phase7();
     }
@@ -222,7 +217,19 @@ public class BattleManager : MonoBehaviour
     // --- Phase 7 전투 종료 판별 --- //
     IEnumerator Phase7()
     {
+        bool playerAllDead = players.All(player => player.IsDead);
+        bool enemyAllDead = enemies.All(enemy => enemy.IsDead);
 
+        if (playerAllDead)
+        {
+            stageEndType = StageEndType.CLEAR;
+            battleRunning = false;
+        }
+        else if(enemyAllDead)
+        {
+            stageEndType = StageEndType.FAIL;
+            battleRunning = false;
+        }
 
         yield break;
     }

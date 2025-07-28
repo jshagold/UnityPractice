@@ -83,7 +83,7 @@ public class BattleManager : MonoBehaviour
 
             foreach(var effect in player.PassiveList.SelectMany(passive => passive.effects))
             {
-                player.ApplyStat(effect);
+                player.ApplyToCurrentStat(effect);
             }
         }
 
@@ -98,7 +98,7 @@ public class BattleManager : MonoBehaviour
 
             foreach (var effect in enemy.PassiveList.SelectMany(passive => passive.effects))
             {
-                enemy.ApplyStat(effect);
+                enemy.ApplyToCurrentStat(effect);
             }
         }
 

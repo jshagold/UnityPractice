@@ -11,65 +11,65 @@ public class CharacterModel
 
     private readonly StatCalculator _statCalc; // 스탯 전용 계산기
 
-    // --- 도메인 이벤트 --- ///
-    public event Action<int> OnHpChanged;
-    public event Action<int> OnLevelUp;
+    // --- Domain Events ---
+    public event Action<int, int> OnHpChanged;          // current, max
+    public event Action<int, int> OnExpChanged;         // current, max
+    public event Action<int> OnLevelUp;                 // new level
     public event Action OnDeath;
+    //public event Action<IEnumerable<StatusEffect>> OnBuffsChanged; // buff list TODO
+    public event Action<CharacterStats> OnStatChanged;
+    public event Action<ActiveSkill> OnMainSkillChanged;
+    public event Action<ActiveSkill?> OnSub1SkillChanged;
+    public event Action<ActiveSkill?> OnSub2SkillChanged;
+
+    // --- Properties --- //
+    // 이름
+    public string DisplayName => string.IsNullOrEmpty(SaveData.name) ? TemplateData.CharacterName : SaveData.name;  // 화면에 보여지는 이름
+    public int Level => SaveData.level; // 레벨
+    public CharacterType CharacterType => SaveData.CharacterType;   // 캐릭터 유형
+    public int EvolutionStage => SaveData.EvolutionStage;   // 캐릭터 진화 단계
+    public CharacterFaction Faction => SaveData.Faction;    // 캐릭터 진영
+    public List<CharacterKeyword> KeywordList => SaveData.KeywordList;  // 캐릭터 키워드
 
 
+    // HP and Exp
+    public int MaxHp => _statCalc.GetDefaultStatByLevel(Level).health;  // 현재 레벨에 따른 최대 체력
+    public int CurrentHp => SaveData.currentHealth; // 현재 체력
+    public int MaxExp => _statCalc.CalcMaxExp(Level);
+    public int CurrentExp => SaveData.currentExp;   // 현재 경험치
+    public bool IsDead => CurrentHp <= 0;   // 캐릭터 사망 상태
+
+    // --- Stats
+    private CharacterStats _defaultStat;
+    private CharacterStats _phase0Stat;
+    private CharacterStats _phase5Stat;
+    private CharacterStats _currentStat;
+    public CharacterStats CurrentStat => _currentStat;
+
+    // Skill List
+    public ActiveSkill MainSkill => SaveData.MainSkill;
+    public ActiveSkill? Sub1Skill => SaveData.Sub1Skill;
+    public ActiveSkill? Sub2Skill => SaveData.Sub2Skill;
+    public List<PassiveSkill?> PassiveList => SaveData.PassiveList;
+
+
+    // --- Constructor --- //
     public CharacterModel(CharacterData characterData, CharacterSaveData characterSaveData)
     {
         TemplateData = characterData;
         SaveData = characterSaveData;
         _statCalc = new StatCalculator(this);
 
-        Phase0Stat = DefaultStat;
+        Initialize();
     }
 
-    // --- 읽기 전용 Property --- //
-
-    public string DisplayName => string.IsNullOrEmpty(SaveData.name) ? TemplateData.CharacterName : SaveData.name;
-    public int Level => SaveData.level;
-    public int CurrentExp => SaveData.currentExp;
-    public CharacterType CharacterType => SaveData.CharacterType;
-    public int EvolutionStage => SaveData.EvolutionStage;
-    public CharacterFaction Faction => SaveData.Faction;
-    public List<CharacterKeyword> KeywordList => SaveData.KeywordList;
-    public bool IsDead => CurrentHp <= 0;
-
-
-    // Current Stats Strength, toughness, agility, evasionRate, criticalRate
-    public int CurrentHp => SaveData.currentHealth;
-    private CharacterStats DefaultStat => _statCalc.GetDefaultStatByLevel(Level);
-
-    private CharacterStats Phase0Stat;
-    private CharacterStats Phase5Stat;
-
-    private CharacterStats _currentStat;
-    public CharacterStats CurrentStat => _currentStat;
-
-    // Skill List
-    public ActiveSkill MainSkill
+    private void Initialize()
     {
-        get => SaveData.MainSkill;
-        private set => SaveData.MainSkill = value;
+        ApplyDefaultStat();
+        OnExpChanged?.Invoke(SaveData.currentExp, _statCalc.CalcMaxExp(Level));
+
+        SetInitialSkills();
     }
-    public ActiveSkill? Sub1Skill
-    {
-        get => SaveData.Sub1Skill;
-        private set => SaveData.Sub1Skill = value;
-    }
-    public ActiveSkill? Sub2Skill
-    {
-        get => SaveData.Sub2Skill;
-        private set => SaveData.Sub2Skill = value;
-    }
-
-    public List<PassiveSkill?> PassiveList => SaveData.PassiveList;
-
-
-
-
 
     // --- 도메인 동작(비즈니스 규칙) --- ///
 
@@ -79,7 +79,7 @@ public class CharacterModel
         if (IsDead) return;
 
         SaveData.currentHealth = Mathf.Max(0, CurrentHp - amount);
-        OnHpChanged?.Invoke(SaveData.currentHealth);
+        OnHpChanged?.Invoke(SaveData.currentHealth, MaxHp);
 
         if (SaveData.currentHealth <= 0)
         {
@@ -87,25 +87,59 @@ public class CharacterModel
         }
     }
 
+    public void Heal(int amount)
+    {
+        if(IsDead) return;
+        SaveData.currentHealth = Mathf.Min(MaxHp, CurrentHp + amount);
+        OnHpChanged?.Invoke(SaveData.currentHealth, MaxHp);
+    }
+
+    // 최대경험치 초과분은 삭제된다.
+    public void GainExp(int amount)
+    {
+        SaveData.currentExp += amount;
+        if(SaveData.currentExp >= MaxExp)
+        {
+            SaveData.currentExp = 0;
+            SaveData.level++;
+            OnLevelUp?.Invoke(SaveData.level);
+
+            // Recalculate stats on level up
+            var newStats = _statCalc.GetDefaultStatByLevel(SaveData.level);
+            _currentStat = newStats;
+            SaveData.currentHealth = Mathf.Min(CurrentHp, newStats.health);
+            OnStatChanged?.Invoke(_currentStat);
+            OnHpChanged?.Invoke(SaveData.currentHealth, newStats.health);
+        }
+
+        OnExpChanged?.Invoke(SaveData.currentExp, MaxExp);
+    }
+
     // Stat
     public void ApplyDefaultStat()
     {
-        _currentStat = DefaultStat;
+        _defaultStat = _statCalc.GetDefaultStatByLevel(Level);
+        _currentStat = _defaultStat;
+        OnStatChanged?.Invoke(_currentStat);
+        OnHpChanged?.Invoke(CurrentHp, _currentStat.health);
     }
-
     public void ApplyPhase0()
     {
-        Phase0Stat = DefaultStat.Clone();
-        _currentStat = Phase0Stat;
+        // TODO Phase0 스탯 계산해야함
+        _phase0Stat = _defaultStat.Clone();
+        _currentStat = _phase0Stat;
+        OnStatChanged?.Invoke(_currentStat);
+        OnHpChanged?.Invoke(CurrentHp, _currentStat.health);
     }
-
     public void ApplyPhase5()
     {
-        Phase5Stat = Phase0Stat.Clone();
-        _currentStat = Phase5Stat;
+        // TODO Phase5 스탯 계산해야함
+        _phase5Stat = _phase0Stat.Clone();
+        _currentStat = _phase5Stat;
+        OnStatChanged?.Invoke(_currentStat);
+        OnHpChanged?.Invoke(CurrentHp, _currentStat.health);
     }
-
-    public void ApplyStat(SkillEffect skillEffect)
+    public void ApplyToCurrentStat(SkillEffect skillEffect)
     {
         CharacterStatType? targetStat = skillEffect.statType;
         float value = skillEffect.value;
@@ -226,39 +260,38 @@ public class CharacterModel
         }
     }
 
-    // Skill
-    public void AddMainSkill(ActiveSkill skill)
+
+    // --- Skill --- //
+    private void SetInitialSkills()
     {
-        MainSkill = skill;
+        OnMainSkillChanged?.Invoke(SaveData.MainSkill);
+        OnSub1SkillChanged?.Invoke(SaveData.Sub1Skill);
+        OnSub2SkillChanged?.Invoke(SaveData.Sub2Skill);
     }
-    public void RemoveMainSkill()
+    // --- Active Skill
+    public void SetMainSkill(ActiveSkill skill)
     {
-        MainSkill = null;
+        if (skill != null)
+        {
+            SaveData.MainSkill = skill;
+        }
+    }
+    public void SetSub1Skill(ActiveSkill skill)
+    {
+        SaveData.Sub1Skill = skill;
+    }
+    public void SetSub2Skill(ActiveSkill skill)
+    {
+        SaveData.Sub2Skill = skill;
     }
 
-    public void AddSub1Skill(ActiveSkill skill)
-    {
-        MainSkill = skill;
-    }
-    public void RemoveSub1Skill()
-    {
-        MainSkill = null;
-    }
-    public void AddSub2Skill(ActiveSkill skill)
-    {
-        MainSkill = skill;
-    }
-    public void RemoveSub2Skill()
-    {
-        MainSkill = null;
-    }
-
+    // --- Passive Skill
     public void AddPassiveSkill(PassiveSkill skill)
     {
-        PassiveList.Add(skill);
+        SaveData.PassiveList.Add(skill);
     }
     public void RemovePassiveSkill(PassiveSkill skill)
     {
-        PassiveList.Remove(skill);
+        SaveData.PassiveList.Remove(skill);
     }
 }

@@ -1,10 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using NUnit.Framework;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class BattleManager : MonoBehaviour
 {
@@ -17,11 +14,15 @@ public class BattleManager : MonoBehaviour
 
     // --- 상태값 --- //
     private bool battleRunning;
-    private StageEndType stageEndType = StageEndType.NOTYET;
+    private StageEndType stageEndType;
     // 적의 공격 타겟 리스트
     private List<BattleTarget> enemyTargets = new();
     private List<BattleTarget> playerTargets = new();
     private List<BattleTarget> battleOrderList= new();
+
+
+    private BattleInputManager inputManager;
+    void Awake() => inputManager = GetComponent<BattleInputManager>();
 
     // --- 1. 초기화 --- //
     public void SetupBattle(List<string> playerIdList, List<string> enemyIdList, StageDifficulty difficulty)
@@ -33,7 +34,7 @@ public class BattleManager : MonoBehaviour
         players = playerIdList.Select(id => characterFactory.Create(id)).ToList();
         enemies = enemyIdList.Select(id => characterFactory.Create(id)).ToList();
 
-
+        stageEndType = StageEndType.NOTYET;
         battleRunning = true;
 
         StartCoroutine(TurnLoop());
@@ -62,13 +63,15 @@ public class BattleManager : MonoBehaviour
             yield return Phase0();
         }
 
-        EndBattle();
+        EndBattle(stageEndType);
     }
 
     // --- Phase 0 캐릭터 상태 로직 계산 --- //
     IEnumerator Phase0()
     {
         battleOrderList.Clear();
+        playerTargets.Clear();
+        enemyTargets.Clear();
         
         // UI
         BattleUI.Instance.OnEnterPhase0();
@@ -128,6 +131,7 @@ public class BattleManager : MonoBehaviour
             else
             {
                 randomSkill = null;
+                continue;
             }
 
             // 2. 적 캐릭터가 스킬에 따른 공격 타겟을 선택.
@@ -153,8 +157,7 @@ public class BattleManager : MonoBehaviour
         BattleUI.Instance.OnEnterPhase2();
 
         // 아군 캐릭터 선택 -> 캐릭터 스킬 선택 -> 타겟 선택 => 모든 캐릭터 선택할때까지 반복
-        yield return GetComponent<BattleInputManager>()
-                 .CollectPlayerTargets(players, enemies, playerTargets);
+        yield return inputManager.CollectPlayerTargets(players, enemies, playerTargets);
 
         yield return Phase3();
     }
@@ -165,7 +168,7 @@ public class BattleManager : MonoBehaviour
         // UI
         BattleUI.Instance.OnEnterPhase3();
 
-        battleOrderList = playerTargets.Concat(enemyTargets).OrderBy( character => character.Caster.CurrentStat.agility ).ToList();
+        battleOrderList = playerTargets.Concat(enemyTargets).OrderByDescending( character => character.Caster.CurrentStat.agility ).ToList();
 
         yield return Phase4();
     }
@@ -178,8 +181,7 @@ public class BattleManager : MonoBehaviour
 
         foreach (var battlePair in battleOrderList)
         {
-            yield return GetComponent<BattleInputManager>()
-                     .CollectQTEResults(battlePair);
+            yield return inputManager.CollectQTEResults(battlePair);
         }
 
         yield return Phase5();
@@ -214,9 +216,6 @@ public class BattleManager : MonoBehaviour
         // UI
         BattleUI.Instance.OnEnterPhase6();
 
-        bool playerAllDead = players.All(player => player.IsDead);
-        bool enemyAllDead = enemies.All(enemy => enemy.IsDead);
-
         yield return Phase7();
     }
 
@@ -245,10 +244,10 @@ public class BattleManager : MonoBehaviour
 
 
     // --- 3. 전투 종료 --- //
-    void EndBattle()
+    void EndBattle(StageEndType stageEndType)
     {
         // UI
-        BattleUI.Instance.OnEnterPhaseEndBattle();
+        BattleUI.Instance.OnEnterPhaseEndBattle(stageEndType);
 
     }
 

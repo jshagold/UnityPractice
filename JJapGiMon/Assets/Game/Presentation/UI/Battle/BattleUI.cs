@@ -143,7 +143,7 @@ public sealed class BattleUI : MonoBehaviour
     {
 
     }
-    public void OnEnterPhaseEndBattle()
+    public void OnEnterPhaseEndBattle(StageEndType stageEndType)
     {
 
     }

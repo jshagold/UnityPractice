@@ -25,9 +25,9 @@ public sealed class BattleInputManager : MonoBehaviour
             CharacterModel caster = null;
             bool chosen = false;
             var remaining = players.Except(outTargets.Select(t => t.Caster)).ToList();
-            BattleUI.Instance.ShowAllySelector(remaining, c => { caster = c; chosen = true; });
+            BattleUI.Instance.ShowPlayerSelector(remaining, c => { caster = c; chosen = true; });
             yield return new WaitUntil(() => chosen);
-            BattleUI.Instance.HideAllySelector();
+            BattleUI.Instance.HidePlayerSelector();
 
             // 2) 스킬 선택
             ActiveSkill skill = null;

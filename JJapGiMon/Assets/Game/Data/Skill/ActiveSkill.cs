@@ -4,16 +4,16 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ActiveSkill", menuName = "Scriptable Objects/ActiveSkill")]
 public class ActiveSkill : SkillData
 {
-    private int _targetCount;
+    private SkillTargeting _targetType;
     private SkillCost _skillCost;
     
-    public int TargetCount => _targetCount;
+    public SkillTargeting TargetType => _targetType;
     public SkillCost SkillCost => _skillCost;
 
 
-    public void SetTargetCount(int targetCount)
+    public void SetTargetType(SkillTargeting targetType)
     {
-        _targetCount = targetCount;
+        _targetType = targetType;
     }
 
     public void SetSkillCost(SkillCost skillCost)

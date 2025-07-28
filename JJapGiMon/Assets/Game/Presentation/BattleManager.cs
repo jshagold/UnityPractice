@@ -125,7 +125,13 @@ public class BattleManager : MonoBehaviour
             }
 
             // 2. 적 캐릭터가 스킬에 따른 공격 타겟을 선택.
-            List<CharacterModel> targetList = players.OrderBy(_ => Random.value).Take(randomSkill.TargetCount).ToList();
+            List<CharacterModel> targetList = randomSkill.TargetType switch
+            {
+                SkillTargeting.None => new(),
+                SkillTargeting.SingleEnemy => players.OrderBy(_ => Random.value).Take(1).ToList(),
+                SkillTargeting.WholeEnemy => players.ToList(),
+                _ => throw new System.NotImplementedException(),
+            };
 
             BattleTarget pair = new(enemy, randomSkill, targetList);
             enemyTargets.Add(pair);

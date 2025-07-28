@@ -15,7 +15,7 @@ public sealed class AttackCommand : BattleCommand
 
         foreach (var target in BattlePair.Targets)
         {
-            DmgCalculator.SetState(target.CurrentStat, ActiveSkill, QteSucceeded);
+            //DmgCalculator.SetState(target.CurrentStat, ActiveSkill, QteSucceeded);
         }
     }
 }

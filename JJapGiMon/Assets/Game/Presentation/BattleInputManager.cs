@@ -1,16 +1,16 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 
 /// <summary>
-/// Phase2 Àü¿ë ÀÔ·Â Ã³¸®: ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍ ¼øÂ÷ ¼±ÅÃ ¹× ½ºÅ³¡¤Å¸°Ù È¹µæ.
+/// Phase2 ì „ìš© ì…ë ¥ ì²˜ë¦¬: í”Œë ˆì´ì–´ ìºë¦­í„° ìˆœì°¨ ì„ íƒ ë° ìŠ¤í‚¬Â·íƒ€ê²Ÿ íšë“.
 /// </summary>
 public sealed class BattleInputManager : MonoBehaviour
 {
     /// <summary>
-    /// players.Count ¸¸Å­ Ä³½ºÅÍ-½ºÅ³-Å¸°ÙÀ» ¼±ÅÃÇÏ¿© outTargets¿¡ Ãß°¡.
+    /// players.Count ë§Œí¼ ìºìŠ¤í„°-ìŠ¤í‚¬-íƒ€ê²Ÿì„ ì„ íƒí•˜ì—¬ outTargetsì— ì¶”ê°€.
     /// </summary>
     public IEnumerator CollectPlayerTargets(
         List<CharacterModel> players,
@@ -21,7 +21,7 @@ public sealed class BattleInputManager : MonoBehaviour
 
         while (outTargets.Count < players.Count)
         {
-            // 1) Ä³½ºÅÍ ¼±ÅÃ
+            // 1) ìºìŠ¤í„° ì„ íƒ
             CharacterModel caster = null;
             bool chosen = false;
             var remaining = players.Except(outTargets.Select(t => t.Caster)).ToList();
@@ -29,14 +29,14 @@ public sealed class BattleInputManager : MonoBehaviour
             yield return new WaitUntil(() => chosen);
             BattleUI.Instance.HideAllySelector();
 
-            // 2) ½ºÅ³ ¼±ÅÃ
+            // 2) ìŠ¤í‚¬ ì„ íƒ
             ActiveSkill skill = null;
             chosen = false;
             BattleUI.Instance.ShowSkillPanel(caster, s => { skill = s; chosen = true; });
             yield return new WaitUntil(() => chosen);
             BattleUI.Instance.HideSkillPanel();
 
-            // 3) Å¸°Ù ¼±ÅÃ (SingleEnemy¸¸ UI·Î)
+            // 3) íƒ€ê²Ÿ ì„ íƒ (SingleEnemyë§Œ UIë¡œ)
             List<CharacterModel> targets;
             if (skill.TargetType == SkillTargeting.SingleEnemy)
             {
@@ -61,5 +61,24 @@ public sealed class BattleInputManager : MonoBehaviour
 
             outTargets.Add(new BattleTarget(caster, skill, targets));
         }
+    }
+
+
+    /// <summary>
+    /// Phase4: ê° ìºë¦­í„°ë³„ QTE ì…ë ¥ ìˆ˜ì§‘
+    /// </summary>
+    public IEnumerator CollectQTEResults(BattleTarget battlePair)
+    {
+        var dmgEffects = battlePair.Skill.effects.OfType<DamageEffect>().ToList();
+        int hitCount = dmgEffects.Count;
+        List<bool> qteList = null;
+        bool done = false;
+
+        BattleUI.Instance.ShowQTEPanel(hitCount, list => { qteList = list; done = true; });
+        yield return new WaitUntil(() => done);
+        BattleUI.Instance.HideQTEPanel();
+
+        var paired = dmgEffects.Zip(qteList, (d, q) => (d, q)).ToList();
+        battlePair.SetDmgQtePair(paired);
     }
 }

@@ -18,6 +18,7 @@ public sealed class BattleUI : MonoBehaviour
     private PlayerSelector playerSelector;
     private SkillPanel skillPanel;
     private TargetSelector targetSelector;
+    private QTEPanel qtePanel;
     private Button backButton;
     private Button startBattleButton;
 
@@ -32,16 +33,23 @@ public sealed class BattleUI : MonoBehaviour
         playerSelector = new PlayerSelector(root.Q<VisualElement>("AllySelector"));
         skillPanel = new SkillPanel(root.Q<VisualElement>("SkillPanel"));
         targetSelector = new TargetSelector(root.Q<VisualElement>("TargetSelector"));
+        qtePanel = new QTEPanel(root.Q<VisualElement>("QTEPanel"));
         backButton = root.Q<Button>("BackButton");
         startBattleButton = root.Q<Button>("StartBattleButton");
+
+        // 초기 세팅
+        HidePlayerSelector();
+        HideSkillPanel();
+        HideTargetSelector();
+        HideQTEPanel();
     }
 
-    // ─── Ally Selector ───
-    public void ShowAllySelector(List<CharacterModel> players, Action<CharacterModel> onPick)
+    // ─── Player Selector ───
+    public void ShowPlayerSelector(List<CharacterModel> players, Action<CharacterModel> onPick)
     {
         playerSelector.Open(players, onPick);
     }
-    public void HideAllySelector()
+    public void HidePlayerSelector()
     {
         playerSelector.Close();
     }
@@ -64,6 +72,16 @@ public sealed class BattleUI : MonoBehaviour
     public void HideTargetSelector()
     {
         targetSelector.Close();
+    }
+
+    // ─── QTE Panel ───
+    public void ShowQTEPanel(int hitCount, Action<List<bool>> onComplete)
+    {
+        qtePanel.Open(hitCount, onComplete);
+    }
+    public void HideQTEPanel()
+    {
+        qtePanel.Close();
     }
 
     // ─── Back Button ───
@@ -89,5 +107,48 @@ public sealed class BattleUI : MonoBehaviour
         if (active && startCallback != null)
             startBattleButton.clicked += startCallback;
     }
+
+
+
+    /* --- Battle Phase 관련 func --- */
+    public void OnEnterPhase0()
+    {
+
+    }
+    public void OnEnterPhase1()
+    {
+
+    }
+    public void OnEnterPhase2()
+    {
+
+    }
+    public void OnEnterPhase3()
+    {
+
+    }
+    public void OnEnterPhase4()
+    {
+
+    }
+    public void OnEnterPhase5()
+    {
+
+    }
+    public void OnEnterPhase6()
+    {
+
+    }
+    public void OnEnterPhase7()
+    {
+
+    }
+    public void OnEnterPhaseEndBattle()
+    {
+
+    }
+
+
+
 
 }

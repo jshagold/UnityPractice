@@ -27,9 +27,9 @@ public class BattleManager : MonoBehaviour
     public void SetupBattle(List<string> playerIdList, List<string> enemyIdList, StageDifficulty difficulty)
     {
 
-        CharacterFactory characterFactory = new CharacterFactory();
+        CharacterFactory characterFactory = new();
 
-        dmgCalculator = new(StageDifficulty.Normal);
+        dmgCalculator = new(difficulty);
         players = playerIdList.Select(id => characterFactory.Create(id)).ToList();
         enemies = enemyIdList.Select(id => characterFactory.Create(id)).ToList();
 
@@ -69,6 +69,9 @@ public class BattleManager : MonoBehaviour
     IEnumerator Phase0()
     {
         battleOrderList.Clear();
+        
+        // UI
+        BattleUI.Instance.OnEnterPhase0();
 
         // 플레이어 패시브
         foreach (var player in players)
@@ -106,6 +109,9 @@ public class BattleManager : MonoBehaviour
     // --- Phase 1 적 캐릭터가 공격스킬을 지정하고 아군 캐릭터를 지정 --- //
     IEnumerator Phase1()
     {
+        // UI
+        BattleUI.Instance.OnEnterPhase1();
+
         foreach (var enemy in enemies)
         {
             // 1. 적 캐릭터가 공격 스킬을 선택.
@@ -143,6 +149,9 @@ public class BattleManager : MonoBehaviour
     // --- Phase 2 플레이어가 공격 타겟을 지정 --- //
     IEnumerator Phase2()
     {
+        // UI
+        BattleUI.Instance.OnEnterPhase2();
+
         // 아군 캐릭터 선택 -> 캐릭터 스킬 선택 -> 타겟 선택 => 모든 캐릭터 선택할때까지 반복
         yield return GetComponent<BattleInputManager>()
                  .CollectPlayerTargets(players, enemies, playerTargets);
@@ -152,8 +161,10 @@ public class BattleManager : MonoBehaviour
 
     // --- Phase 3 캐릭터들의 속도에 따라서 공격 / 수비를 결정. --- //
     IEnumerator Phase3()
-
     {
+        // UI
+        BattleUI.Instance.OnEnterPhase3();
+
         battleOrderList = playerTargets.Concat(enemyTargets).OrderBy( character => character.Caster.CurrentStat.agility ).ToList();
 
         yield return Phase4();
@@ -162,17 +173,13 @@ public class BattleManager : MonoBehaviour
     // --- Phase 4 QTE 행동 --- //
     IEnumerator Phase4()
     {
+        // UI
+        BattleUI.Instance.OnEnterPhase4();
+
         foreach (var battlePair in battleOrderList)
         {
-            List<DamageEffect> dmgEffect = battlePair.Skill.effects.OfType<DamageEffect>().ToList();
-            int hitCount = dmgEffect.Count;
-            //yield return new WaitUntil(() => BattleUI.Instance.IsFinishSelect);
-            //List<bool> qteList = BattleUI.Instance.PopQTEResultBySkill();
-            List<bool> qteList = new List<bool>(hitCount);
-
-            List<(DamageEffect dmgEffect, bool qte)> paired = dmgEffect.Zip(qteList, (d, q) => (d, q)).ToList();
-
-            battlePair.SetDmgQtePair(paired);
+            yield return GetComponent<BattleInputManager>()
+                     .CollectQTEResults(battlePair);
         }
 
         yield return Phase5();
@@ -181,6 +188,9 @@ public class BattleManager : MonoBehaviour
     // --- Phase 5 데미지 계산 --- //
     IEnumerator Phase5()
     {
+        // UI
+        BattleUI.Instance.OnEnterPhase5();
+
         foreach (var battlePair in battleOrderList)
         {
             foreach (var dmgQtePair in battlePair.DmgQtePair) 
@@ -201,6 +211,9 @@ public class BattleManager : MonoBehaviour
     // --- Phase 6 캐릭터 상태 변경 --- //
     IEnumerator Phase6()
     {
+        // UI
+        BattleUI.Instance.OnEnterPhase6();
+
         bool playerAllDead = players.All(player => player.IsDead);
         bool enemyAllDead = enemies.All(enemy => enemy.IsDead);
 
@@ -210,6 +223,9 @@ public class BattleManager : MonoBehaviour
     // --- Phase 7 전투 종료 판별 --- //
     IEnumerator Phase7()
     {
+        // UI
+        BattleUI.Instance.OnEnterPhase7();
+
         bool playerAllDead = players.All(player => player.IsDead);
         bool enemyAllDead = enemies.All(enemy => enemy.IsDead);
 
@@ -231,6 +247,8 @@ public class BattleManager : MonoBehaviour
     // --- 3. 전투 종료 --- //
     void EndBattle()
     {
+        // UI
+        BattleUI.Instance.OnEnterPhaseEndBattle();
 
     }
 

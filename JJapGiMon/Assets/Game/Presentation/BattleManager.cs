@@ -144,21 +144,8 @@ public class BattleManager : MonoBehaviour
     IEnumerator Phase2()
     {
         // 아군 캐릭터 선택 -> 캐릭터 스킬 선택 -> 타겟 선택 => 모든 캐릭터 선택할때까지 반복
-
-        // BattleUI.Instance.OpenPlayerSelector(players);
-        //yield return new WaitUntil(() => BattleUI.Instance.IsFinishSelect);
-
-
-        //CharacterModel caster = BattleUI.Instance.PopAllySelection();
-        CharacterModel caster;
-        //ActiveSkill chosenSkill = BattleUI.Instance.PopSkillSelection();
-        ActiveSkill chosenSkill = new();
-        //List<CharacterModel> targets = BattleUI.Instance.PopEnemySelection();
-        List<CharacterModel> targets = new();
-
-        BattleTarget pair = new BattleTarget(caster, chosenSkill, targets);
-        playerTargets.Add(pair);
-
+        yield return GetComponent<BattleInputManager>()
+                 .CollectPlayerTargets(players, enemies, playerTargets);
 
         yield return Phase3();
     }

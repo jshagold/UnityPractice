@@ -39,8 +39,6 @@ public class BattleManager : MonoBehaviour
 
         stageEndType = StageEndType.NOTYET;
         battleRunning = true;
-
-        StartCoroutine(TurnLoop());
     }
 
     
@@ -59,7 +57,7 @@ public class BattleManager : MonoBehaviour
 
 
     // --- 2. 턴 반복 --- //
-    IEnumerator TurnLoop()
+    public IEnumerator TurnLoop()
     {
         while(battleRunning)
         {
@@ -77,7 +75,7 @@ public class BattleManager : MonoBehaviour
         enemyTargets.Clear();
         
         // UI
-        BattleUI.Instance.OnEnterPhase0();
+        //BattleUI.Instance.OnEnterPhase0();
 
         // 플레이어 패시브
         foreach (var player in players)
@@ -116,7 +114,7 @@ public class BattleManager : MonoBehaviour
     IEnumerator Phase1()
     {
         // UI
-        BattleUI.Instance.OnEnterPhase1();
+        //BattleUI.Instance.OnEnterPhase1();
 
         foreach (var enemy in enemies)
         {
@@ -157,7 +155,7 @@ public class BattleManager : MonoBehaviour
     IEnumerator Phase2()
     {
         // UI
-        BattleUI.Instance.OnEnterPhase2();
+        //BattleUI.Instance.OnEnterPhase2();
 
         // 아군 캐릭터 선택 -> 캐릭터 스킬 선택 -> 타겟 선택 => 모든 캐릭터 선택할때까지 반복
         yield return inputManager.CollectPlayerTargets(players, enemies, playerTargets);
@@ -169,7 +167,7 @@ public class BattleManager : MonoBehaviour
     IEnumerator Phase3()
     {
         // UI
-        BattleUI.Instance.OnEnterPhase3();
+        //BattleUI.Instance.OnEnterPhase3();
 
         battleOrderList = playerTargets.Concat(enemyTargets).OrderByDescending( character => character.Caster.CurrentStat.agility ).ToList();
 
@@ -180,12 +178,9 @@ public class BattleManager : MonoBehaviour
     IEnumerator Phase4()
     {
         // UI
-        BattleUI.Instance.OnEnterPhase4();
+        //BattleUI.Instance.OnEnterPhase4();
 
-        foreach (var battlePair in battleOrderList)
-        {
-            yield return inputManager.CollectQTEResults(battlePair);
-        }
+        yield return inputManager.CollectQTEResults(battleOrderList);
 
         yield return Phase5();
     }
@@ -194,7 +189,7 @@ public class BattleManager : MonoBehaviour
     IEnumerator Phase5()
     {
         // UI
-        BattleUI.Instance.OnEnterPhase5();
+        //BattleUI.Instance.OnEnterPhase5();
 
         foreach (var battlePair in battleOrderList)
         {
@@ -217,7 +212,7 @@ public class BattleManager : MonoBehaviour
     IEnumerator Phase6()
     {
         // UI
-        BattleUI.Instance.OnEnterPhase6();
+        //BattleUI.Instance.OnEnterPhase6();
 
         yield return Phase7();
     }
@@ -226,7 +221,7 @@ public class BattleManager : MonoBehaviour
     IEnumerator Phase7()
     {
         // UI
-        BattleUI.Instance.OnEnterPhase7();
+        //BattleUI.Instance.OnEnterPhase7();
 
         bool playerAllDead = players.All(player => player.IsDead);
         bool enemyAllDead = enemies.All(enemy => enemy.IsDead);
@@ -249,13 +244,14 @@ public class BattleManager : MonoBehaviour
     // --- 3. 전투 종료 --- //
     void EndBattle(StageEndType stageEndType)
     {
+        // 캐릭터 데이터 저장
         foreach (var player in players)
         {
             _repo.Save(player.SaveData);
         }
         
         // UI
-        BattleUI.Instance.OnEnterPhaseEndBattle(stageEndType);
+        //BattleUI.Instance.OnEnterPhaseEndBattle(stageEndType);
         
 
     }

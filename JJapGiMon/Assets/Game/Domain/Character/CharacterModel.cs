@@ -24,8 +24,8 @@ public class CharacterModel
 
     // --- Properties --- //
     // 이름
-    public string DisplayName => string.IsNullOrEmpty(SaveData.name) ? TemplateData.CharacterName : SaveData.name;  // 화면에 보여지는 이름
-    public int Level => SaveData.level; // 레벨
+    public string DisplayName => string.IsNullOrEmpty(SaveData.Name) ? TemplateData.CharacterName : SaveData.Name;  // 화면에 보여지는 이름
+    public int Level => SaveData.Level; // 레벨
     public CharacterType CharacterType => SaveData.CharacterType;   // 캐릭터 유형
     public int EvolutionStage => SaveData.EvolutionStage;   // 캐릭터 진화 단계
     public CharacterFaction Faction => SaveData.Faction;    // 캐릭터 진영
@@ -34,9 +34,9 @@ public class CharacterModel
 
     // HP and Exp
     public int MaxHp => _statCalc.GetDefaultStatByLevel(Level).health;  // 현재 레벨에 따른 최대 체력
-    public int CurrentHp => SaveData.currentHealth; // 현재 체력
+    public int CurrentHp => SaveData.CurrentHealth; // 현재 체력
     public int MaxExp => _statCalc.CalcMaxExp(Level);
-    public int CurrentExp => SaveData.currentExp;   // 현재 경험치
+    public int CurrentExp => SaveData.CurrentExp;   // 현재 경험치
     public bool IsDead => CurrentHp <= 0;   // 캐릭터 사망 상태
 
     // --- Stats
@@ -66,7 +66,7 @@ public class CharacterModel
     private void Initialize()
     {
         ApplyDefaultStat();
-        OnExpChanged?.Invoke(SaveData.currentExp, _statCalc.CalcMaxExp(Level));
+        OnExpChanged?.Invoke(SaveData.CurrentExp, _statCalc.CalcMaxExp(Level));
 
         SetInitialSkills();
     }
@@ -78,10 +78,10 @@ public class CharacterModel
     {
         if (IsDead) return;
 
-        SaveData.currentHealth = Mathf.Max(0, CurrentHp - amount);
-        OnHpChanged?.Invoke(SaveData.currentHealth, MaxHp);
+        SaveData.CurrentHealth = Mathf.Max(0, CurrentHp - amount);
+        OnHpChanged?.Invoke(SaveData.CurrentHealth, MaxHp);
 
-        if (SaveData.currentHealth <= 0)
+        if (SaveData.CurrentHealth <= 0)
         {
             OnDeath?.Invoke();
         }
@@ -90,29 +90,29 @@ public class CharacterModel
     public void Heal(int amount)
     {
         if(IsDead) return;
-        SaveData.currentHealth = Mathf.Min(MaxHp, CurrentHp + amount);
-        OnHpChanged?.Invoke(SaveData.currentHealth, MaxHp);
+        SaveData.CurrentHealth = Mathf.Min(MaxHp, CurrentHp + amount);
+        OnHpChanged?.Invoke(SaveData.CurrentHealth, MaxHp);
     }
 
     // 최대경험치 초과분은 삭제된다.
     public void GainExp(int amount)
     {
-        SaveData.currentExp += amount;
-        if(SaveData.currentExp >= MaxExp)
+        SaveData.CurrentExp += amount;
+        if(SaveData.CurrentExp >= MaxExp)
         {
-            SaveData.currentExp = 0;
-            SaveData.level++;
-            OnLevelUp?.Invoke(SaveData.level);
+            SaveData.CurrentExp = 0;
+            SaveData.Level++;
+            OnLevelUp?.Invoke(SaveData.Level);
 
             // Recalculate stats on level up
-            var newStats = _statCalc.GetDefaultStatByLevel(SaveData.level);
+            var newStats = _statCalc.GetDefaultStatByLevel(SaveData.Level);
             _currentStat = newStats;
-            SaveData.currentHealth = Mathf.Min(CurrentHp, newStats.health);
+            SaveData.CurrentHealth = Mathf.Min(CurrentHp, newStats.health);
             OnStatChanged?.Invoke(_currentStat);
-            OnHpChanged?.Invoke(SaveData.currentHealth, newStats.health);
+            OnHpChanged?.Invoke(SaveData.CurrentHealth, newStats.health);
         }
 
-        OnExpChanged?.Invoke(SaveData.currentExp, MaxExp);
+        OnExpChanged?.Invoke(SaveData.CurrentExp, MaxExp);
     }
 
     // Stat

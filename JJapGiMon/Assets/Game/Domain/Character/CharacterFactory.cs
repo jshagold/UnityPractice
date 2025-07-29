@@ -1,13 +1,16 @@
 ﻿public class CharacterFactory
 {
+    private readonly ICharacterRepository _characterRepository;
 
+    public CharacterFactory(ICharacterRepository characterRepository)
+    {
+        _characterRepository = characterRepository;
+    }
 
-    public CharacterModel Create(string CharacterId)
+    public CharacterModel Create(string characterId)
     {
         CharacterData data = new CharacterData();
-        CharacterSaveData saveData = new CharacterSaveData();
-        
-        // TODO DataRepository로 데이터 가져와야함
+        CharacterSaveData saveData = CharacterSaveData.New(characterId);
         
         return new CharacterModel(data, saveData);
     }

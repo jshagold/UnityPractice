@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
+    private ICharacterRepository _repo;
+
     // --- 데이터 보관 --- //
     private List<CharacterModel> players = new();
     private List<CharacterModel> enemies = new();
@@ -27,8 +29,9 @@ public class BattleManager : MonoBehaviour
     // --- 1. 초기화 --- //
     public void SetupBattle(List<string> playerIdList, List<string> enemyIdList, StageDifficulty difficulty)
     {
+        _repo = new LocalCharacterRepository();
 
-        CharacterFactory characterFactory = new();
+        CharacterFactory characterFactory = new(_repo);
 
         dmgCalculator = new(difficulty);
         players = playerIdList.Select(id => characterFactory.Create(id)).ToList();
@@ -246,8 +249,14 @@ public class BattleManager : MonoBehaviour
     // --- 3. 전투 종료 --- //
     void EndBattle(StageEndType stageEndType)
     {
+        foreach (var player in players)
+        {
+            _repo.Save(player.SaveData);
+        }
+        
         // UI
         BattleUI.Instance.OnEnterPhaseEndBattle(stageEndType);
+        
 
     }
 

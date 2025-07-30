@@ -19,6 +19,8 @@ public class BattleSceneController : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("start");
+     
         // Ensure BattleManager reference
         if (battleManager == null)
             battleManager = GetComponent<BattleManager>();

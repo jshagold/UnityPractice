@@ -25,6 +25,8 @@ public class CharacterSaveData
 
     public int SaveVersion { get; set; }
 
+    public CharacterSaveData() { }
+
     private CharacterSaveData(string id)
     {
         this.Id = id;

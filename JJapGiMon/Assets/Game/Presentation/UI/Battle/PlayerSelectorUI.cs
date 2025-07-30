@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,7 +23,7 @@ public class PlayerSelectorUI : MonoBehaviour
         foreach (var player in players)
         {
             var btn = Instantiate(buttonPrefab, buttonContainer);
-            btn.GetComponentInChildren<Text>().text = player.DisplayName;
+            btn.GetComponentInChildren<TextMeshProUGUI>().text = player.DisplayName;
             btn.onClick.AddListener(() => HandlePick(player));
         }
     }

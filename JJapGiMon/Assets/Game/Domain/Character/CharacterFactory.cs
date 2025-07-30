@@ -10,9 +10,9 @@
     public CharacterModel Create(string characterId)
     {
         CharacterData data = new CharacterData();
-        CharacterSaveData saveData = CharacterSaveData.New(characterId);
-        _characterRepository.Save(saveData);
-        
+        CharacterSaveData saveData = _characterRepository.Load(characterId);
+
+
         return new CharacterModel(data, saveData);
     }
 }

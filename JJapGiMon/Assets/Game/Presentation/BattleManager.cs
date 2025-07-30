@@ -39,6 +39,9 @@ public class BattleManager : MonoBehaviour
 
         stageEndType = StageEndType.NOTYET;
         battleRunning = true;
+
+
+        Debug.Log("SetUp Battle");
     }
 
     
@@ -73,9 +76,10 @@ public class BattleManager : MonoBehaviour
         battleOrderList.Clear();
         playerTargets.Clear();
         enemyTargets.Clear();
-        
+
         // UI
         //BattleUI.Instance.OnEnterPhase0();
+        Debug.Log("Phase0");
 
         // 플레이어 패시브
         foreach (var player in players)
@@ -116,6 +120,7 @@ public class BattleManager : MonoBehaviour
     {
         // UI
         //BattleUI.Instance.OnEnterPhase1();
+        Debug.Log("Phase1");
 
         foreach (var enemy in enemies)
         {
@@ -157,6 +162,7 @@ public class BattleManager : MonoBehaviour
     {
         // UI
         //BattleUI.Instance.OnEnterPhase2();
+        Debug.Log("Phase2");
 
         // 아군 캐릭터 선택 -> 캐릭터 스킬 선택 -> 타겟 선택 => 모든 캐릭터 선택할때까지 반복
         yield return inputManager.CollectPlayerTargets(players, enemies, playerTargets);
@@ -169,6 +175,8 @@ public class BattleManager : MonoBehaviour
     {
         // UI
         //BattleUI.Instance.OnEnterPhase3();
+        Debug.Log("Phase3");
+
 
         battleOrderList = playerTargets.Concat(enemyTargets).OrderByDescending( character => character.Caster.CurrentStat.agility ).ToList();
 

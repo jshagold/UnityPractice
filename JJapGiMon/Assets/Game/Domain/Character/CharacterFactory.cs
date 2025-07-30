@@ -11,6 +11,7 @@
     {
         CharacterData data = new CharacterData();
         CharacterSaveData saveData = CharacterSaveData.New(characterId);
+        _characterRepository.Save(saveData);
         
         return new CharacterModel(data, saveData);
     }

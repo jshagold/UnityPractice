@@ -82,10 +82,11 @@ public class BattleManager : MonoBehaviour
         {
             player.ApplyPhase0();
 
-            foreach(var effect in player.PassiveList.SelectMany(passive => passive.effects))
+            foreach (var effect in player.PassiveList?.SelectMany(passive => passive.effects) ?? Enumerable.Empty<SkillEffect>())
             {
                 player.ApplyToCurrentStat(effect);
             }
+
         }
 
         // 플레이어 장비
@@ -97,7 +98,7 @@ public class BattleManager : MonoBehaviour
         {
             enemy.ApplyPhase0();
 
-            foreach (var effect in enemy.PassiveList.SelectMany(passive => passive.effects))
+            foreach (var effect in enemy.PassiveList?.SelectMany(passive => passive.effects) ?? Enumerable.Empty<SkillEffect>())
             {
                 enemy.ApplyToCurrentStat(effect);
             }

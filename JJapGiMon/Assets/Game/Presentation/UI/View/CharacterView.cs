@@ -95,16 +95,16 @@ public class CharacterView : MonoBehaviour
     private void UpdateSkillIcon(Image iconSlot, ActiveSkill? skill)
     {
         if (iconSlot == null) return;
-        if (skill != null && skill.IconSprite != null)
-        {
-            iconSlot.sprite = skill.IconSprite;
-            iconSlot.color = Color.white;
-        }
-        else
-        {
-            iconSlot.sprite = null;
-            iconSlot.color = new Color(1, 1, 1, 0); // 숨김
-        }
+        //if (skill != null && skill.IconSprite != null)
+        //{
+        //    iconSlot.sprite = skill.IconSprite;
+        //    iconSlot.color = Color.white;
+        //}
+        //else
+        //{
+        //    iconSlot.sprite = null;
+        //    iconSlot.color = new Color(1, 1, 1, 0); // 숨김
+        //}
     }
 
     //private void AddBuffIcon(StatusEffect buff)

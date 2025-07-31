@@ -285,6 +285,7 @@ MonoBehaviour:
   stageDifficulty: 0
   playerIdList:
   - player_0
+  - player_1
   enemyIdList:
   - enemy_0
 --- !u!114 &188365284

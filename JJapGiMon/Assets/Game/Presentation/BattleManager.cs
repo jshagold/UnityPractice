@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
-    private ICharacterRepository _repo;
+    private ICharacterRepository _characterRepo;
+    private ISkillRepository _skillRepo;
 
     // --- 데이터 보관 --- //
     private List<CharacterModel> players = new();
@@ -29,9 +30,10 @@ public class BattleManager : MonoBehaviour
     // --- 1. 초기화 --- //
     public void SetupBattle(List<string> playerIdList, List<string> enemyIdList, StageDifficulty difficulty)
     {
-        _repo = new LocalCharacterRepository();
+        _characterRepo = new LocalCharacterRepository();
+        _skillRepo = new LocalSkillRepository();
 
-        CharacterFactory characterFactory = new(_repo);
+        CharacterFactory characterFactory = new(_characterRepo);
 
         dmgCalculator = new(difficulty);
         players = playerIdList.Select(id => characterFactory.Create(id)).ToList();
@@ -40,6 +42,14 @@ public class BattleManager : MonoBehaviour
         stageEndType = StageEndType.NOTYET;
         battleRunning = true;
 
+        //todo skill 은 나중에 정리해야함 test용
+        SkillFactory skillFactory = new(_skillRepo);
+        ActiveSkill actSkill = skillFactory.CreateActiveSkill("active_0");
+        foreach (var player in players)
+        {
+            player.SetMainSkill(actSkill);
+            _characterRepo.Save(player.SaveData);
+        }
 
         Debug.Log("SetUp Battle");
     }
@@ -256,7 +266,7 @@ public class BattleManager : MonoBehaviour
         // 캐릭터 데이터 저장
         foreach (var player in players)
         {
-            _repo.Save(player.SaveData);
+            _characterRepo.Save(player.SaveData);
         }
         
         // UI

@@ -24,8 +24,10 @@ public class SkillSelectorUI : MonoBehaviour
         Clear();
         foreach (var skill in skills)
         {
+            Debug.Log($"skill {skill.skillName}");
             var btn = Instantiate(buttonPrefab, buttonContainer);
-            btn.GetComponentInChildren<Text>().text = skill.skillName;
+            var label = btn.GetComponentInChildren<TextMeshProUGUI>(true);
+            label.text = skill.skillName;
             btn.onClick.AddListener(() => HandlePick(skill));
         }
 

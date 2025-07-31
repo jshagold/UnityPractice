@@ -23,8 +23,13 @@ public class PlayerSelectorUI : MonoBehaviour
         foreach (var player in players)
         {
             var btn = Instantiate(buttonPrefab, buttonContainer);
-            btn.GetComponentInChildren<TextMeshProUGUI>().text = player.DisplayName;
+            var label = btn.GetComponentInChildren<TextMeshProUGUI>(true);
+            label.text = player.DisplayName;
+
             btn.onClick.AddListener(() => HandlePick(player));
+            Debug.Log("AddListener attached", btn);
+            Debug.Log($"Interactable at Start: {btn.interactable}");
+            Debug.Log(player.DisplayName);
         }
     }
 

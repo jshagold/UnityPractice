@@ -30,11 +30,14 @@ public sealed class BattleInputManager : MonoBehaviour
 
         while (outTargets.Count < players.Count)
         {
+            Debug.Log("selectedPlayersUI.Show");
             // 1) 이미 선택된 캐릭터 목록 표시
             CharacterModel toReset = null;
             bool resetRequested = false;
             selectedPlayersUI.Show(outTargets, p => { toReset = p; resetRequested = true; });
 
+
+            Debug.Log("playerSelectorUI.Show");
             // 1) 플레이어 캐릭터 선택
             CharacterModel chosenPlayer = null;
             bool playerPicked = false;
@@ -46,6 +49,7 @@ public sealed class BattleInputManager : MonoBehaviour
             // 다시 설정
             if (resetRequested)
             {
+                Debug.Log("resetDialogUI.Show");
                 bool confirmed = false, cancelled = false;
                 resetDialogUI.Show(toReset, () => confirmed = true, () => cancelled = true);
                 yield return new WaitUntil(() => confirmed || cancelled);
@@ -54,6 +58,8 @@ public sealed class BattleInputManager : MonoBehaviour
                 continue;
             }
 
+
+            Debug.Log("skillSelectorUI.Show");
             // 2) 스킬 선택
             ActiveSkill chosenSkill = null;
             bool skillPicked = false, goBack = false;
@@ -66,6 +72,7 @@ public sealed class BattleInputManager : MonoBehaviour
             controlButtonsUI.SetCancel(null);
             if (goBack) continue;
 
+            Debug.Log("targetSelectorUI.Show");
             // 3) 타겟 선택 (SingleEnemy만 UI로)
             List<CharacterModel> chosenTargets;
             switch (chosenSkill.TargetType)

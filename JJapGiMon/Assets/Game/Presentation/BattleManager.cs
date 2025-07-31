@@ -160,7 +160,7 @@ public class BattleManager : MonoBehaviour
     // --- Phase 2 플레이어가 공격 타겟을 지정 --- //
     IEnumerator Phase2()
     {
-        // UI
+        // UIrm duv
         //BattleUI.Instance.OnEnterPhase2();
         Debug.Log("Phase2");
 

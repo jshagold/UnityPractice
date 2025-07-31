@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +18,7 @@ public class SkillSelectorUI : MonoBehaviour
 
     public void Show(List<ActiveSkill> skills, Action<ActiveSkill> callback)
     {
+        Debug.Log($"skill {skills}");
         onSkillPicked = callback;
         panel.SetActive(true);
         Clear();
@@ -24,6 +27,14 @@ public class SkillSelectorUI : MonoBehaviour
             var btn = Instantiate(buttonPrefab, buttonContainer);
             btn.GetComponentInChildren<Text>().text = skill.skillName;
             btn.onClick.AddListener(() => HandlePick(skill));
+        }
+
+        if(skills.Count == 0)
+        {
+            var btn = Instantiate(buttonPrefab, buttonContainer);
+            var label = btn.GetComponentInChildren<TextMeshProUGUI>(true);
+            label.text = "skill is null";
+            //btn.onClick.AddListener(() => HandlePick(skill));
         }
     }
 

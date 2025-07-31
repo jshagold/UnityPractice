@@ -38,6 +38,7 @@ public class BattleManager : MonoBehaviour
         dmgCalculator = new(difficulty);
         players = playerIdList.Select(id => characterFactory.Create(id)).ToList();
         enemies = enemyIdList.Select(id => characterFactory.Create(id)).ToList();
+        enemies.ForEach(enemy => { enemy.SaveData.CurrentHealth = enemy.MaxHp; });
 
         stageEndType = StageEndType.NOTYET;
         battleRunning = true;
@@ -45,6 +46,7 @@ public class BattleManager : MonoBehaviour
         //todo skill 은 나중에 정리해야함 test용
         SkillFactory skillFactory = new(_skillRepo);
         ActiveSkill actSkill = skillFactory.CreateActiveSkill("active_0");
+        Debug.Log($"--- ActSkill --- {actSkill.TargetType}");
         foreach (var player in players)
         {
             player.SetMainSkill(actSkill);
@@ -198,6 +200,7 @@ public class BattleManager : MonoBehaviour
     {
         // UI
         //BattleUI.Instance.OnEnterPhase4();
+        Debug.Log("Phase4");
 
         yield return inputManager.CollectQTEResults(battleOrderList);
 
@@ -209,9 +212,11 @@ public class BattleManager : MonoBehaviour
     {
         // UI
         //BattleUI.Instance.OnEnterPhase5();
+        Debug.Log("Phase5");
 
         foreach (var battlePair in battleOrderList)
         {
+            if(battlePair.DmgQtePair == null) continue;
             foreach (var dmgQtePair in battlePair.DmgQtePair) 
             {
                 int damagePower = dmgCalculator.CalculateDamage(
@@ -232,6 +237,7 @@ public class BattleManager : MonoBehaviour
     {
         // UI
         //BattleUI.Instance.OnEnterPhase6();
+        Debug.Log("Phase6");
 
         yield return Phase7();
     }
@@ -241,6 +247,7 @@ public class BattleManager : MonoBehaviour
     {
         // UI
         //BattleUI.Instance.OnEnterPhase7();
+        Debug.Log("Phase7");
 
         bool playerAllDead = players.All(player => player.IsDead);
         bool enemyAllDead = enemies.All(enemy => enemy.IsDead);
@@ -263,10 +270,17 @@ public class BattleManager : MonoBehaviour
     // --- 3. 전투 종료 --- //
     void EndBattle(StageEndType stageEndType)
     {
-        // 캐릭터 데이터 저장
+        Debug.Log("EndBattle");
+
+        // todo 캐릭터 데이터 저장
         foreach (var player in players)
         {
             _characterRepo.Save(player.SaveData);
+        }
+        Debug.Log($"enemy Id {enemies[0]}");
+        foreach (var enemy in enemies)
+        {
+            _characterRepo.Save(enemy.SaveData);
         }
         
         // UI

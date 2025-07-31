@@ -1,0 +1,11 @@
+{
+    "skillId": "active_0",
+    "skillName": "Default Attack",
+    "skillDescription": "기본 공격",
+    "skillType": 0,
+    "effects": null,
+    "TargetType": 1,
+    "SkillCost": null,
+    "name": "",
+    "hideFlags": 0
+}

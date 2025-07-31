@@ -1,9 +1,11 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ControlButtonsUI : MonoBehaviour
 {
+    [SerializeField] private Transform buttonContainer;
     [SerializeField] private Button cancelButton;
     [SerializeField] private Button startButton;
 
@@ -17,9 +19,14 @@ public class ControlButtonsUI : MonoBehaviour
 
     public void SetStart(Action onClick)
     {
-        startButton.onClick.RemoveAllListeners();
-        startButton.gameObject.SetActive(onClick != null);
+        var btn = Instantiate(startButton, buttonContainer);
+        btn.onClick.RemoveAllListeners();
+        var label = btn.GetComponentInChildren<TextMeshProUGUI>(true);
+        label.text = "Battle Start!!";
+        btn.gameObject.SetActive(onClick != null);
         if (onClick != null)
-            startButton.onClick.AddListener(() => onClick());
+        {
+            btn.onClick.AddListener(() => onClick());
+        }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SelectedPlayersUI : MonoBehaviour
 {
@@ -20,7 +21,9 @@ public class SelectedPlayersUI : MonoBehaviour
         foreach (var bt in selections)
         {
             var btn = Instantiate(buttonPrefab, buttonContainer);
-            btn.GetComponentInChildren<Text>().text = bt.Caster.DisplayName;
+            var label = btn.GetComponentInChildren<TextMeshProUGUI>(true);
+            label.text = bt.Caster.DisplayName;
+
             btn.onClick.AddListener(() => onResetRequest?.Invoke(bt.Caster));
         }
     }

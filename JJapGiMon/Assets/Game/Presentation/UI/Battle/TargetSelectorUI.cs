@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,8 +23,11 @@ public class TargetSelectorUI : MonoBehaviour
         foreach (var target in targets)
         {
             var btn = Instantiate(buttonPrefab, buttonContainer);
-            btn.GetComponentInChildren<Text>().text = target.DisplayName;
+            var label = btn.GetComponentInChildren<TextMeshProUGUI>(true);
+            label.text = target.DisplayName;
+
             btn.onClick.AddListener(() => HandlePick(target));
+            btn.gameObject.SetActive(true);
         }
     }
 

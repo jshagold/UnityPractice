@@ -11,8 +11,7 @@ public class QTEPanelUI : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
     [SerializeField] private Transform toggleContainer;
-    [SerializeField] private Toggle togglePrefab;
-    [SerializeField] private Button completeButton;
+    [SerializeField] private Button qteButtonPrefab;
 
     private Action<List<bool>> onComplete;
 
@@ -24,12 +23,11 @@ public class QTEPanelUI : MonoBehaviour
         var results = Enumerable.Repeat(false, hitCount).ToList();
         for (int i = 0; i < hitCount; i++)
         {
-            var tog = Instantiate(togglePrefab, toggleContainer);
-            int idx = i;
-            tog.onValueChanged.AddListener(val => results[idx] = val);
+            var qteButton = Instantiate(qteButtonPrefab, toggleContainer);
+            qteButton.onClick.AddListener(() => { TabQteButton(); results[i] = true; });
+            //yield return new WaitForSeconds(1.0f);
         }
-        completeButton.onClick.RemoveAllListeners();
-        completeButton.onClick.AddListener(() => Complete(results));
+        Complete(results);
     }
 
     public void Hide()
@@ -47,5 +45,10 @@ public class QTEPanelUI : MonoBehaviour
     {
         for (int i = toggleContainer.childCount - 1; i >= 0; i--)
             Destroy(toggleContainer.GetChild(i).gameObject);
+    }
+
+    private void TabQteButton()
+    {
+        Debug.Log("QTE Tab");
     }
 }

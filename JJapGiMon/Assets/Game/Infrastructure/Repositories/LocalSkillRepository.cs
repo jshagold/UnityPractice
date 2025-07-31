@@ -23,10 +23,14 @@ public class LocalSkillRepository : ISkillRepository
         var path = GetPath(skillId);
         if (!File.Exists(path))
         {
+            Debug.Log("Null Skill");
             return ActiveSkill.New(skillId);
         }
 
         var json = File.ReadAllText(path);
+        Debug.Log("" +
+            $"json: {json}\n" +
+            $"convert: {JsonConvert.DeserializeObject<ActiveSkill>(json)!}\n");
         return JsonConvert.DeserializeObject<ActiveSkill>(json)!;
     }
 

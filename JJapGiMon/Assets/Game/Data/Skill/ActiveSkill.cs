@@ -5,12 +5,9 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "ActiveSkill", menuName = "Scriptable Objects/ActiveSkill")]
 public class ActiveSkill : SkillData
-{
-    private SkillTargeting _targetType;
-    private SkillCost _skillCost;
-    
-    public SkillTargeting TargetType => _targetType;
-    public SkillCost SkillCost => _skillCost;
+{   
+    public SkillTargeting TargetType;
+    public SkillCost SkillCost;
 
     public ActiveSkill() { }
 
@@ -20,22 +17,10 @@ public class ActiveSkill : SkillData
         this.skillName = "";
         this.skillDescription = "";
         this.skillType = SkillType.Active;
-
-        this._targetType = SkillTargeting.None;
     }
 
     public static ActiveSkill New(string characterId)
     {
         return new ActiveSkill(characterId);
-    }
-
-    public void SetTargetType(SkillTargeting targetType)
-    {
-        _targetType = targetType;
-    }
-
-    public void SetSkillCost(SkillCost skillCost)
-    {
-        _skillCost = skillCost;
     }
 } 

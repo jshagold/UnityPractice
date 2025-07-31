@@ -9,7 +9,7 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayerSelectorUI : MonoBehaviour
 {
-    [SerializeField] private GameObject panel;
+    [SerializeField] private GameObject playerContainer;
     [SerializeField] private Transform buttonContainer;
     [SerializeField] private Button buttonPrefab;
 
@@ -18,7 +18,7 @@ public class PlayerSelectorUI : MonoBehaviour
     public void Show(List<CharacterModel> players, Action<CharacterModel> callback)
     {
         onPlayerPicked = callback;
-        panel.SetActive(true);
+        playerContainer.SetActive(true);
         Clear();
         foreach (var player in players)
         {
@@ -27,15 +27,13 @@ public class PlayerSelectorUI : MonoBehaviour
             label.text = player.DisplayName;
 
             btn.onClick.AddListener(() => HandlePick(player));
-            Debug.Log("AddListener attached", btn);
-            Debug.Log($"Interactable at Start: {btn.interactable}");
-            Debug.Log(player.DisplayName);
+            btn.gameObject.SetActive(true);
         }
     }
 
     public void Hide()
     {
-        panel.SetActive(false);
+        playerContainer.SetActive(false);
         Clear();
     }
 

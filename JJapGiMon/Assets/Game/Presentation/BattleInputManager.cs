@@ -31,6 +31,9 @@ public sealed class BattleInputManager : MonoBehaviour
         while (outTargets.Count < players.Count)
         {
             Debug.Log("selectedPlayersUI.Show");
+            // 0) 모든 창 닫기
+            CloseAllPanel();
+
             // 1) 이미 선택된 캐릭터 목록 표시
             CharacterModel toReset = null;
             bool resetRequested = false;
@@ -75,6 +78,7 @@ public sealed class BattleInputManager : MonoBehaviour
             Debug.Log("targetSelectorUI.Show");
             // 3) 타겟 선택 (SingleEnemy만 UI로)
             List<CharacterModel> chosenTargets;
+            Debug.Log($"TargetType: {chosenSkill.TargetType}");
             switch (chosenSkill.TargetType)
             {
                 case SkillTargeting.SingleEnemy:
@@ -99,9 +103,11 @@ public sealed class BattleInputManager : MonoBehaviour
             }
 
             outTargets.Add(new BattleTarget(chosenPlayer, chosenSkill, chosenTargets));
+            Debug.Log($"outTargets Count {outTargets.Count}");
         }
 
         // Enable start
+        Debug.Log("controlButtonsUI.Show");
         bool start = false;
         controlButtonsUI.SetStart(() => start = true);
         yield return new WaitUntil(() => start);
@@ -114,6 +120,7 @@ public sealed class BattleInputManager : MonoBehaviour
     {
         foreach (var battlePair in battleOrderList)
         {
+            if(battlePair.Skill.effects == null) continue;
             var dmgEffects = battlePair.Skill.effects.OfType<DamageEffect>().ToList();
             int hitCount = dmgEffects.Count;
             List<bool> results = null;
@@ -125,5 +132,16 @@ public sealed class BattleInputManager : MonoBehaviour
 
             battlePair.SetDmgQtePair(dmgEffects.Zip(results, (d, q) => (d, q)).ToList());
         }
+    }
+
+    public void CloseAllPanel()
+    {
+        playerSelectorUI.Hide();
+        skillSelectorUI.Hide();
+        targetSelectorUI.Hide();
+        selectedPlayersUI.Hide();
+        resetDialogUI.Hide();
+        controlButtonsUI.SetCancel(null);
+        qtePanelUI.Hide();
     }
 }

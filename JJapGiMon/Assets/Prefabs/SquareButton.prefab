@@ -149,12 +149,12 @@ GameObject:
   - component: {fileID: 3486353629983962170}
   - component: {fileID: 7337824492844356114}
   m_Layer: 5
-  m_Name: Button 2
+  m_Name: SquareButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8464232179429828111
 RectTransform:
   m_ObjectHideFlags: 0

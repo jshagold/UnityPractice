@@ -1,0 +1,26 @@
+{
+  "$type": "ActiveSkill, Assembly-CSharp",
+  "TargetType": 0,
+  "SkillCost": null,
+  "skillId": "active_0",
+  "skillName": "",
+  "skillDescription": "",
+  "skillType": 0,
+  "effects": {
+    "$type": "System.Collections.Generic.List`1[[SkillEffect, Assembly-CSharp]], mscorlib",
+    "$values": [
+        {
+            "$type": "DamageEffect, Assembly-CSharp",
+            "statType": null,
+            "value": 1.0,
+            "damage": {
+                "$type": "Damage, Assembly-CSharp",
+                "fixedDamage": 0,
+                "scalingDamage": 1.0
+            }
+        }
+    ]
+  },
+  "name": "",
+  "hideFlags": 0
+}

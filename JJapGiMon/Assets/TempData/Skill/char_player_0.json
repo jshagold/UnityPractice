@@ -1,0 +1,36 @@
+{
+  "Id": "player_0",
+  "Name": null,
+  "CharacterType": null,
+  "EvolutionStage": 0,
+  "Faction": null,
+  "KeywordList": null,
+  "Level": 1,
+  "CurrentExp": 0,
+  "CurrentHealth": 0,
+  "MainSkill": {
+    "TargetType": 0,
+    "SkillCost": null,
+    "skillId": "active_0",
+    "skillName": "",
+    "skillDescription": "",
+    "skillType": 0,
+    "effects": [
+      {
+        "$type": "DamageEffect, Assembly-CSharp",
+        "statType": null,
+        "value": 1.0,
+        "damage": {
+          "fixedDamage": 0,
+          "scalingDamage": 1.0
+        }
+      }
+    ],
+    "name": "",
+    "hideFlags": 0
+  },
+  "Sub1Skill": null,
+  "Sub2Skill": null,
+  "PassiveList": null,
+  "SaveVersion": 1
+}

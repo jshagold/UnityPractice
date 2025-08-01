@@ -15,7 +15,14 @@ public class LocalCharacterRepository : ICharacterRepository
         }
 
         var json = File.ReadAllText(path);
-        return JsonConvert.DeserializeObject<CharacterSaveData>(json)!;
+        var settings = new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.All,
+            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+            Formatting = Formatting.Indented
+        };
+
+        return JsonConvert.DeserializeObject<CharacterSaveData>(json, settings)!;
     }
 
     public void Save(CharacterSaveData saveData)
@@ -23,9 +30,11 @@ public class LocalCharacterRepository : ICharacterRepository
         var path = GetPath(saveData.Id);
         var settings = new JsonSerializerSettings
         {
-            TypeNameHandling = TypeNameHandling.Auto,
-            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
+            TypeNameHandling = TypeNameHandling.All,
+            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+            Formatting = Formatting.Indented
         };
+
         var json = JsonConvert.SerializeObject(saveData, Formatting.Indented, settings);
         File.WriteAllText(path, json);
     }

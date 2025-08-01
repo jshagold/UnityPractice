@@ -1,0 +1,49 @@
+{
+    "$type": "ActiveSkill, Assembly-CSharp",
+    "TargetType": 0,
+    "SkillCost": {
+        "CostType": 0,
+        "CostValue": 1.0
+    },
+    "skillId": "active_0",
+    "skillName": "삼연격",
+    "skillDescription": "약하게 중간정도 강하게 세대때린다.",
+    "skillType": 0,
+    "effects": {
+        "$type": "System.Collections.Generic.List`1[[SkillEffect, Assembly-CSharp]], mscorlib",
+        "$values": [
+            {
+                "$type": "DamageEffect, Assembly-CSharp",
+                "statType": null,
+                "value": 1.0,
+                "damage": {
+                    "$type": "Damage, Assembly-CSharp",
+                    "fixedDamage": 0,
+                    "scalingDamage": 0.7
+                }
+            },
+            {
+                "$type": "DamageEffect, Assembly-CSharp",
+                "statType": null,
+                "value": 1.0,
+                "damage": {
+                    "$type": "Damage, Assembly-CSharp",
+                    "fixedDamage": 5,
+                    "scalingDamage": 1.0
+                }
+            },
+            {
+                "$type": "DamageEffect, Assembly-CSharp",
+                "statType": null,
+                "value": 1.0,
+                "damage": {
+                    "$type": "Damage, Assembly-CSharp",
+                    "fixedDamage": 5,
+                    "scalingDamage": 1.5
+                }
+            }
+        ]
+    },
+    "name": "",
+    "hideFlags": 0
+}

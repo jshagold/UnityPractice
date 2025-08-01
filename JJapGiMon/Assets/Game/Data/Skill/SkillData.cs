@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public abstract class SkillData : ScriptableObject
@@ -9,7 +10,8 @@ public abstract class SkillData : ScriptableObject
 
     public SkillType skillType;
 
-    public readonly List<SkillEffect> effects;
+    [JsonProperty]
+    public List<SkillEffect> effects { get; set; } = new();
 
     // todo serialize 할수있어야함
     //[Header("UI")]

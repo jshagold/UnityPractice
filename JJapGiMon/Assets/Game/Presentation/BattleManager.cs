@@ -46,7 +46,10 @@ public class BattleManager : MonoBehaviour
         //todo skill 은 나중에 정리해야함 test용
         SkillFactory skillFactory = new(_skillRepo);
         ActiveSkill actSkill = skillFactory.CreateActiveSkill("active_0");
-        Debug.Log($"--- ActSkill --- {actSkill.TargetType}");
+
+        TempCreateSkill(skillFactory);
+
+        Debug.Log($"--- ActSkill :: {actSkill.effects}");
         foreach (var player in players)
         {
             player.SetMainSkill(actSkill);
@@ -290,5 +293,11 @@ public class BattleManager : MonoBehaviour
     }
 
 
+    // --- TODO Temp create skill ---
+    void TempCreateSkill(SkillFactory factory)
+    {
+
+        ActiveSkill actSkill = factory.CreateActiveSkill("active_1");
+    }
 
 }

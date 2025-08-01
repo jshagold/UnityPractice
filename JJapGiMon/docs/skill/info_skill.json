@@ -11,7 +11,7 @@
 		{
 			"type": "string", // Enum 계산에 적용될 타입 (ex. statMul-스탯곱셈, damage-데미지효과, 등등)
 			"stat": "string", // Enum 적용할 스탯
-			"value": "double", // 적용할 수치
+			"value": "double", // 스탯에 적용할 수치 (합, 곱)
 			"damage": {
 				"fixedDamage": "Int",	// 고정 데미지
 				"scalingDamage": "double"	// 계수 데미지

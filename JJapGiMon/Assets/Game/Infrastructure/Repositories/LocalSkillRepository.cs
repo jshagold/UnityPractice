@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System.IO;
 using UnityEditor.Overlays;
 using UnityEngine;
@@ -13,8 +14,13 @@ public class LocalSkillRepository : ISkillRepository
     public void Save(SkillData skillData)
     {
         var path = GetPath(skillData.skillId);
-
-        var json = JsonConvert.SerializeObject(skillData, Formatting.Indented);
+        var settings = new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.All,
+            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+            Formatting = Formatting.Indented
+        };
+        var json = JsonConvert.SerializeObject(skillData, settings);
         File.WriteAllText(path, json);
     }
 
@@ -24,14 +30,26 @@ public class LocalSkillRepository : ISkillRepository
         if (!File.Exists(path))
         {
             Debug.Log("Null Skill");
-            return ActiveSkill.New(skillId);
+            ActiveSkill newSkill = ActiveSkill.New(skillId);
+            Save(newSkill);
+            return newSkill;
         }
 
         var json = File.ReadAllText(path);
+        var settings = new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.All,
+            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+            Formatting = Formatting.Indented
+        };
+
+        var activeSkill = JsonConvert.DeserializeObject<ActiveSkill>(json, settings)!;
+        var deserializeJson = JsonConvert.SerializeObject(activeSkill, settings);
+
         Debug.Log("" +
-            $"json: {json}\n" +
-            $"convert: {JsonConvert.DeserializeObject<ActiveSkill>(json)!}\n");
-        return JsonConvert.DeserializeObject<ActiveSkill>(json)!;
+            $"json: {deserializeJson}\n");
+
+        return JsonConvert.DeserializeObject<ActiveSkill>(json, settings)!;
     }
 
     public PassiveSkill LoadPassiveSkill(string skillId)

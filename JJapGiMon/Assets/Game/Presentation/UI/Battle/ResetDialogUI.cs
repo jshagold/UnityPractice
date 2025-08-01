@@ -1,11 +1,12 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ResetDialogUI : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
-    [SerializeField] private Text messageText;
+    [SerializeField] private TextMeshProUGUI messageText;
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button cancelButton;
 

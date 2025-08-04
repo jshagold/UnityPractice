@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -34,10 +34,10 @@ public class BattleSceneController : MonoBehaviour
         //battleManager.SetupBattle(partyModels, enemyModels, stageDifficulty);
 
 
-        // ÀüÅõ ¸Ê ±×¸®±â
+        // ì „íˆ¬ ë§µ ê·¸ë¦¬ê¸°
 
 
-        // ¸Ê¿¡ Ä³¸¯ÅÍ ½ÃÀÛ»óÅÂ ¼³Á¤
+        // ë§µì— ìºë¦­í„° ì‹œì‘ìƒíƒœ ì„¤ì •
 
 
         // Begin the turn-based combat loop

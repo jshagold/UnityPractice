@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Game/Stage Sequence")]
 public class StageSequenceData : ScriptableObject
 {
-    // ¼ø¼­´ë·Î ·ÎµåÇÒ ½ºÅ×ÀÌÁö ¸ñ·Ï
+    // ìˆœì„œëŒ€ë¡œ ë¡œë“œí•  ìŠ¤í…Œì´ì§€ ëª©ë¡
     public List<StageDefinition> stages = new List<StageDefinition>();
 }
 
@@ -12,8 +12,8 @@ public class StageSequenceData : ScriptableObject
 public class StageDefinition
 {
     public string sceneName;               // ex) "BattleScene", "EventScene", "BossScene"
-    public bool isBattle;                // ÀüÅõ ¸Ê ¿©ºÎ
-    public bool isBoss;                  // º¸½º ¸Ê ¿©ºÎ
-    public float battleProbability = 1f;  // ÀÌº¥Æ® ¸ÊÀÏ ¶§ ÀüÅõ È®·ü(1f = Ç×»ó ÀüÅõ)
-    // ÇÊ¿äÇÏ´Ù¸é Àû »ı¼º¿ë µ¥ÀÌÅÍ³ª, ÀÌº¥Æ® ÆÄ¶ó¹ÌÅÍ¸¦ Ãß°¡·Î Á¤ÀÇÇÒ ¼ö ÀÖ½À´Ï´Ù.
+    public bool isBattle;                // ì „íˆ¬ ë§µ ì—¬ë¶€
+    public bool isBoss;                  // ë³´ìŠ¤ ë§µ ì—¬ë¶€
+    public float battleProbability = 1f;  // ì´ë²¤íŠ¸ ë§µì¼ ë•Œ ì „íˆ¬ í™•ë¥ (1f = í•­ìƒ ì „íˆ¬)
+    // í•„ìš”í•˜ë‹¤ë©´ ì  ìƒì„±ìš© ë°ì´í„°ë‚˜, ì´ë²¤íŠ¸ íŒŒë¼ë¯¸í„°ë¥¼ ì¶”ê°€ë¡œ ì •ì˜í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
 }

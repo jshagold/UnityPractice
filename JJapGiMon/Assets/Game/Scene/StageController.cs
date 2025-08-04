@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,13 +6,13 @@ public class StageController : MonoBehaviour
 {
     public static StageController Instance { get; private set; }
 
-    [Header("½ÃÄö½º µ¥ÀÌÅÍ")]
+    [Header("ì‹œí€€ìŠ¤ ë°ì´í„°")]
     [SerializeField] private StageSequenceData sequenceData;
 
     public int CurrentStageIndex { get; private set; } = 0;
 
-    private List<CharacterModel> party;    // ¼±ÅÃµÈ ¾Æ±º
-    private List<CharacterModel> enemies;  // ÇöÀç ½ºÅ×ÀÌÁö Àû
+    private List<CharacterModel> party;    // ì„ íƒëœ ì•„êµ°
+    private List<CharacterModel> enemies;  // í˜„ì¬ ìŠ¤í…Œì´ì§€ ì 
 
     private void Awake()
     {
@@ -26,7 +26,7 @@ public class StageController : MonoBehaviour
     }
 
     /// <summary>
-    /// °ÔÀÓ ½ÃÀÛ Á÷ÈÄ, Ä³¸¯ÅÍ ¼±ÅÃ & ÁøÀÔ Àü Á¶°Ç ¸ğµÎ ³¡³­ µÚ È£Ãâ
+    /// ê²Œì„ ì‹œì‘ ì§í›„, ìºë¦­í„° ì„ íƒ & ì§„ì… ì „ ì¡°ê±´ ëª¨ë‘ ëë‚œ ë’¤ í˜¸ì¶œ
     /// </summary>
     public void InitGame(List<CharacterModel> selectedParty)
     {
@@ -39,35 +39,35 @@ public class StageController : MonoBehaviour
     {
         if (index >= sequenceData.stages.Count)
         {
-            Debug.Log("¸ğµç ½ºÅ×ÀÌÁö ¿Ï·á!");
-            // TODO: ¿£µù ¾À ·Îµå µî
+            Debug.Log("ëª¨ë“  ìŠ¤í…Œì´ì§€ ì™„ë£Œ!");
+            // TODO: ì—”ë”© ì”¬ ë¡œë“œ ë“±
             return;
         }
 
         var def = sequenceData.stages[index];
 
-        // Àû »ı¼º ·ÎÁ÷. ÇÊ¿ä¿¡ µû¶ó EnemyGenerator µî¿¡¼­ »Ì¾Æ ¿É´Ï´Ù.
+        // ì  ìƒì„± ë¡œì§. í•„ìš”ì— ë”°ë¼ EnemyGenerator ë“±ì—ì„œ ë½‘ì•„ ì˜µë‹ˆë‹¤.
         if (def.isBattle || def.isBoss)
         {
             enemies = EnemyGenerator.GenerateForStage(index + 1);
         }
         else
         {
-            enemies = new List<CharacterModel>(); // ÀÌº¥Æ®¸ÊÀº Á÷Á¢ ÀÌº¥Æ® ÄÄÆ÷³ÍÆ®°¡ Ã³¸®
+            enemies = new List<CharacterModel>(); // ì´ë²¤íŠ¸ë§µì€ ì§ì ‘ ì´ë²¤íŠ¸ ì»´í¬ë„ŒíŠ¸ê°€ ì²˜ë¦¬
         }
 
-        // ÇØ´ç ¾ÀÀ¸·Î ÀÌµ¿
+        // í•´ë‹¹ ì”¬ìœ¼ë¡œ ì´ë™
         SceneManager.LoadScene(def.sceneName);
     }
 
     /// <summary>
-    /// BattleSceneController µî¿¡¼­ ÆÄÆ¼¡¤Àû Á¤º¸ Á¶È¸ÇÒ ¶§ »ç¿ë
+    /// BattleSceneController ë“±ì—ì„œ íŒŒí‹°Â·ì  ì •ë³´ ì¡°íšŒí•  ë•Œ ì‚¬ìš©
     /// </summary>
     public List<CharacterModel> GetParty() => party;
     public List<CharacterModel> GetEnemies() => enemies;
 
     /// <summary>
-    /// °¢ ¸Ê(½ºÅ×ÀÌÁö) ¿Ï·á ½Ã È£Ãâ
+    /// ê° ë§µ(ìŠ¤í…Œì´ì§€) ì™„ë£Œ ì‹œ í˜¸ì¶œ
     /// </summary>
     public void OnStageComplete(bool cleared)
     {

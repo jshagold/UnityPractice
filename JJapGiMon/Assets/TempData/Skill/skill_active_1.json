@@ -1,4 +1,4 @@
-{
+ï»¿{
     "$type": "ActiveSkill, Assembly-CSharp",
     "TargetType": 0,
     "SkillCost": {
@@ -6,8 +6,8 @@
         "CostValue": 1.0
     },
     "skillId": "active_0",
-    "skillName": "»ï¿¬°Ý",
-    "skillDescription": "¾àÇÏ°Ô Áß°£Á¤µµ °­ÇÏ°Ô ¼¼´ë¶§¸°´Ù.",
+    "skillName": "ì‚¼ì—°ê²©",
+    "skillDescription": "ì•½í•˜ê²Œ ë³´í†µ ê°•í•˜ê²Œ ì„¸ë²ˆ.",
     "skillType": 0,
     "effects": {
         "$type": "System.Collections.Generic.List`1[[SkillEffect, Assembly-CSharp]], mscorlib",

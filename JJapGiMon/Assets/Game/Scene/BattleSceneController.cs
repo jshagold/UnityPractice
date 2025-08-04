@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(BattleManager))]
@@ -19,14 +20,25 @@ public class BattleSceneController : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("start");
+        Debug.Log("Battle Scene Start");
      
         // Ensure BattleManager reference
         if (battleManager == null)
             battleManager = GetComponent<BattleManager>();
 
+        var partyModels = StageController.Instance.GetParty();
+        var enemyModels = StageController.Instance.GetEnemies();
+
         // Initialize battle with configured IDs and difficulty
         battleManager.SetupBattle(playerIdList, enemyIdList, stageDifficulty);
+        //battleManager.SetupBattle(partyModels, enemyModels, stageDifficulty);
+
+
+        // 전투 맵 그리기
+
+
+        // 맵에 캐릭터 시작상태 설정
+
 
         // Begin the turn-based combat loop
         StartCoroutine(battleManager.TurnLoop());

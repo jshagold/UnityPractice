@@ -36,12 +36,19 @@ public class BattleManager : MonoBehaviour
         CharacterFactory characterFactory = new(_characterRepo);
 
         dmgCalculator = new(difficulty);
+        
+        // 캐릭터 정보 세팅
         players = playerIdList.Select(id => characterFactory.Create(id)).ToList();
         enemies = enemyIdList.Select(id => characterFactory.Create(id)).ToList();
         enemies.ForEach(enemy => { enemy.SaveData.CurrentHealth = enemy.MaxHp; });
 
         stageEndType = StageEndType.NOTYET;
         battleRunning = true;
+
+        // 전투 맵 그리기
+
+        // 맵에 캐릭터 시작상태 설정
+
 
         //todo skill 은 나중에 정리해야함 test용
         SkillFactory skillFactory = new(_skillRepo);
@@ -56,7 +63,6 @@ public class BattleManager : MonoBehaviour
             _characterRepo.Save(player.SaveData);
         }
 
-        Debug.Log("SetUp Battle");
     }
 
     
@@ -257,11 +263,13 @@ public class BattleManager : MonoBehaviour
 
         if (playerAllDead)
         {
+            Debug.Log("Player All Dead");
             stageEndType = StageEndType.CLEAR;
             battleRunning = false;
         }
         else if(enemyAllDead)
         {
+            Debug.Log("Enemy All Dead");
             stageEndType = StageEndType.FAIL;
             battleRunning = false;
         }

@@ -49,7 +49,7 @@ public class StageController : MonoBehaviour
         // 적 생성 로직. 필요에 따라 EnemyGenerator 등에서 뽑아 옵니다.
         if (def.isBattle || def.isBoss)
         {
-            enemies = EnemyGenerator.GenerateForStage(index + 1);
+            //enemies = EnemyGenerator.GenerateForStage(index + 1);
         }
         else
         {

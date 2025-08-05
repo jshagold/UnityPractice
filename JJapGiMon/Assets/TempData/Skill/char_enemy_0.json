@@ -1,0 +1,17 @@
+{
+  "$type": "CharacterSaveData, Assembly-CSharp",
+  "Id": "enemy_0",
+  "Name": "enemy_0",
+  "CharacterType": null,
+  "EvolutionStage": 0,
+  "Faction": null,
+  "KeywordList": null,
+  "Level": 1,
+  "CurrentExp": 0,
+  "CurrentHealth": 0,
+  "MainSkill": null,
+  "Sub1Skill": null,
+  "Sub2Skill": null,
+  "PassiveList": null,
+  "SaveVersion": 1
+}

@@ -1,0 +1,16 @@
+{
+  "Id": "enemy_1",
+  "Name": null,
+  "CharacterType": null,
+  "EvolutionStage": 0,
+  "Faction": null,
+  "KeywordList": null,
+  "Level": 1,
+  "CurrentExp": 0,
+  "CurrentHealth": 110,
+  "MainSkill": null,
+  "Sub1Skill": null,
+  "Sub2Skill": null,
+  "PassiveList": null,
+  "SaveVersion": 1
+}

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(BattleManager))]
@@ -47,7 +48,29 @@ public class BattleSceneController : MonoBehaviour
 
         // 1) 배경 설정
         if (backgroundRenderer != null && battleBackground != null)
+        {
             backgroundRenderer.sprite = battleBackground;
+        }
+        else
+        {
+            if (backgroundRenderer == null)
+                Debug.LogError("backgroundRenderer가 할당되지 않았습니다!");
+            if (battleBackground == null)
+                Debug.LogError("battleBackground가 할당되지 않았습니다!");
+
+            Sprite tempBg = Resources.Load<Sprite>("Images/temp_battle_bg");
+            if (tempBg != null)
+            {
+                backgroundRenderer.sprite = tempBg;
+            }
+            else
+            {
+                Debug.LogError("temp_bg.png를 Resources/Images에서 찾을 수 없습니다.");
+            }
+        }
+        var bounds = backgroundRenderer.sprite.bounds.size;
+        Debug.Log($"Sprite world size (before scale): {bounds}");
+        Debug.Log($"Transform localScale: {backgroundRenderer.transform.localScale}");
 
         //var partyModels = StageController.Instance.GetParty();
         //var enemyModels = StageController.Instance.GetEnemies();
@@ -70,18 +93,21 @@ public class BattleSceneController : MonoBehaviour
         for (int i = 0; i < partyModels.Count && i < playerSpawnPoints.Length; i++)
         {
             var model = partyModels[i];
-            var spawn = playerSpawnPoints[i];
-            var view = Instantiate(playerViewPrefab, spawn.position, Quaternion.identity);
+            var spawn = playerSpawnPoints[i].position;
+            spawn.z = 0f;
+            var view = Instantiate(playerViewPrefab, spawn, Quaternion.identity);
             view.Initialize(model);
             views[model] = view;
+            Debug.Log($"[UI] Instantiated PlayerUI for {model.DisplayName} ");
         }
 
         // 4) 적 뷰 인스턴스화
         for (int i = 0; i < enemyModels.Count && i < enemySpawnPoints.Length; i++)
         {
             var model = enemyModels[i];
-            var spawn = enemySpawnPoints[i];
-            var view = Instantiate(enemyViewPrefab, spawn.position, Quaternion.identity);
+            var spawn = enemySpawnPoints[i].position;
+            spawn.z = 0f;
+            var view = Instantiate(enemyViewPrefab, spawn, Quaternion.identity);
             view.Initialize(model);
             views[model] = view;
         }
@@ -94,5 +120,16 @@ public class BattleSceneController : MonoBehaviour
 
         // Begin the turn-based combat loop
         StartCoroutine(battleManager.TurnLoop());
+    }
+
+    /// <summary>
+    /// 전투 중에 특정 캐릭터를 새로운 월드좌표로 이동시킵니다.
+    /// </summary>
+    public void MoveCharacter(CharacterModel model, Vector3 newPos, float duration = 0.5f)
+    {
+        if (views.TryGetValue(model, out var view))
+        {
+            StartCoroutine(view.MoveToPosition(newPos, duration));
+        }
     }
 }

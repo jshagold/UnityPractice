@@ -139,7 +139,7 @@ public class CharacterModel
     public void ApplyToCurrentStat(SkillEffect skillEffect)
     {
         CharacterStatType? targetStat = skillEffect.statType;
-        float value = skillEffect.value;
+        float value = skillEffect.value.GetValueOrDefault(0f);
 
         switch (skillEffect)
         {

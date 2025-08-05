@@ -10,7 +10,7 @@ public abstract class SkillData : ScriptableObject
 
     public SkillType skillType;
 
-    [JsonProperty]
+    [JsonProperty("effects", ItemConverterType = typeof(SkillEffectConverter))]
     public List<SkillEffect> effects { get; set; } = new();
 
     // todo serialize 할수있어야함

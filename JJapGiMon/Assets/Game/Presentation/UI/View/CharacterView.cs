@@ -1,6 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,16 +7,15 @@ using UnityEngine.UI;
 /// CharacterModel의 모든 상태 변화를 uGUI로 시각화합니다.
 /// HP, EXP, 레벨, 스킬, 버프, 사망 처리 등 포함.
 /// </summary>
-[RequireComponent(typeof(CharacterModel))]
 public class CharacterView : MonoBehaviour
 {
-    [SerializeField] private CharacterModel model;
+    private CharacterModel model;
 
     [Header("UI References (World Space Canvas)")]
     [SerializeField] private Slider hpSlider;
     [SerializeField] private Slider expSlider;
-    [SerializeField] private Text levelText;
-    [SerializeField] private Text nameText;
+    [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private Image portrait;
 
     [Header("Skill Icons")]
@@ -28,7 +26,7 @@ public class CharacterView : MonoBehaviour
 
     private void Awake()
     {
-        if (model == null) model = GetComponent<CharacterModel>();
+
     }
     
     /// <summary>

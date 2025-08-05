@@ -17,6 +17,9 @@ public class BattleSceneController : MonoBehaviour
     [Tooltip("Difficulty level for the current stage")]
     [SerializeField] private StageDifficulty stageDifficulty;
 
+    [Header("Character Container")]
+    [SerializeField] private Transform playerUiContainer;
+    [SerializeField] private Transform enemyUiContainer;
 
     [Header("Prefabs")]
     [SerializeField] private CharacterView playerViewPrefab;    // CharacterView 프리팹 :contentReference[oaicite:5]{index=5}
@@ -55,8 +58,6 @@ public class BattleSceneController : MonoBehaviour
         {
             if (backgroundRenderer == null)
                 Debug.LogError("backgroundRenderer가 할당되지 않았습니다!");
-            if (battleBackground == null)
-                Debug.LogError("battleBackground가 할당되지 않았습니다!");
 
             Sprite tempBg = Resources.Load<Sprite>("Images/temp_battle_bg");
             if (tempBg != null)
@@ -68,9 +69,6 @@ public class BattleSceneController : MonoBehaviour
                 Debug.LogError("temp_bg.png를 Resources/Images에서 찾을 수 없습니다.");
             }
         }
-        var bounds = backgroundRenderer.sprite.bounds.size;
-        Debug.Log($"Sprite world size (before scale): {bounds}");
-        Debug.Log($"Transform localScale: {backgroundRenderer.transform.localScale}");
 
         //var partyModels = StageController.Instance.GetParty();
         //var enemyModels = StageController.Instance.GetEnemies();
@@ -81,13 +79,12 @@ public class BattleSceneController : MonoBehaviour
         var partyModels = playerIdList.Select(id => characterFactory.Create(id)).ToList();
         var enemyModels = enemyIdList.Select(id => characterFactory.Create(id)).ToList();
 
-
+        // todo 캐릭터 설정 초기화
+        partyModels.ForEach(player => { player.SaveData.CurrentHealth = player.MaxHp; });
+        enemyModels.ForEach(enemy => { enemy.SaveData.CurrentHealth = enemy.MaxHp; });
 
         // Initialize battle with configured IDs and difficulty
         battleManager.SetupBattle(partyModels, enemyModels, stageDifficulty);
-        //battleManager.SetupBattle(partyModels, enemyModels, stageDifficulty);
-
-
 
         // 3) 플레이어 뷰 인스턴스화
         for (int i = 0; i < partyModels.Count && i < playerSpawnPoints.Length; i++)
@@ -95,7 +92,7 @@ public class BattleSceneController : MonoBehaviour
             var model = partyModels[i];
             var spawn = playerSpawnPoints[i].position;
             spawn.z = 0f;
-            var view = Instantiate(playerViewPrefab, spawn, Quaternion.identity);
+            var view = Instantiate(playerViewPrefab, spawn, Quaternion.identity, playerUiContainer);
             view.Initialize(model);
             views[model] = view;
             Debug.Log($"[UI] Instantiated PlayerUI for {model.DisplayName} ");
@@ -107,7 +104,7 @@ public class BattleSceneController : MonoBehaviour
             var model = enemyModels[i];
             var spawn = enemySpawnPoints[i].position;
             spawn.z = 0f;
-            var view = Instantiate(enemyViewPrefab, spawn, Quaternion.identity);
+            var view = Instantiate(enemyViewPrefab, spawn, Quaternion.identity, enemyUiContainer);
             view.Initialize(model);
             views[model] = view;
         }

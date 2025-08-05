@@ -40,13 +40,10 @@ public class BattleManager : MonoBehaviour
         // 캐릭터 정보 세팅
         players = playerList;
         enemies = enemyList;
-        enemies.ForEach(enemy => { enemy.SaveData.CurrentHealth = enemy.MaxHp; });
 
         stageEndType = StageEndType.NOTYET;
         battleRunning = true;
 
-
-        // 맵에 캐릭터 시작상태 설정
 
 
         //todo skill 은 나중에 정리해야함 test용
@@ -293,10 +290,6 @@ public class BattleManager : MonoBehaviour
             _characterRepo.Save(enemy.SaveData);
         }
         
-        // UI
-        //BattleUI.Instance.OnEnterPhaseEndBattle(stageEndType);
-        
-
     }
 
 

@@ -28,7 +28,7 @@ public class BattleManager : MonoBehaviour
     void Awake() => inputManager = GetComponent<BattleInputManager>();
 
     // --- 1. 초기화 --- //
-    public void SetupBattle(List<string> playerIdList, List<string> enemyIdList, StageDifficulty difficulty)
+    public void SetupBattle(List<CharacterModel> playerList, List<CharacterModel> enemyList, StageDifficulty difficulty)
     {
         _characterRepo = new LocalCharacterRepository();
         _skillRepo = new LocalSkillRepository();
@@ -36,16 +36,15 @@ public class BattleManager : MonoBehaviour
         CharacterFactory characterFactory = new(_characterRepo);
 
         dmgCalculator = new(difficulty);
-        
+
         // 캐릭터 정보 세팅
-        players = playerIdList.Select(id => characterFactory.Create(id)).ToList();
-        enemies = enemyIdList.Select(id => characterFactory.Create(id)).ToList();
+        players = playerList;
+        enemies = enemyList;
         enemies.ForEach(enemy => { enemy.SaveData.CurrentHealth = enemy.MaxHp; });
 
         stageEndType = StageEndType.NOTYET;
         battleRunning = true;
 
-        // 전투 맵 그리기
 
         // 맵에 캐릭터 시작상태 설정
 

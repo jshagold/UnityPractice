@@ -16,7 +16,6 @@ public class CharacterModel
     public event Action<int, int> OnExpChanged;         // current, max
     public event Action<int> OnLevelUp;                 // new level
     public event Action OnDeath;
-    //public event Action<IEnumerable<StatusEffect>> OnBuffsChanged; // buff list TODO
     public event Action<CharacterStats> OnStatChanged;
     public event Action<ActiveSkill> OnMainSkillChanged;
     public event Action<ActiveSkill?> OnSub1SkillChanged;

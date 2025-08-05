@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,52 +18,50 @@ public class CharacterView : MonoBehaviour
     [SerializeField] private Slider expSlider;
     [SerializeField] private Text levelText;
     [SerializeField] private Text nameText;
+    [SerializeField] private Image portrait;
 
     [Header("Skill Icons")]
     [SerializeField] private Image mainSkillIcon;
     [SerializeField] private Image sub1SkillIcon;
     [SerializeField] private Image sub2SkillIcon;
 
-    [Header("Buffs")]
-    [SerializeField] private Transform buffContainer;   // HorizontalLayoutGroup
-    [SerializeField] private GameObject buffIconPrefab; // Image 프리팹
-
-    // 버프 트래킹
-    //private readonly Dictionary<StatusEffect, GameObject> buffIcons = new();
 
     private void Awake()
     {
         if (model == null) model = GetComponent<CharacterModel>();
+    }
+    
+    /// <summary>
+    /// 외부에서 CharacterModel을 주입하고, UI 초기화 및 이벤트 구독을 수행합니다.
+    /// </summary>
+    public void Initialize(CharacterModel model)
+    {
+        this.model = model;
 
-        // 초기 UI 설정
-        nameText.text = model.DisplayName;
-        levelText.text = $"Lv {model.Level}";
+        // 1) UI 텍스트·슬라이더 초기 값 세팅
+        nameText.text     = model.DisplayName;
+        levelText.text    = $"Lv {model.Level}";
         hpSlider.maxValue = model.MaxHp;
-        hpSlider.value = model.CurrentHp;
-        expSlider.maxValue = model.MaxExp;
-        expSlider.value = model.CurrentExp;
+        hpSlider.value    = model.CurrentHp;
+        expSlider.maxValue= model.MaxExp;
+        expSlider.value   = model.CurrentExp;
 
+        // 2) 스킬·버프 아이콘 세팅 (필요 시 메서드 호출)
         UpdateSkillIcon(mainSkillIcon, model.MainSkill);
         UpdateSkillIcon(sub1SkillIcon, model.Sub1Skill);
         UpdateSkillIcon(sub2SkillIcon, model.Sub2Skill);
 
-        // 초기 버프 표시
-        //foreach (var buff in model.Buffs)
-        //    AddBuffIcon(buff);
-
-        // 이벤트 구독
-        model.OnHpChanged += HandleHpChanged;
-        model.OnExpChanged += HandleExpChanged;
-        model.OnLevelUp += HandleLevelUp;
+        // 3) 모델 이벤트 구독
+        model.OnHpChanged      += HandleHpChanged;
+        model.OnExpChanged     += HandleExpChanged;
+        model.OnLevelUp        += HandleLevelUp;
         model.OnMainSkillChanged += skill => UpdateSkillIcon(mainSkillIcon, skill);
-        model.OnSub1SkillChanged += skill => UpdateSkillIcon(sub1SkillIcon, skill);
-        model.OnSub2SkillChanged += skill => UpdateSkillIcon(sub2SkillIcon, skill);
-        //model.OnBuffAdded += AddBuffIcon;
-        //model.OnBuffRemoved += RemoveBuffIcon;
-        model.OnDeath += HandleDeath;
-    }
+        model.OnSub1SkillChanged  += skill => UpdateSkillIcon(sub1SkillIcon, skill);
+        model.OnSub2SkillChanged  += skill => UpdateSkillIcon(sub2SkillIcon, skill);
+        model.OnDeath          += HandleDeath;
+    }                                                                                                                                                              
 
-    private void OnDestroy()
+private void OnDestroy()
     {
         // 이벤트 해제
         model.OnHpChanged -= HandleHpChanged;
@@ -70,8 +70,6 @@ public class CharacterView : MonoBehaviour
         model.OnMainSkillChanged -= skill => UpdateSkillIcon(mainSkillIcon, skill);
         model.OnSub1SkillChanged -= skill => UpdateSkillIcon(sub1SkillIcon, skill);
         model.OnSub2SkillChanged -= skill => UpdateSkillIcon(sub2SkillIcon, skill);
-        //model.OnBuffAdded -= AddBuffIcon;
-        //model.OnBuffRemoved -= RemoveBuffIcon;
         model.OnDeath -= HandleDeath;
     }
 
@@ -107,31 +105,28 @@ public class CharacterView : MonoBehaviour
         //}
     }
 
-    //private void AddBuffIcon(StatusEffect buff)
-    //{
-    //    if (buffIconPrefab == null || buffContainer == null) return;
-    //    if (buffIcons.ContainsKey(buff)) return;
-
-    //    var go = Instantiate(buffIconPrefab, buffContainer);
-    //    var img = go.GetComponent<Image>();
-    //    if (img != null && buff.IconSprite != null)
-    //        img.sprite = buff.IconSprite;
-    //    buffIcons[buff] = go;
-    //}
-
-    //private void RemoveBuffIcon(StatusEffect buff)
-    //{
-    //    if (buffIcons.TryGetValue(buff, out var go))
-    //    {
-    //        Destroy(go);
-    //        buffIcons.Remove(buff);
-    //    }
-    //}
-
     private void HandleDeath()
     {
         var rend = GetComponent<SpriteRenderer>();
         if (rend != null)
             rend.color = new Color(rend.color.r, rend.color.g, rend.color.b, 0.5f);
+    }
+
+    /// <summary>
+    /// 현재 위치에서 targetPosition까지 duration 초 동안 선형 보간 이동합니다.
+    /// </summary>
+    public IEnumerator MoveToPosition(Vector3 targetPosition, float duration = 0.5f)
+    {
+        Vector3 start = transform.position;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            transform.position = Vector3.Lerp(start, targetPosition, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = targetPosition;
     }
 }

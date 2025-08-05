@@ -1,26 +1,21 @@
-{
-  "$type": "ActiveSkill, Assembly-CSharp",
-  "TargetType": 0,
-  "SkillCost": null,
-  "skillId": "active_0",
-  "skillName": "",
-  "skillDescription": "",
-  "skillType": 0,
-  "effects": {
-    "$type": "System.Collections.Generic.List`1[[SkillEffect, Assembly-CSharp]], mscorlib",
-    "$values": [
+﻿{
+    "skillId": "active_0",
+    "skillName": "Default Attack",
+    "skillDescription": "기본 공격tqtq",
+    "skillType": 0,
+    "effects": [
         {
-            "$type": "DamageEffect, Assembly-CSharp",
+            "effectType": "damage",
             "statType": null,
-            "value": 1.0,
+            "value": null,
             "damage": {
-                "$type": "Damage, Assembly-CSharp",
-                "fixedDamage": 0,
+                "fixedDamage": 100,
                 "scalingDamage": 1.0
             }
         }
-    ]
-  },
-  "name": "",
-  "hideFlags": 0
+    ],
+    "TargetType": 1,
+    "SkillCost": null,
+    "name": "",
+    "hideFlags": 0
 }

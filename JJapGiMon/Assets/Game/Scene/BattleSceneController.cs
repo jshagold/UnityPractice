@@ -26,8 +26,8 @@ public class BattleSceneController : MonoBehaviour
         if (battleManager == null)
             battleManager = GetComponent<BattleManager>();
 
-        var partyModels = StageController.Instance.GetParty();
-        var enemyModels = StageController.Instance.GetEnemies();
+        //var partyModels = StageController.Instance.GetParty();
+        //var enemyModels = StageController.Instance.GetEnemies();
 
         // Initialize battle with configured IDs and difficulty
         battleManager.SetupBattle(playerIdList, enemyIdList, stageDifficulty);

@@ -2,6 +2,7 @@
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 [RequireComponent(typeof(BattleManager))]
 public class BattleSceneController : MonoBehaviour
@@ -17,7 +18,7 @@ public class BattleSceneController : MonoBehaviour
     [Tooltip("Difficulty level for the current stage")]
     [SerializeField] private StageDifficulty stageDifficulty;
 
-    [Header("Character Container")]
+    [Header("Character Container (World-Space Canvas)")]
     [SerializeField] private Transform playerUiContainer;
     [SerializeField] private Transform enemyUiContainer;
 
@@ -52,6 +53,11 @@ public class BattleSceneController : MonoBehaviour
     private void OnEnable()
     {
         BattleManager.Instance.OnBattleEnd += HandleBattleEnd;
+    }
+
+    private void OnDisable()
+    {
+        BattleManager.Instance.OnBattleEnd -= HandleBattleEnd;
     }
 
     private void Start()
@@ -96,33 +102,40 @@ public class BattleSceneController : MonoBehaviour
         battleManager.SetupBattle(partyModels, enemyModels, stageDifficulty);
 
         // 3) 플레이어 뷰 인스턴스화
-        for (int i = 0; i < partyModels.Count && i < playerSpawnPoints.Length; i++)
-        {
-            var model = partyModels[i];
-            var spawn = playerSpawnPoints[i].position;
-            spawn.z = 0f;
-            var view = Instantiate(playerViewPrefab, spawn, Quaternion.identity, playerUiContainer);
-            view.Initialize(model);
-            views[model] = view;
-        }
+        InitCharacters(partyModels, playerSpawnPoints, playerViewPrefab, playerUiContainer);
 
         // 4) 적 뷰 인스턴스화
-        for (int i = 0; i < enemyModels.Count && i < enemySpawnPoints.Length; i++)
-        {
-            var model = enemyModels[i];
-            var spawn = enemySpawnPoints[i].position;
-            spawn.z = 0f;
-            var view = Instantiate(enemyViewPrefab, spawn, Quaternion.identity, enemyUiContainer);
-            view.Initialize(model);
-            views[model] = view;
-        }
+        InitCharacters(enemyModels, enemySpawnPoints, enemyViewPrefab, enemyUiContainer);
 
-
-        // 맵에 캐릭터 시작상태 설정
 
 
         // Begin the turn-based combat loop
         StartCoroutine(battleManager.TurnLoop());
+    }
+
+    /*
+     * 캐릭터 세팅
+     */
+    private void InitCharacters(
+        List<CharacterModel> models,
+        Transform[] spawnPoints,
+        CharacterView prefab,
+        Transform container)
+    {
+        for (int i = 0; i < models.Count && i < spawnPoints.Length; i++)
+        {
+            var model = models[i];
+            Vector3 worldPos = spawnPoints[i].position;
+            worldPos.z = 0f;
+
+            // World-Space Canvas 하위에 생성
+            var view = Instantiate(prefab, container);
+            view.transform.position = worldPos;
+            view.transform.rotation = Quaternion.identity;
+
+            view.Initialize(model);
+            views[model] = view;
+        }
     }
 
     /// <summary>

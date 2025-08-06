@@ -1,1 +1,1 @@
-public record StatMulEffect(CharacterStatType? statType, float? value, Damage? damage = null) : SkillEffect(statType, value, damage);
+public record StatMulEffect(CharacterStatType? statType, float? value, Damage? damage = null, string effectType = "statMul") : SkillEffect(effectType, statType, value, damage);

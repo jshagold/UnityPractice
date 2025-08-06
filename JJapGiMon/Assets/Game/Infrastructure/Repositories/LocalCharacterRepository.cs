@@ -28,14 +28,8 @@ public class LocalCharacterRepository : ICharacterRepository
     public void Save(CharacterSaveData saveData)
     {
         var path = GetPath(saveData.Id);
-        var settings = new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.All,
-            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
-            Formatting = Formatting.Indented
-        };
 
-        var json = JsonConvert.SerializeObject(saveData, Formatting.Indented, settings);
+        var json = JsonConvert.SerializeObject(saveData, Formatting.Indented);
         File.WriteAllText(path, json);
     }
 }

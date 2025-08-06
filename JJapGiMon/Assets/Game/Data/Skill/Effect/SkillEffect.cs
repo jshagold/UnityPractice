@@ -1,1 +1,1 @@
-public abstract record SkillEffect(CharacterStatType? statType, float? value, Damage? damage);
+public abstract record SkillEffect(string effectType, CharacterStatType? statType, float? value, Damage? damage);

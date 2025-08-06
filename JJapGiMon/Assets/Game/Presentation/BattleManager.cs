@@ -243,6 +243,7 @@ public class BattleManager : MonoBehaviour
                 );
 
                 battlePair.Targets.ForEach(target => target.TakeDamage(damagePower));
+                Debug.Log($"Damage!!! {damagePower}");
             }
         }
 

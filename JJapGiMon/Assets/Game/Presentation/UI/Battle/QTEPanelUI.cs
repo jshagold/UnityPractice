@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,18 +18,12 @@ public class QTEPanelUI : MonoBehaviour
 
     public void Show(int hitCount, Action<List<bool>> callback)
     {
+        Debug.Log($"Show QTE Panel count: {hitCount}");
         onComplete = callback;
         panel.SetActive(true);
         Clear();
-        var results = Enumerable.Repeat(false, hitCount).ToList();
-        for (int i = 0; i < hitCount; i++)
-        {
-            var qteButton = Instantiate(qteButtonPrefab, toggleContainer);
-            qteButton.onClick.AddListener(() => { TabQteButton(); results[i] = true; });
-            qteButton.gameObject.SetActive(true);
-            //yield return new WaitForSeconds(1.0f);
-        }
-        Complete(results);
+
+        StartCoroutine(RunQTE(hitCount));
     }
 
     public void Hide()
@@ -37,8 +32,35 @@ public class QTEPanelUI : MonoBehaviour
         Clear();
     }
 
-    private void Complete(List<bool> results)
+    private IEnumerator RunQTE(int hitCount)
     {
+        var results = Enumerable.Repeat(false, hitCount).ToList();
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            bool clicked = false;
+            int index = i;
+            var btn = Instantiate(qteButtonPrefab, toggleContainer);
+            btn.gameObject.SetActive(true);
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() =>
+            {
+                TabQteButton();
+                clicked = true;
+                results[index] = true;
+                btn.interactable = false;
+            });
+
+            float elapsed = 0f;
+            while (elapsed < 1f && !clicked)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            Destroy(btn.gameObject);
+        }
+
         onComplete?.Invoke(results);
     }
 

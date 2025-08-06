@@ -18,6 +18,11 @@ public sealed class BattleInputManager : MonoBehaviour
     [SerializeField] private ControlButtonsUI controlButtonsUI;
     [SerializeField] private QTEPanelUI qtePanelUI;
 
+    private void OnEnable()
+    {
+        BattleManager.Instance.OnBattleEnd += HandleBattleEnd;
+    }
+
     /// <summary>
     /// players.Count 만큼 캐스터-스킬-타겟을 선택하여 outTargets에 추가.
     /// </summary>
@@ -30,7 +35,6 @@ public sealed class BattleInputManager : MonoBehaviour
 
         while (outTargets.Count < players.Count)
         {
-            Debug.Log("selectedPlayersUI.Show");
             // 0) 모든 창 닫기
             CloseAllPanel();
 
@@ -109,9 +113,9 @@ public sealed class BattleInputManager : MonoBehaviour
         // Enable start
         Debug.Log("controlButtonsUI.Show");
         bool start = false;
-        controlButtonsUI.SetStart(() => start = true);
+        controlButtonsUI.ShowBattleStartPanel(() => start = true);
         yield return new WaitUntil(() => start);
-        controlButtonsUI.SetStart(null);
+        controlButtonsUI.HideBattleStartPanel();
         selectedPlayersUI.Hide();
     }
 
@@ -141,7 +145,17 @@ public sealed class BattleInputManager : MonoBehaviour
         targetSelectorUI.Hide();
         selectedPlayersUI.Hide();
         resetDialogUI.Hide();
+        //controlButtonsUI.SetStart(null);
+        controlButtonsUI.HideBattleStartPanel();
         controlButtonsUI.SetCancel(null);
         qtePanelUI.Hide();
+    }
+
+    /*
+     * BattleManager에서 전투가 끝났을 때
+     */
+    public void HandleBattleEnd()
+    {
+        CloseAllPanel();
     }
 }

@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
+    public static BattleManager Instance { get; private set; }
+
     private ICharacterRepository _characterRepo;
     private ISkillRepository _skillRepo;
 
@@ -25,7 +28,14 @@ public class BattleManager : MonoBehaviour
 
 
     private BattleInputManager inputManager;
-    void Awake() => inputManager = GetComponent<BattleInputManager>();
+    // 전투 종료 listener
+    public event Action OnBattleEnd;
+    
+    private void Awake()
+    {
+        Instance = this;
+        inputManager = GetComponent<BattleInputManager>();
+    }
 
     // --- 1. 초기화 --- //
     public void SetupBattle(List<CharacterModel> playerList, List<CharacterModel> enemyList, StageDifficulty difficulty)
@@ -49,6 +59,7 @@ public class BattleManager : MonoBehaviour
         //todo skill 은 나중에 정리해야함 test용
         SkillFactory skillFactory = new(_skillRepo);
         ActiveSkill actSkill = skillFactory.CreateActiveSkill("active_0");
+        ActiveSkill subSkill2 = skillFactory.CreateActiveSkill("active_1");
 
         TempCreateSkill(skillFactory);
 
@@ -56,6 +67,7 @@ public class BattleManager : MonoBehaviour
         foreach (var player in players)
         {
             player.SetMainSkill(actSkill);
+            player.SetSub1Skill(subSkill2);
             _characterRepo.Save(player.SaveData);
         }
 
@@ -150,7 +162,7 @@ public class BattleManager : MonoBehaviour
 
             if(pool.Count > 0)
             {
-                randomSkill = pool[Random.Range(0, pool.Count)];
+                randomSkill = pool[UnityEngine.Random.Range(0, pool.Count)];
             } 
             else
             {
@@ -162,7 +174,7 @@ public class BattleManager : MonoBehaviour
             List<CharacterModel> targetList = randomSkill.TargetType switch
             {
                 SkillTargeting.None => new(),
-                SkillTargeting.SingleEnemy => players.OrderBy(_ => Random.value).Take(1).ToList(),
+                SkillTargeting.SingleEnemy => players.OrderBy(_ => UnityEngine.Random.value).Take(1).ToList(),
                 SkillTargeting.WholeEnemy => players.ToList(),
                 _ => throw new System.NotImplementedException(),
             };
@@ -289,7 +301,8 @@ public class BattleManager : MonoBehaviour
         {
             _characterRepo.Save(enemy.SaveData);
         }
-        
+
+        OnBattleEnd?.Invoke();
     }
 
 

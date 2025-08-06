@@ -46,9 +46,6 @@ public class LocalSkillRepository : ISkillRepository
         var activeSkill = JsonConvert.DeserializeObject<ActiveSkill>(json, settings)!;
         var deserializeJson = JsonConvert.SerializeObject(activeSkill, settings);
 
-        Debug.Log("" +
-            $"json: {deserializeJson}\n");
-
         return JsonConvert.DeserializeObject<ActiveSkill>(json, settings)!;
     }
 

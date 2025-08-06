@@ -25,6 +25,7 @@ public class QTEPanelUI : MonoBehaviour
         {
             var qteButton = Instantiate(qteButtonPrefab, toggleContainer);
             qteButton.onClick.AddListener(() => { TabQteButton(); results[i] = true; });
+            qteButton.gameObject.SetActive(true);
             //yield return new WaitForSeconds(1.0f);
         }
         Complete(results);

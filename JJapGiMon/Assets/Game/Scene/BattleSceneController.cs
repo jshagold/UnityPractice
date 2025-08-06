@@ -41,13 +41,22 @@ public class BattleSceneController : MonoBehaviour
     private readonly Dictionary<CharacterModel, CharacterView> views
         = new Dictionary<CharacterModel, CharacterView>();
 
-    private void Start()
+    private void Awake()
     {
-        Debug.Log("Battle Scene Start");
-     
+        Debug.Log("Battle Scene Awake");
         // Ensure BattleManager reference
         if (battleManager == null)
             battleManager = GetComponent<BattleManager>();
+    }
+
+    private void OnEnable()
+    {
+        BattleManager.Instance.OnBattleEnd += HandleBattleEnd;
+    }
+
+    private void Start()
+    {
+        Debug.Log("Battle Scene Start");
 
         // 1) 배경 설정
         if (backgroundRenderer != null && battleBackground != null)
@@ -95,7 +104,6 @@ public class BattleSceneController : MonoBehaviour
             var view = Instantiate(playerViewPrefab, spawn, Quaternion.identity, playerUiContainer);
             view.Initialize(model);
             views[model] = view;
-            Debug.Log($"[UI] Instantiated PlayerUI for {model.DisplayName} ");
         }
 
         // 4) 적 뷰 인스턴스화
@@ -108,8 +116,6 @@ public class BattleSceneController : MonoBehaviour
             view.Initialize(model);
             views[model] = view;
         }
-
-        // 전투 맵 그리기
 
 
         // 맵에 캐릭터 시작상태 설정
@@ -128,5 +134,13 @@ public class BattleSceneController : MonoBehaviour
         {
             StartCoroutine(view.MoveToPosition(newPos, duration));
         }
+    }
+
+    /*
+     * BattleManager에서 전투가 끝났을 때
+     */
+    public void HandleBattleEnd()
+    {
+
     }
 }

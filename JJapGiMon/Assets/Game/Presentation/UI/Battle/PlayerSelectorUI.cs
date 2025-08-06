@@ -22,7 +22,6 @@ public class PlayerSelectorUI : MonoBehaviour
         Clear();
         foreach (var player in players)
         {
-            Debug.Log($"player Name: {player.DisplayName}");
             var btn = Instantiate(buttonPrefab, buttonContainer);
             var label = btn.GetComponentInChildren<TextMeshProUGUI>(true);
             label.text = player.DisplayName;

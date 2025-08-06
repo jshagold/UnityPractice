@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +8,7 @@ public class ControlButtonsUI : MonoBehaviour
 {
     [SerializeField] private Transform buttonContainer;
     [SerializeField] private Button cancelButton;
-    [SerializeField] private Button startButton;
+    [SerializeField] private Button battleStartButton;
 
     public void SetCancel(Action onClick)
     {
@@ -17,16 +18,28 @@ public class ControlButtonsUI : MonoBehaviour
             cancelButton.onClick.AddListener(() => onClick());
     }
 
-    public void SetStart(Action onClick)
+
+    public void ShowBattleStartPanel(Action onClick)
     {
-        var btn = Instantiate(startButton, buttonContainer);
-        btn.onClick.RemoveAllListeners();
+        battleStartButton.gameObject.SetActive(true);
+        Clear();
+
+        var btn = Instantiate(battleStartButton, buttonContainer);
+        btn.onClick.AddListener(() => onClick());
         var label = btn.GetComponentInChildren<TextMeshProUGUI>(true);
         label.text = "Battle Start!!";
-        btn.gameObject.SetActive(onClick != null);
-        if (onClick != null)
-        {
-            btn.onClick.AddListener(() => onClick());
-        }
+        btn.gameObject.SetActive(true);
+    }
+
+    public void HideBattleStartPanel()
+    {
+        battleStartButton.gameObject.SetActive(false);
+        Clear();
+    }
+
+    private void Clear()
+    {
+        for (int i = buttonContainer.childCount - 1; i >= 0; i--)
+            Destroy(buttonContainer.GetChild(i).gameObject);
     }
 }

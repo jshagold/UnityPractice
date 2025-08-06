@@ -18,7 +18,7 @@ public class SkillSelectorUI : MonoBehaviour
 
     public void Show(List<ActiveSkill> skills, Action<ActiveSkill> callback)
     {
-        Debug.Log($"skill {skills}");
+        Debug.Log($"skill List");
         onSkillPicked = callback;
         panel.SetActive(true);
         Clear();

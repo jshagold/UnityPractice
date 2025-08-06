@@ -17,6 +17,7 @@ public sealed class BattleInputManager : MonoBehaviour
     [SerializeField] private ResetDialogUI resetDialogUI;
     [SerializeField] private ControlButtonsUI controlButtonsUI;
     [SerializeField] private QTEPanelUI qtePanelUI;
+    [SerializeField] private ResultDialogUi resultDialogUI;
 
     private void OnEnable()
     {
@@ -149,6 +150,7 @@ public sealed class BattleInputManager : MonoBehaviour
         controlButtonsUI.HideBattleStartPanel();
         controlButtonsUI.SetCancel(null);
         qtePanelUI.Hide();
+        resultDialogUI.Hide();
     }
 
     /*
@@ -157,5 +159,6 @@ public sealed class BattleInputManager : MonoBehaviour
     public void HandleBattleEnd()
     {
         CloseAllPanel();
+        resultDialogUI.Show();
     }
 }

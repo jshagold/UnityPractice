@@ -212,19 +212,18 @@ public class BattleManager : MonoBehaviour
         yield return Phase4();
     }
 
-    // --- Phase 4 QTE 행동 --- //
+    // --- Phase 4 --- //
     IEnumerator Phase4()
     {
         // UI
         //BattleUI.Instance.OnEnterPhase4();
         Debug.Log("Phase4");
 
-        yield return inputManager.CollectQTEResults(battleOrderList);
 
         yield return Phase5();
     }
 
-    // --- Phase 5 데미지 계산 --- //
+    // --- Phase 5 데미지 계산(QTE 행동, 애니메이션, 데미지 계산) --- //
     IEnumerator Phase5()
     {
         // UI
@@ -233,7 +232,10 @@ public class BattleManager : MonoBehaviour
 
         foreach (var battlePair in battleOrderList)
         {
-            if(battlePair.DmgQtePair == null) continue;
+            yield return inputManager.CollectQTEResults(battlePair);
+
+
+            if (battlePair.DmgQtePair == null) continue;
             foreach (var dmgQtePair in battlePair.DmgQtePair) 
             {
                 int damagePower = dmgCalculator.CalculateDamage(

@@ -18,6 +18,7 @@ public class CharacterModel
     public event Action<ActiveSkill> OnMainSkillChanged;
     public event Action<ActiveSkill?> OnSub1SkillChanged;
     public event Action<ActiveSkill?> OnSub2SkillChanged;
+    public event Action<int> OnDamageTaken;
 
     // --- Properties --- //
     // 이름
@@ -77,6 +78,7 @@ public class CharacterModel
 
         SaveData.CurrentHealth = Mathf.Max(0, CurrentHp - amount);
         OnHpChanged?.Invoke(SaveData.CurrentHealth, MaxHp);
+        OnDamageTaken?.Invoke(amount);
 
         if (SaveData.CurrentHealth <= 0)
         {

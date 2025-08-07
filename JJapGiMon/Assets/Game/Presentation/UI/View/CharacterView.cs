@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,10 +24,13 @@ public class CharacterView : MonoBehaviour
     [SerializeField] private Image sub1SkillIcon;
     [SerializeField] private Image sub2SkillIcon;
 
+    // Animation
+    private Animator animator;
+
 
     private void Awake()
     {
-
+        animator = GetComponent<Animator>();
     }
     
     /// <summary>
@@ -57,6 +61,7 @@ public class CharacterView : MonoBehaviour
         model.OnSub1SkillChanged  += skill => UpdateSkillIcon(sub1SkillIcon, skill);
         model.OnSub2SkillChanged  += skill => UpdateSkillIcon(sub2SkillIcon, skill);
         model.OnDeath          += HandleDeath;
+        model.OnDamageTaken += HandleDamagePopup;
     }                                                                                                                                                              
 
 private void OnDestroy()
@@ -69,6 +74,7 @@ private void OnDestroy()
         model.OnSub1SkillChanged -= skill => UpdateSkillIcon(sub1SkillIcon, skill);
         model.OnSub2SkillChanged -= skill => UpdateSkillIcon(sub2SkillIcon, skill);
         model.OnDeath -= HandleDeath;
+        model.OnDamageTaken -= HandleDamagePopup;
     }
 
     private void HandleHpChanged(int current, int max)
@@ -110,6 +116,13 @@ private void OnDestroy()
             rend.color = new Color(rend.color.r, rend.color.g, rend.color.b, 0.5f);
     }
 
+
+    private void HandleDamagePopup(int damage)
+    {
+        Vector3 popupPos = transform.position + Vector3.up * 1.5f;
+        DamagePopupManager.Instance.ShowDamage(popupPos, damage);
+    }
+
     /// <summary>
     /// 현재 위치에서 targetPosition까지 duration 초 동안 선형 보간 이동합니다.
     /// </summary>
@@ -126,5 +139,37 @@ private void OnDestroy()
         }
 
         transform.position = targetPosition;
+    }
+
+
+    /* Animation */
+    public IEnumerator PlayAttackAnimation()
+    {
+        //animator.SetTrigger("Attack");
+        //// 애니메이션 길이에 맞춰서 대기
+        //yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+
+        yield return new WaitForSeconds(1f);
+    }
+
+    public IEnumerator PlayHitAnimation()
+    {
+        //animator.SetTrigger("Hit");
+        //yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    // 지정된 위치까지 트윈으로 이동하고, 완료 시점까지 대기한다.
+    public IEnumerator MoveToTween(Vector3 targetWorldPos, float duration = 0.5f)
+    {
+        //animator.SetTrigger("Run");
+
+        Tween moveTween = transform.DOMove(targetWorldPos, duration)
+            .SetEase(Ease.OutQuad);
+
+        yield return moveTween.WaitForCompletion();
+
+        //animator.SetTrigger("Idle");
     }
 }

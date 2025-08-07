@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 
 /// <summary>
@@ -16,8 +17,8 @@ public class DamagePopupManager : MonoBehaviour
     [SerializeField] private Canvas canvas;            // Screen Space - Overlay
 
     [Header("Animation Settings")]
-    [SerializeField] private float floatDuration = 1f;
-    [SerializeField] private Vector2 floatOffset = new Vector2(0, 50);
+    [SerializeField] private float floatDuration = 1f; // 떠오르는 시간
+    [SerializeField] private Vector3 floatOffset = new Vector3(0, 1f, 0);
 
     private void Awake()
     {
@@ -30,37 +31,33 @@ public class DamagePopupManager : MonoBehaviour
     /// </summary>
     public void ShowDamage(Vector3 worldPos, int damage)
     {
-        // 스크린 좌표 계산
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
-
         // 팝업 인스턴스화
-        var popupGO = Instantiate(popupPrefab, canvas.transform);
-        var text = popupGO.GetComponentInChildren<Text>();
+        var popup = Instantiate(popupPrefab, canvas.transform);
+        var text = popup.GetComponentInChildren<TextMeshProUGUI>();
         text.text = damage.ToString();
 
         // 위치 설정
-        var rect = popupGO.GetComponent<RectTransform>();
-        rect.anchoredPosition = screenPos;
+        popup.transform.position = worldPos;
 
         // 애니메이션 시작
-        StartCoroutine(AnimatePopup(rect, popupGO));
+        StartCoroutine(AnimatePopup(popup, text));
     }
 
-    private IEnumerator AnimatePopup(RectTransform rect, GameObject popupGO)
+    private IEnumerator AnimatePopup(GameObject popup, TextMeshProUGUI text)
     {
         float elapsed = 0f;
-        var image = popupGO.GetComponentInChildren<Text>();
-        Color originalColor = image.color;
+        var rect = popup.GetComponent<RectTransform>();
+        var color = text.color;
 
         while (elapsed < floatDuration)
         {
             float t = elapsed / floatDuration;
-            rect.anchoredPosition += floatOffset * Time.deltaTime / floatDuration;
-            image.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f - t);
+            rect.position += floatOffset * (Time.deltaTime / floatDuration);
+            text.color = new Color(color.r, color.g, color.b, 1f - t);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        Destroy(popupGO);
+        Destroy(popup);
     }
 }

@@ -10,6 +10,9 @@ public class ControlButtonsUI : MonoBehaviour
     [SerializeField] private Button cancelButton;
     [SerializeField] private Button battleStartButton;
 
+
+
+
     public void SetCancel(Action onClick)
     {
         cancelButton.onClick.RemoveAllListeners();

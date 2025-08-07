@@ -121,22 +121,19 @@ public sealed class BattleInputManager : MonoBehaviour
     }
 
 
-    public IEnumerator CollectQTEResults(List<BattleTarget> battleOrderList)
+    public IEnumerator CollectQTEResults(BattleTarget battlePair)
     {
-        foreach (var battlePair in battleOrderList)
-        {
-            if(battlePair.Skill.effects == null) continue;
-            var dmgEffects = battlePair.Skill.effects.OfType<DamageEffect>().ToList();
-            int hitCount = dmgEffects.Count;
-            List<bool> results = null;
+        if (battlePair.Skill.effects == null) yield break;
+        var dmgEffects = battlePair.Skill.effects.OfType<DamageEffect>().ToList();
+        int hitCount = dmgEffects.Count;
+        List<bool> results = null;
 
-            bool done = false;
-            qtePanelUI.Show(hitCount, r => { results = r; done = true; });
-            yield return new WaitUntil(() => done);
-            qtePanelUI.Hide();
+        bool done = false;
+        qtePanelUI.Show(hitCount, r => { results = r; done = true; });
+        yield return new WaitUntil(() => done);
+        qtePanelUI.Hide();
 
-            battlePair.SetDmgQtePair(dmgEffects.Zip(results, (d, q) => (d, q)).ToList());
-        }
+        battlePair.SetDmgQtePair(dmgEffects.Zip(results, (d, q) => (d, q)).ToList());
     }
 
     public void CloseAllPanel()

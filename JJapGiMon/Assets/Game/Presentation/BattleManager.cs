@@ -28,9 +28,14 @@ public class BattleManager : MonoBehaviour
 
 
     private BattleInputManager inputManager;
-    // 전투 종료 listener
-    public event Action OnBattleEnd;
     
+
+    // --- Event --- ///
+    public event Action OnBattleEnd; // 전투 종료 listener
+    public event Action<CharacterModel> OnQTEPhaseStart; // QTE 액션을 시작
+
+
+
     private void Awake()
     {
         Instance = this;
@@ -232,6 +237,11 @@ public class BattleManager : MonoBehaviour
 
         foreach (var battlePair in battleOrderList)
         {
+
+            // QTE 시작전 연출 요청
+            OnQTEPhaseStart?.Invoke(battlePair.Caster);
+
+            // QTE 패널 Open
             yield return inputManager.CollectQTEResults(battlePair);
 
             // todo QTE 공격과 회피 구분해야됨

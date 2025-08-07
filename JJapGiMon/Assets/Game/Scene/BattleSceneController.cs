@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -53,11 +54,13 @@ public class BattleSceneController : MonoBehaviour
     private void OnEnable()
     {
         BattleManager.Instance.OnBattleEnd += HandleBattleEnd;
+        BattleManager.Instance.OnQTEPhaseStart += HandleQTEPhaseStart;
     }
 
     private void OnDisable()
     {
         BattleManager.Instance.OnBattleEnd -= HandleBattleEnd;
+        BattleManager.Instance.OnQTEPhaseStart -= HandleQTEPhaseStart;
     }
 
     private void Start()
@@ -136,6 +139,12 @@ public class BattleSceneController : MonoBehaviour
             view.Initialize(model);
             views[model] = view;
         }
+    }
+
+
+    private void HandleQTEPhaseStart(CharacterModel caster)
+    {
+
     }
 
     /// <summary>

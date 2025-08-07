@@ -144,7 +144,10 @@ public class BattleSceneController : MonoBehaviour
 
     private void HandleQTEPhaseStart(CharacterModel caster)
     {
-
+        if(views.TryGetValue(caster, out var view))
+        {
+            StartCoroutine(view.PlayAttackAnimation());
+        }
     }
 
     /// <summary>

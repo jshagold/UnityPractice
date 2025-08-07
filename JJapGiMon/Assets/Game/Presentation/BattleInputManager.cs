@@ -107,7 +107,7 @@ public sealed class BattleInputManager : MonoBehaviour
                     break;
             }
 
-            outTargets.Add(new BattleTarget(chosenPlayer, chosenSkill, chosenTargets));
+            outTargets.Add(new BattleTarget(chosenPlayer, CharacterFaction.Player, chosenSkill, chosenTargets));
             Debug.Log($"outTargets Count {outTargets.Count}");
         }
 
@@ -124,12 +124,13 @@ public sealed class BattleInputManager : MonoBehaviour
     public IEnumerator CollectQTEResults(BattleTarget battlePair)
     {
         if (battlePair.Skill.effects == null) yield break;
+
         var dmgEffects = battlePair.Skill.effects.OfType<DamageEffect>().ToList();
         int hitCount = dmgEffects.Count;
         List<bool> results = null;
 
         bool done = false;
-        qtePanelUI.Show(hitCount, r => { results = r; done = true; });
+        qtePanelUI.Show(battlePair.CasterFaction, hitCount, r => { results = r; done = true; });
         yield return new WaitUntil(() => done);
         qtePanelUI.Hide();
 

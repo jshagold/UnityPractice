@@ -1,15 +1,15 @@
-public sealed record CharacterFaction()
+public enum CharacterFaction
 {
-	// 플레이어
-	public static readonly CharacterFaction Player = new();
+    // 플레이어
+    Player,
 
-	// 아군
-	public static readonly CharacterFaction Ally = new();
+    // 아군
+    Ally,
 
-	// 적군
-	public static readonly CharacterFaction Enemy = new();
+    // 적군
+    Enemy,
 
-	// 중립
-	public static readonly CharacterFaction Neutral = new();
+    // 중립
+    Neutral
 
 }

@@ -2309,6 +2309,7 @@ MonoBehaviour:
   panel: {fileID: 1936888596}
   toggleContainer: {fileID: 1936888597}
   qteButtonPrefab: {fileID: 7337824492844356114, guid: 249930b04b419144ea585e6b85b1fb01, type: 3}
+  evasionButtonPrefab: {fileID: 7337824492844356114, guid: 0d9141210a42124428a7d0e224b47067, type: 3}
   qteSpawnPoints:
   - {fileID: 106474736}
   - {fileID: 2001301135}

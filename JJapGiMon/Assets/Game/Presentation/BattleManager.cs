@@ -179,7 +179,7 @@ public class BattleManager : MonoBehaviour
                 _ => throw new System.NotImplementedException(),
             };
 
-            BattleTarget pair = new(enemy, randomSkill, targetList);
+            BattleTarget pair = new(enemy, CharacterFaction.Enemy, randomSkill, targetList);
             enemyTargets.Add(pair);
         }
 
@@ -234,6 +234,7 @@ public class BattleManager : MonoBehaviour
         {
             yield return inputManager.CollectQTEResults(battlePair);
 
+            // todo QTE 공격과 회피 구분해야됨
 
             if (battlePair.DmgQtePair == null) continue;
             foreach (var dmgQtePair in battlePair.DmgQtePair) 

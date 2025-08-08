@@ -32,7 +32,8 @@ public class BattleManager : MonoBehaviour
 
     // --- Event --- ///
     public event Action OnBattleEnd; // 전투 종료 listener
-    public event Action<CharacterModel> OnQTEPhaseStart; // QTE 액션을 시작
+    public event Action<CharacterModel, List<CharacterModel>> OnQTEPhaseStart; // QTE 액션을 시작
+    public event Action<CharacterModel, List<CharacterModel>> OnDamageEnd; // 데미지 판정 종료
 
 
 
@@ -239,7 +240,7 @@ public class BattleManager : MonoBehaviour
         {
 
             // QTE 시작전 연출 요청
-            OnQTEPhaseStart?.Invoke(battlePair.Caster);
+            OnQTEPhaseStart?.Invoke(battlePair.Caster, battlePair.Targets);
 
             // QTE 패널 Open
             yield return inputManager.CollectQTEResults(battlePair);
@@ -256,7 +257,9 @@ public class BattleManager : MonoBehaviour
                 );
 
                 battlePair.Targets.ForEach(target => target.TakeDamage(damagePower));
+
                 Debug.Log($"Damage!!! {damagePower}");
+                OnDamageEnd?.Invoke(battlePair.Caster, battlePair.Targets);
             }
         }
 

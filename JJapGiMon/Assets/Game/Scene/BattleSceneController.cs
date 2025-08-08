@@ -55,12 +55,14 @@ public class BattleSceneController : MonoBehaviour
     {
         BattleManager.Instance.OnBattleEnd += HandleBattleEnd;
         BattleManager.Instance.OnQTEPhaseStart += HandleQTEPhaseStart;
+        BattleManager.Instance.OnDamageEnd += HandleDamageEnd;
     }
 
     private void OnDisable()
     {
         BattleManager.Instance.OnBattleEnd -= HandleBattleEnd;
         BattleManager.Instance.OnQTEPhaseStart -= HandleQTEPhaseStart;
+        BattleManager.Instance.OnDamageEnd -= HandleDamageEnd;
     }
 
     private void Start()
@@ -136,18 +138,53 @@ public class BattleSceneController : MonoBehaviour
             view.transform.position = worldPos;
             view.transform.rotation = Quaternion.identity;
 
-            view.Initialize(model);
+            view.Initialize(model, worldPos);
             views[model] = view;
         }
     }
 
 
-    private void HandleQTEPhaseStart(CharacterModel caster)
+    private void HandleQTEPhaseStart(CharacterModel caster, List<CharacterModel> targets)
     {
-        if(views.TryGetValue(caster, out var view))
+        Debug.Log("Handle QTE Phase Start");
+        StartCoroutine(TestAttack(caster, targets));
+    }
+
+    private IEnumerator TestAttack(CharacterModel caster, List<CharacterModel> targets)
+    {
+        Debug.Log($"Test Attack Target Count {targets.Count}");
+        var atkView = views[caster];
+        switch (targets.Count)
         {
-            StartCoroutine(view.PlayAttackAnimation());
+            case 0:
+                break;
+            case 1:
+                var defView = views[targets[0]];
+                //Vector3 attackPos = defView.transform.position + Vector3.left * 0.5f;
+
+                var dir = (defView.transform.position - atkView.transform.position).normalized;
+                var attackPos = defView.transform.position - dir * 5f; // 타겟 앞 0.5유닛
+                yield return atkView.MoveToTween(attackPos);
+                
+                break;
+            case 2:
+                break;
         }
+
+        yield return new WaitForSeconds(0.2f);
+    }
+
+    private void HandleDamageEnd(CharacterModel caster, List<CharacterModel> targets)
+    {
+        Debug.Log("Handle Damage End");
+        StartCoroutine(DamageEnd(caster, targets));
+    }
+
+    private IEnumerator DamageEnd(CharacterModel caster, List<CharacterModel> targets)
+    {
+        var atkView = views[caster];
+        // 3) 원위치 복귀
+        yield return atkView.MoveToTween(atkView.cachedSpawnPos, 0.3f);
     }
 
     /// <summary>

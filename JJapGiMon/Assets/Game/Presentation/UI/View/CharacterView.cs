@@ -24,6 +24,8 @@ public class CharacterView : MonoBehaviour
     [SerializeField] private Image sub1SkillIcon;
     [SerializeField] private Image sub2SkillIcon;
 
+    // 초기 위치
+    public Vector3 cachedSpawnPos;
     // Animation
     private Animator animator;
 
@@ -32,11 +34,11 @@ public class CharacterView : MonoBehaviour
     {
         animator = GetComponent<Animator>();
     }
-    
+
     /// <summary>
     /// 외부에서 CharacterModel을 주입하고, UI 초기화 및 이벤트 구독을 수행합니다.
     /// </summary>
-    public void Initialize(CharacterModel model)
+    public void Initialize(CharacterModel model, Vector3 spawnPos)
     {
         this.model = model;
 
@@ -62,6 +64,8 @@ public class CharacterView : MonoBehaviour
         model.OnSub2SkillChanged  += skill => UpdateSkillIcon(sub2SkillIcon, skill);
         model.OnDeath          += HandleDeath;
         model.OnDamageTaken += HandleDamagePopup;
+
+        cachedSpawnPos = spawnPos;
     }                                                                                                                                                              
 
 private void OnDestroy()
@@ -163,6 +167,7 @@ private void OnDestroy()
     // 지정된 위치까지 트윈으로 이동하고, 완료 시점까지 대기한다.
     public IEnumerator MoveToTween(Vector3 targetWorldPos, float duration = 0.5f)
     {
+        Debug.Log("Move To Tween");
         //animator.SetTrigger("Run");
 
         Tween moveTween = transform.DOMove(targetWorldPos, duration)

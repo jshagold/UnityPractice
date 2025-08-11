@@ -1,20 +1,20 @@
-using DG.Tweening;
+ï»¿using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class StageMapModel
 {
-    public int length;                 // ¿¹: 5 (½ÃÀÛ, Áß°£3, ¸¶Áö¸·)
-    public int choicesPerStep;         // ¿¹: 3
-    public List<List<StageNode>> levels = new();  // depthº° ³ëµå ¸ñ·Ï [depth][index]
+    public int length;                 // ì˜ˆ: 5 (ì‹œì‘, ì¤‘ê°„3, ë§ˆì§€ë§‰)
+    public int choicesPerStep;         // ì˜ˆ: 3
+    public List<List<StageNode>> levels = new();  // depthë³„ ë…¸ë“œ ëª©ë¡ [depth][index]
 
-    System.Random rng;
+    private System.Random randomRange;
 
     public StageMapModel(int length = 5, int choicesPerStep = 3, int? seed = null)
     {
         this.length = Mathf.Max(2, length);
-        this.choicesPerStep = Mathf.Clamp(choicesPerStep, 1, 5);
-        rng = seed.HasValue ? new System.Random(seed.Value) : new System.Random();
+        this.choicesPerStep = choicesPerStep;
+        randomRange = seed.HasValue ? new System.Random(seed.Value) : new System.Random();
         Build();
     }
 
@@ -22,30 +22,56 @@ public class StageMapModel
     {
         levels.Clear();
 
-        // depth 0: Start 1°³
+        // depth 0: Start 1ê°œ
         var start = new StageNode(0, 0, StageRoomType.Start);
         levels.Add(new List<StageNode> { start });
 
-        // depth 1..length-2: Áß°£(¹èÆ²/ÀÌº¥Æ®) ³ëµåµé
-        for (int d = 1; d < length - 1; d++)
+        // depth 1..length-1: ì¤‘ê°„(ë°°í‹€/ì´ë²¤íŠ¸) ë…¸ë“œë“¤ - 1~3ê°œ ë¬´ì‘ìœ„
+        for (int d = 1; d < length; d++)
         {
             var list = new List<StageNode>();
-            for (int i = 0; i < choicesPerStep; i++)
+            // ê° depthë§ˆë‹¤ 1~3ê°œ ì‚¬ì´ì˜ ë¬´ì‘ìœ„ ê°œìˆ˜ ìƒì„±
+            int roomCount = randomRange.Next(1, choicesPerStep + 1); // 1, 2, 3 ì¤‘ í•˜ë‚˜
+            
+            for (int i = 0; i < roomCount; i++)
             {
-                // °£´ÜÇÑ È®·ü: 70% ¹èÆ², 30% ÀÌº¥Æ®
-                bool isBattle = rng.NextDouble() < 0.7;
+                // ê°„ë‹¨í•œ í™•ë¥ : 70% ë°°í‹€, 30% ì´ë²¤íŠ¸
+                bool isBattle = randomRange.NextDouble() < 0.7;
                 list.Add(new StageNode(d, i, isBattle ? StageRoomType.Battle : StageRoomType.Event));
             }
             levels.Add(list);
         }
 
-        // depth (length-1): Boss 1°³
-        var boss = new StageNode(length - 1, 0, StageRoomType.Boss);
-        levels.Add(new List<StageNode> { boss });
+        // depth (length): ë§ˆì§€ë§‰ ë°© 3ê°œ (ëª©í‘œ 1ê°œ, ì‹¤íŒ¨ 2ê°œ) - Boss/Event ì¤‘ í•˜ë‚˜ë§Œ ì‚¬ìš©í•˜ê³  ë¬´ì‘ìœ„ ìˆœì„œë¡œ ì„ê¸°
+        var lastDepth = length;
+        
+        // Bossì™€ Event ì¤‘ í•˜ë‚˜ë¥¼ ëœë¤ ì„ íƒ
+        var baseRoomType = randomRange.NextDouble() < 0.5 ? StageRoomType.Boss : StageRoomType.Event;
+        
+        // ëª©í‘œ/ì‹¤íŒ¨ ìƒíƒœë¥¼ ë‚˜íƒ€ë‚´ëŠ” ë¦¬ìŠ¤íŠ¸ (true = ëª©í‘œ 1ê°œ, false = ì‹¤íŒ¨ 2ê°œ)
+        var isGoalList = new List<bool> { true, false, false };
+        
+        // Fisher-Yates ì…”í”Œ ì•Œê³ ë¦¬ì¦˜ìœ¼ë¡œ ëª©í‘œ/ì‹¤íŒ¨ ìˆœì„œë¥¼ ì„ê¸°
+        for (int i = isGoalList.Count - 1; i > 0; i--)
+        {
+            int j = randomRange.Next(i + 1);
+            var temp = isGoalList[i];
+            isGoalList[i] = isGoalList[j];
+            isGoalList[j] = temp;
+        }
+        
+        var lastList = new List<StageNode>();
+        for (int i = 0; i < isGoalList.Count; i++)
+        {
+            var node = new StageNode(lastDepth, i, baseRoomType);
+            node.isGoal = isGoalList[i]; // ëª©í‘œ ì—¬ë¶€ ì„¤ì •
+            lastList.Add(node);
+        }
+        levels.Add(lastList);
 
-        // ¿§Áö(ºÎ¸ğ¡æÀÚ½Ä) ¿¬°á: °¢ depthÀÇ ¸ğµç ³ëµå°¡ ´ÙÀ½ depthÀÇ ¸ğµç ³ëµå·Î ¿¬°á
-        // (Slay the Spire ÃÊ±âÇü½ÄÃ³·³ °øÀ¯-ÀÚ½Ä ±¸Á¶: ¸Å depth¿¡¼­ ÃÖ´ë n°³ ¼±ÅÃÁö º¸Àå)
-        for (int d = 0; d < length - 1; d++)
+        // ì—£ì§€(ë¶€ëª¨â†’ìì‹) ì—°ê²°: ê° depthì˜ ëª¨ë“  ë…¸ë“œê°€ ë‹¤ìŒ depthì˜ ëª¨ë“  ë…¸ë“œë¡œ ì—°ê²°
+        // (Slay the Spire ì´ˆê¸°í˜•ì‹ì²˜ëŸ¼ ê³µìœ -ìì‹ êµ¬ì¡°: ë§¤ depthì—ì„œ ìµœëŒ€ nê°œ ì„ íƒì§€ ë³´ì¥)
+        for (int d = 0; d < levels.Count - 1; d++)
         {
             foreach (var node in levels[d])
                 node.children.AddRange(levels[d + 1]);

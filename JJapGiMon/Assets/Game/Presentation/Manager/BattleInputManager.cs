@@ -24,6 +24,11 @@ public sealed class BattleInputManager : MonoBehaviour
         BattleManager.Instance.OnBattleEnd += HandleBattleEnd;
     }
 
+    private void OnDisable()
+    {
+        BattleManager.Instance.OnBattleEnd -= HandleBattleEnd;
+    }
+
     /// <summary>
     /// players.Count 만큼 캐스터-스킬-타겟을 선택하여 outTargets에 추가.
     /// </summary>

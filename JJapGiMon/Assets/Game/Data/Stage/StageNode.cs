@@ -9,6 +9,7 @@ public class StageNode
     public int depth;
     public int index;
     public StageRoomType type;
+    public bool isGoal; // 마지막 방에서 목표 여부 (true = 목표, false = 실패)
     public List<StageNode> children = new();
 
     public StageNode(int depth, int index, StageRoomType type)

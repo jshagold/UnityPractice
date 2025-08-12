@@ -17,6 +17,7 @@ public class StageNode
     // 세부 타입들
     public EventRoomType? eventType; // 이벤트 방일 때만 사용
     public BattleRoomType? battleType; // 전투 방일 때만 사용
+    public int? roomContentsId; // 방 정보 Id (저장된 데이터 풀에서 가져옴. 예를들어, 기본적 3마리가 들어있는 방 id / 강한 적 1마리가 들어있는 방 id 등등에서 가져와서 저장.)
 
     // 방 정보
     public string roomName; // 방 이름
@@ -27,43 +28,22 @@ public class StageNode
     // 🆕 부모 노드 참조
     public StageNode parent;
 
-    public StageNode(int depth, int index, StageRoomType type, int seed = 0)
+    public StageNode(int depth, int index, StageRoomType type, EventRoomType? eventRoomType, BattleRoomType? battleRoomType, int seed = 0)
     {
         this.depth = depth;
         this.index = index;
         this.type = type;
         this.seed = seed;
+        this.eventType = eventRoomType;
+        this.battleType = battleRoomType;
         this.isVisited = false;
         this.isAvailable = false;
         
         // 타입에 따라 세부 타입 초기화
-        InitializeSubType();
         InitializeRoomInfo();
     }
 
-    private void InitializeSubType()
-    {
-        switch (type)
-        {
-            case StageRoomType.Event:
-                // 이벤트 방은 4가지 타입 중 하나로 무작위 선택
-                var random = new System.Random(seed);
-                eventType = (EventRoomType)random.Next(0, 4);
-                break;
-                
-            case StageRoomType.Battle:
-                // 전투 방은 시드값에 따라 4가지 타입 중 하나로 무작위 선택
-                var battleRandom = new System.Random(seed);
-                battleType = (BattleRoomType)battleRandom.Next(0, 4);
-                break;
-                
-            default:
-                // Start, Boss는 세부 타입이 없음
-                eventType = null;
-                battleType = null;
-                break;
-        }
-    }
+ 
 
     private void InitializeRoomInfo()
     {
@@ -97,7 +77,7 @@ public class StageNode
         return eventType switch
         {
             EventRoomType.Rest => "휴식 공간",
-            EventRoomType.Shop => "상점",
+            EventRoomType.Story => "스토리",
             EventRoomType.Maintenance => "정비소",
             EventRoomType.Event => "이벤트 공간",
             _ => "이벤트 방"
@@ -109,7 +89,7 @@ public class StageNode
         return eventType switch
         {
             EventRoomType.Rest => "체력을 회복할 수 있는 안전한 공간입니다.",
-            EventRoomType.Shop => "다양한 아이템을 구매할 수 있는 상점입니다.",
+            EventRoomType.Story => "스토리가 진행되는 곳입니다.",
             EventRoomType.Maintenance => "장비를 정비하고 강화할 수 있는 곳입니다.",
             EventRoomType.Event => "특별한 이벤트가 일어날 수 있는 공간입니다.",
             _ => "이벤트가 발생하는 방입니다."
@@ -120,10 +100,7 @@ public class StageNode
     {
         return battleType switch
         {
-            BattleRoomType.NormalBattle => "일반 전투",
-            BattleRoomType.EliteBattle => "정예 전투",
-            BattleRoomType.AmbushBattle => "매복 전투",
-            BattleRoomType.ArenaBattle => "아레나 전투",
+            BattleRoomType.Normal => "일반 전투",
             _ => "전투 방"
         };
     }
@@ -132,10 +109,7 @@ public class StageNode
     {
         return battleType switch
         {
-            BattleRoomType.NormalBattle => "일반적인 적들과의 전투입니다.",
-            BattleRoomType.EliteBattle => "강력한 정예 적들과의 전투입니다.",
-            BattleRoomType.AmbushBattle => "매복한 적들과의 급작스러운 전투입니다.",
-            BattleRoomType.ArenaBattle => "아레나에서 벌어지는 특별한 전투입니다.",
+            BattleRoomType.Normal => "일반적인 적들과의 전투입니다.",
             _ => "적들과의 전투가 벌어지는 방입니다."
         };
     }

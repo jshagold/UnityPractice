@@ -13,7 +13,8 @@ public class StageNodeData
     // 세부 타입
     public EventRoomType? eventType;
     public BattleRoomType? battleType;
-    
+    public int? roomContentsId; // 방 정보 Id (저장된 데이터 풀에서 가져옴. 예를들어, 기본적 3마리가 들어있는 방 id / 강한 적 1마리가 들어있는 방 id 등등에서 가져와서 저장.)
+
     // 구조 정보
     public List<int> childNodeIds;           // 자식 노드 ID 목록
     public int? parentNodeId;                // 부모 노드 ID

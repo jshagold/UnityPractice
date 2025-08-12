@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 [Serializable]
 public class StageData
@@ -12,14 +11,16 @@ public class StageData
     public string stageDescription;         // 스테이지 설명
     
     // 맵 생성 설정
-    public int stageLength = 5;             // 스테이지의 총 길이 (시작, 보스 제외)
+    public int stageLength = 5;             // 스테이지의 총 길이 (시작, 보스 포함)
     public int choicesPerStep = 3;          // 스테이지에서 선택 가능한 최대 노드 수
     public int? randomSeed = null;          // 스테이지의 랜덤 시드
     public int lastRoomCount = 3;           // 보스 방 개수
 
     // 🆕 실제 맵 데이터
-    public StageNodeData rootNode;          // 전체 맵 구조
+    public StageNodeData rootNode;          // 시작 
     public List<StageNodeData> allNodes;    // 모든 노드 데이터
+    [NonSerialized]
+    [Newtonsoft.Json.JsonIgnore]
     public Dictionary<int, StageNodeData> nodeMap; // 빠른 접근용
 
     // 🆕 스테이지 진행 상태
@@ -27,7 +28,7 @@ public class StageData
     public List<int> visitedNodeIds;        // 방문한 노드 ID 목록
     public List<int> availableNodeIds;      // 접근 가능한 노드 ID 목록
     public bool isCompleted;                // 스테이지 완료 여부
-    public bool isFailed;                   // 스테이지 실패 여부
+    public bool isFailed;                   // 스테이지 실패 여부   
 
     // 🆕 캐릭터 상태 (저장/로드용)
     public List<CharacterSaveData> characterStates; // 캐릭터들의 현재 상태
@@ -42,9 +43,15 @@ public class StageData
         isFailed = false;
     }
 
-    public StageData(int? stageId, string stageName, string stageDescription, 
-                    int stageLength = 5, int choicesPerStep = 3, 
-                    int? randomSeed = null, int lastRoomCount = 3)
+    public StageData(
+        int? stageId,
+        string stageName, 
+        string stageDescription, 
+        int stageLength = 5, 
+        int choicesPerStep = 3, 
+        int? randomSeed = null, 
+        int lastRoomCount = 3
+        )
     {
         this.stageId = stageId;
         this.stageName = stageName;
@@ -56,6 +63,7 @@ public class StageData
 
         // 초기화
         allNodes = new List<StageNodeData>();
+        visitedNodeIds = new List<int>();
         visitedNodeIds = new List<int>();
         availableNodeIds = new List<int>();
         characterStates = new List<CharacterSaveData>();

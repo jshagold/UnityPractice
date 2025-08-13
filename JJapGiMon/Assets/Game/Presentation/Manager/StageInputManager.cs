@@ -51,17 +51,8 @@ public sealed class StageInputManager : MonoBehaviour
             
             if (childIndex >= 0)
             {
-                // StageSceneController를 통해 노드 이동
-                var sceneController = FindObjectOfType<StageSceneController>();
-                if (sceneController != null)
-                {
-                    sceneController.MoveToNode(childIndex);
-                }
-                else
-                {
-                    // 직접 StageManager로 이동
-                    stageManager.MoveToNode(childIndex);
-                }
+                // StageManager를 통해 노드 이동
+                stageManager.MoveToNode(childIndex);
             }
             else
             {
@@ -71,28 +62,13 @@ public sealed class StageInputManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 스테이지 맵 초기화 (기존 호환성)
-    /// </summary>
-    public void InitializeStageMap(StageMapModel model, StageNode currentNode)
-    {
-        if (stageMapUI != null)
-        {
-            stageMapUI.UpdateMap(model, currentNode);
-        }
-    }
-
-    /// <summary>
-    /// 새로운 스테이지 시스템용 맵 초기화
+    /// 스테이지 맵 초기화
     /// </summary>
     public void InitializeStageMap(StageNode rootNode, StageNode currentNode)
     {
         if (stageMapUI != null)
         {
-            // StageMapUI가 새로운 구조를 지원하도록 수정 필요
-            // stageMapUI.UpdateMapNew(rootNode, currentNode);
-            
-            // 임시로 기존 방식 사용
-            Debug.Log($"새로운 스테이지 맵 초기화: {rootNode?.roomName} -> {currentNode?.roomName}");
+            stageMapUI.UpdateMap(rootNode, currentNode);
         }
     }
 
@@ -108,121 +84,43 @@ public sealed class StageInputManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 사용 가능한 노드들 업데이트
+    /// 맵 새로고침
     /// </summary>
-    public void UpdateAvailableNodes(List<StageNode> availableNodes)
+    public void RefreshMap()
+    {
+        if (stageManager != null && stageMapUI != null)
+        {
+            stageMapUI.UpdateMap(stageManager.CurrentStageMap, stageManager.CurrentNode);
+        }
+    }
+
+    /// <summary>
+    /// UI 활성화/비활성화
+    /// </summary>
+    public void SetUIEnabled(bool enabled)
     {
         if (stageMapUI != null)
         {
-            // StageMapUI가 새로운 구조를 지원하도록 수정 필요
-            // stageMapUI.UpdateAvailableNodes(availableNodes);
-            
-            Debug.Log($"접근 가능한 노드 업데이트: {availableNodes.Count}개");
+            stageMapUI.gameObject.SetActive(enabled);
         }
     }
 
     /// <summary>
-    /// 스테이지 진행 상황 업데이트
+    /// 디버그 정보 출력
     /// </summary>
-    public void UpdateProgress(StageProgress progress)
+    [ContextMenu("Print Debug Info")]
+    public void PrintDebugInfo()
     {
+        if (stageManager != null)
+        {
+            Debug.Log($"StageManager Active: {stageManager.IsStageActive}");
+            Debug.Log($"Current Node: {stageManager.CurrentNode?.roomName}");
+            Debug.Log($"Available Children: {stageManager.GetAvailableChildren().Count}");
+        }
+        
         if (stageMapUI != null)
         {
-            // StageMapUI가 진행 상황을 표시하도록 수정 필요
-            // stageMapUI.UpdateProgress(progress);
-            
-            Debug.Log($"진행률 업데이트: {progress.ProgressPercentage:F1}%");
+            Debug.Log($"StageMapUI Active: {stageMapUI.gameObject.activeInHierarchy}");
         }
-    }
-
-    /// <summary>
-    /// 이벤트 방 UI 표시
-    /// </summary>
-    public void ShowEventRoomUI(StageNode eventNode)
-    {
-        if (eventNode?.eventType != null)
-        {
-            switch (eventNode.eventType)
-            {
-                case EventRoomType.Rest:
-                    ShowRestEventUI();
-                    break;
-                case EventRoomType.Shop:
-                    ShowShopUI();
-                    break;
-                case EventRoomType.Maintenance:
-                    ShowMaintenanceUI();
-                    break;
-                case EventRoomType.Event:
-                    ShowSpecialEventUI();
-                    break;
-            }
-        }
-    }
-
-    /// <summary>
-    /// 휴식 이벤트 UI 표시
-    /// </summary>
-    private void ShowRestEventUI()
-    {
-        Debug.Log("휴식 이벤트 UI 표시");
-        // TODO: 실제 UI 구현
-        // EventUIManager.Instance.ShowRestEvent();
-    }
-
-    /// <summary>
-    /// 상점 UI 표시
-    /// </summary>
-    private void ShowShopUI()
-    {
-        Debug.Log("상점 UI 표시");
-        // TODO: 실제 UI 구현
-        // ShopUIManager.Instance.ShowShop();
-    }
-
-    /// <summary>
-    /// 정비 UI 표시
-    /// </summary>
-    private void ShowMaintenanceUI()
-    {
-        Debug.Log("정비 UI 표시");
-        // TODO: 실제 UI 구현
-        // MaintenanceUIManager.Instance.ShowMaintenance();
-    }
-
-    /// <summary>
-    /// 특별 이벤트 UI 표시
-    /// </summary>
-    private void ShowSpecialEventUI()
-    {
-        Debug.Log("특별 이벤트 UI 표시");
-        // TODO: 실제 UI 구현
-        // SpecialEventUIManager.Instance.ShowSpecialEvent();
-    }
-
-    /// <summary>
-    /// 전투 씬 로드
-    /// </summary>
-    public void LoadBattleScene()
-    {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("BattleScene");
-    }
-
-    /// <summary>
-    /// 보스 전투 씬 로드
-    /// </summary>
-    public void LoadBossScene()
-    {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("BossScene");
-    }
-
-    /// <summary>
-    /// 이벤트 완료 처리
-    /// </summary>
-    public void CompleteEvent()
-    {
-        Debug.Log("이벤트 완료");
-        // 이벤트 UI 닫기 및 다음 단계로 진행
-        // EventUIManager.Instance.HideEventUI();
     }
 }

@@ -14,6 +14,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] private int currentDepth = 0;
 
     private StageMapGenerator stageMapGenerator;
+    private IStageRepository stageRepository;
 
     public StageData CurrentStageData => currentStageData;
     public StageNode CurrentStageMap => currentStageMap;
@@ -24,6 +25,7 @@ public class StageManager : MonoBehaviour
     void Awake()
     {
         stageMapGenerator = new StageMapGenerator(currentStageData ?? new StageData());
+        stageRepository = new LocalStageRepository();
     }
 
     /// <summary>
@@ -69,15 +71,11 @@ public class StageManager : MonoBehaviour
 
     private StageNode RestoreNodeRecursive(StageNodeData nodeData, Dictionary<int, StageNodeData> nodeMap)
     {
-        // StageNode 생성
-        var node = new StageNode(nodeData.depth, nodeData.index, nodeData.type, nodeData.seed)
+        // StageNode 생성 (런타임 정보는 생성자에서 자동으로 설정됨)
+        var node = new StageNode(nodeData.depth, nodeData.index, nodeData.type, nodeData.eventType, nodeData.battleType, nodeData.seed)
         {
             nodeId = nodeData.nodeId,
-            isGoal = nodeData.isGoal,
-            eventType = nodeData.eventType,
-            battleType = nodeData.battleType,
-            roomName = nodeData.nodeName,
-            roomDescription = nodeData.nodeDescription
+            isGoal = nodeData.isGoal
         };
 
         // 자식 노드들 복원
@@ -205,8 +203,8 @@ public class StageManager : MonoBehaviour
                 Debug.Log("휴식 공간에 입장했습니다. 체력을 회복할 수 있습니다.");
                 break;
                 
-            case EventRoomType.Shop:
-                Debug.Log("상점에 입장했습니다. 아이템을 구매할 수 있습니다.");
+            case EventRoomType.Story:
+                Debug.Log("스토리 이벤트가 발생했습니다.");
                 break;
                 
             case EventRoomType.Maintenance:
@@ -228,20 +226,8 @@ public class StageManager : MonoBehaviour
         
         switch (currentNode.battleType)
         {
-            case BattleRoomType.NormalBattle:
+            case BattleRoomType.Normal:
                 Debug.Log("일반 전투를 시작합니다.");
-                break;
-                
-            case BattleRoomType.EliteBattle:
-                Debug.Log("정예 전투를 시작합니다.");
-                break;
-                
-            case BattleRoomType.AmbushBattle:
-                Debug.Log("매복 전투를 시작합니다.");
-                break;
-                
-            case BattleRoomType.ArenaBattle:
-                Debug.Log("아레나 전투를 시작합니다.");
                 break;
         }
         
@@ -331,6 +317,83 @@ public class StageManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 현재 스테이지 데이터를 저장합니다.
+    /// </summary>
+    public void SaveStage()
+    {
+        if (currentStageData != null)
+        {
+            try
+            {
+                stageRepository.Save(currentStageData);
+                Debug.Log("스테이지 데이터 저장 완료");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"스테이지 저장 중 오류 발생: {ex.Message}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("저장할 스테이지 데이터가 없습니다.");
+        }
+    }
+
+    /// <summary>
+    /// 가장 최근 저장된 스테이지 데이터를 로드합니다.
+    /// </summary>
+    /// <returns>로드 성공 여부</returns>
+    public bool LoadStage()
+    {
+        try
+        {
+            var stageData = stageRepository.Load();
+            if (stageData != null)
+            {
+                StartStage(stageData);
+                Debug.Log("스테이지 데이터 로드 완료");
+                return true;
+            }
+            else
+            {
+                Debug.Log("저장된 스테이지 데이터가 없습니다.");
+                return false;
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"스테이지 로드 중 오류 발생: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 저장된 스테이지 데이터가 있는지 확인합니다.
+    /// </summary>
+    /// <returns>저장 데이터 존재 여부</returns>
+    public bool HasSaveData()
+    {
+        return stageRepository.HasSaveData();
+    }
+
+    /// <summary>
+    /// 저장된 스테이지 데이터를 삭제합니다.
+    /// </summary>
+    public void DeleteSaveData()
+    {
+        try
+        {
+            stageRepository.Delete();
+            Debug.Log("저장된 스테이지 데이터 삭제 완료");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"스테이지 데이터 삭제 중 오류 발생: {ex.Message}");
+        }
+    }
+
+    // 기존 JSON 저장/로드 메서드들 (호환성 유지)
+    /// <summary>
     /// 현재 스테이지 데이터를 JSON으로 저장
     /// </summary>
     public string SaveStageDataToJson()
@@ -359,7 +422,7 @@ public class StageManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 자동 저장
+    /// 자동 저장 (PlayerPrefs 사용)
     /// </summary>
     public void AutoSave()
     {
@@ -373,7 +436,7 @@ public class StageManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 자동 저장 데이터 로드
+    /// 자동 저장 데이터 로드 (PlayerPrefs 사용)
     /// </summary>
     public bool LoadAutoSave()
     {

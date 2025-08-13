@@ -22,9 +22,12 @@ public class StageMapUI : MonoBehaviour
     [SerializeField] private Color goalRoomColor = Color.yellow;    // 목표 방 색상
     [SerializeField] private Color failRoomColor = Color.gray;      // 실패 방 색상
 
-    private StageMapModel model;
+    private StageNode rootNode;
     private StageNode currentNode;
     private readonly Dictionary<StageNode, Button> roomButtons = new();
+
+    // 이벤트 정의
+    public event Action<StageNode> OnNodeClicked;
 
     private void Start()
     {
@@ -34,9 +37,9 @@ public class StageMapUI : MonoBehaviour
     /// <summary>
     /// 컨트롤러에서 호출하여 맵 업데이트
     /// </summary>
-    public void UpdateMap(StageMapModel model, StageNode currentNode)
+    public void UpdateMap(StageNode rootNode, StageNode currentNode)
     {
-        this.model = model;
+        this.rootNode = rootNode;
         this.currentNode = currentNode;
         Clear();
         RenderMap();
@@ -54,30 +57,71 @@ public class StageMapUI : MonoBehaviour
 
     private void RenderMap()
     {
-        // 각 depth별로 노드들을 렌더링
-        for (int depth = 0; depth < model.levels.Count; depth++)
+        if (rootNode == null) return;
+
+        // 트리 구조를 순회하며 노드들을 렌더링
+        var nodePositions = CalculateNodePositions();
+        
+        foreach (var kvp in nodePositions)
         {
-            var level = model.levels[depth];
-            for (int index = 0; index < level.Count; index++)
-            {
-                var node = level[index];
-                CreateRoomButton(node, depth, index);
-            }
+            var node = kvp.Key;
+            var position = kvp.Value;
+            CreateRoomButton(node, position);
         }
 
         // 연결선 그리기
-        DrawConnections();
+        DrawConnections(nodePositions);
     }
 
-    private void CreateRoomButton(StageNode node, int depth, int index)
+    private Dictionary<StageNode, Vector2> CalculateNodePositions()
+    {
+        var positions = new Dictionary<StageNode, Vector2>();
+        var depthGroups = new Dictionary<int, List<StageNode>>();
+        
+        // 트리를 순회하며 depth별로 노드들을 그룹화
+        CollectNodesByDepth(rootNode, depthGroups, new HashSet<StageNode>());
+        
+        // 각 depth별로 노드들의 위치 계산
+        foreach (var kvp in depthGroups)
+        {
+            int depth = kvp.Key;
+            var nodes = kvp.Value;
+            
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                float xPos = depth * 200f;
+                float yPos = (i - (nodes.Count - 1) * 0.5f) * 150f;
+                positions[nodes[i]] = new Vector2(xPos, yPos);
+            }
+        }
+        
+        return positions;
+    }
+
+    private void CollectNodesByDepth(StageNode node, Dictionary<int, List<StageNode>> depthGroups, HashSet<StageNode> visited)
+    {
+        if (node == null || visited.Contains(node)) return;
+        
+        visited.Add(node);
+        
+        if (!depthGroups.ContainsKey(node.depth))
+            depthGroups[node.depth] = new List<StageNode>();
+        
+        depthGroups[node.depth].Add(node);
+        
+        foreach (var child in node.children)
+        {
+            CollectNodesByDepth(child, depthGroups, visited);
+        }
+    }
+
+    private void CreateRoomButton(StageNode node, Vector2 position)
     {
         var button = Instantiate(roomButtonPrefab, mapRoot);
         var rectTransform = button.GetComponent<RectTransform>();
         
-        // 위치 설정 (depth에 따라 x축, index에 따라 y축)
-        float xPos = depth * 200f;
-        float yPos = (index - (model.levels[depth].Count - 1) * 0.5f) * 150f;
-        rectTransform.anchoredPosition = new Vector2(xPos, yPos);
+        // 위치 설정
+        rectTransform.anchoredPosition = position;
 
         // 텍스트 설정
         var text = button.GetComponentInChildren<TextMeshProUGUI>();
@@ -99,106 +143,136 @@ public class StageMapUI : MonoBehaviour
         roomButtons[node] = button;
     }
 
-    private string GetRoomDisplayText(StageNode node)
+    private void DrawConnections(Dictionary<StageNode, Vector2> nodePositions)
     {
-        if (node.depth == model.length) // 마지막 방
+        // 모든 노드의 연결선 그리기
+        foreach (var node in nodePositions.Keys)
         {
-            return node.isGoal ? "목표" : "실패";
-        }
-        
-        return node.type switch
-        {
-            StageRoomType.Start => "시작",
-            StageRoomType.Battle => "전투",
-            StageRoomType.Event => "이벤트",
-            StageRoomType.Boss => "보스",
-            _ => "???"
-        };
-    }
-
-    private Color GetRoomColor(StageNode node)
-    {
-        if (node.depth == model.length) // 마지막 방
-        {
-            return node.isGoal ? goalRoomColor : failRoomColor;
-        }
-        
-        return node.type switch
-        {
-            StageRoomType.Start => startRoomColor,
-            StageRoomType.Battle => battleRoomColor,
-            StageRoomType.Event => eventRoomColor,
-            StageRoomType.Boss => bossRoomColor,
-            _ => Color.white
-        };
-    }
-
-    private void DrawConnections()
-    {
-        // 각 노드에서 자식 노드로 연결선 그리기
-        foreach (var kvp in roomButtons)
-        {
-            var parentNode = kvp.Key;
-            var parentButton = kvp.Value;
-            
-            foreach (var childNode in parentNode.children)
+            if (node.children != null)
             {
-                if (roomButtons.TryGetValue(childNode, out var childButton))
+                foreach (var child in node.children)
                 {
-                    CreateConnectionLine(parentButton, childButton);
+                    if (nodePositions.ContainsKey(child))
+                    {
+                        DrawConnection(nodePositions[node], nodePositions[child]);
+                    }
                 }
             }
         }
     }
 
-    private void CreateConnectionLine(Button from, Button to)
+    private void DrawConnection(Vector2 startPos, Vector2 endPos)
     {
-        var line = Instantiate(connectionImagePrefab, mapRoot);
-        var rectTransform = line.GetComponent<RectTransform>();
+        var connection = Instantiate(connectionImagePrefab, mapRoot);
+        var rectTransform = connection.GetComponent<RectTransform>();
         
-        // 연결선 위치와 크기 계산
-        Vector2 fromPos = from.GetComponent<RectTransform>().anchoredPosition;
-        Vector2 toPos = to.GetComponent<RectTransform>().anchoredPosition;
-        Vector2 center = (fromPos + toPos) * 0.5f;
-        Vector2 direction = (toPos - fromPos).normalized;
-        float distance = Vector2.Distance(fromPos, toPos);
+        // 연결선 위치와 회전 계산
+        Vector2 direction = endPos - startPos;
+        float distance = direction.magnitude;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         
-        rectTransform.anchoredPosition = center;
+        rectTransform.anchoredPosition = startPos + direction * 0.5f;
         rectTransform.sizeDelta = new Vector2(distance, 2f);
-        rectTransform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-    }
-
-    // --- Events --- //
-    public event Action<StageNode> OnNodeClicked; // 노드 클릭 이벤트
-
-    private void OnClickNode(StageNode node)
-    {
-        // 노드 클릭 이벤트 발생
-        OnNodeClicked?.Invoke(node);
+        rectTransform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     private void UpdateButtonStates()
     {
-        // 모든 버튼을 비활성화
-        foreach (var button in roomButtons.Values)
+        foreach (var kvp in roomButtons)
         {
-            button.interactable = false;
-        }
-
-        // 현재 노드의 자식들만 활성화
-        foreach (var child in currentNode.children)
-        {
-            if (roomButtons.TryGetValue(child, out var button))
+            var node = kvp.Key;
+            var button = kvp.Value;
+            
+            // 현재 노드 강조
+            if (node == currentNode)
             {
-                button.interactable = true;
+                button.transform.localScale = Vector3.one * 1.2f;
             }
+            else
+            {
+                button.transform.localScale = Vector3.one;
+            }
+            
+            // 접근 가능한 노드만 활성화
+            bool isAccessible = IsNodeAccessible(node);
+            button.interactable = isAccessible;
+            
+            // 비활성화된 노드는 회색 처리
+            var image = button.GetComponent<Image>();
+            if (image != null && !isAccessible)
+            {
+                image.color = Color.gray;
+            }
+        }
+    }
+
+    private bool IsNodeAccessible(StageNode node)
+    {
+        if (currentNode == null) return false;
+        
+        // 현재 노드의 자식들만 접근 가능
+        return currentNode.children.Contains(node);
+    }
+
+    private void OnClickNode(StageNode node)
+    {
+        OnNodeClicked?.Invoke(node);
+    }
+
+    private string GetRoomDisplayText(StageNode node)
+    {
+        if (node == null) return "Unknown";
+        
+        switch (node.type)
+        {
+            case StageRoomType.Start:
+                return "시작";
+            case StageRoomType.Battle:
+                return "전투";
+            case StageRoomType.Event:
+                return "이벤트";
+            case StageRoomType.Boss:
+                return node.isGoal ? "목표" : "보스";
+            default:
+                return "방";
+        }
+    }
+
+    private Color GetRoomColor(StageNode node)
+    {
+        if (node == null) return Color.white;
+        
+        switch (node.type)
+        {
+            case StageRoomType.Start:
+                return startRoomColor;
+            case StageRoomType.Battle:
+                return battleRoomColor;
+            case StageRoomType.Event:
+                return eventRoomColor;
+            case StageRoomType.Boss:
+                return node.isGoal ? goalRoomColor : bossRoomColor;
+            default:
+                return Color.white;
         }
     }
 
     private void Clear()
     {
+        // 기존 UI 요소들 제거
+        foreach (var button in roomButtons.Values)
+        {
+            if (button != null)
+                DestroyImmediate(button.gameObject);
+        }
         roomButtons.Clear();
-        for (int i = mapRoot.childCount - 1; i >= 0; i--)
-            Destroy(mapRoot.GetChild(i).gameObject);
+        
+        // 연결선들도 제거
+        var connections = mapRoot.GetComponentsInChildren<Image>();
+        foreach (var connection in connections)
+        {
+            if (connection != connectionImagePrefab)
+                DestroyImmediate(connection.gameObject);
+        }
     }
 }

@@ -72,7 +72,7 @@ public class StageMapGenerator
     /// </summary>
     public StageNode GenerateStageMap()
     {
-        var root = new StageNode(0, 0, StageRoomType.Start, random.Next());
+        var root = new StageNode(0, 0, StageRoomType.Start, null, null, random.Next());
         root.nodeId = GetNextNodeId();
         
         if (stageData.stageLength > 0)
@@ -88,7 +88,7 @@ public class StageMapGenerator
     /// </summary>
     public StageNode GenerateStageMap(int depth, int maxWidth = 3)
     {
-        var root = new StageNode(0, 0, StageRoomType.Start, random.Next());
+        var root = new StageNode(0, 0, StageRoomType.Start, null, null, random.Next());
         root.nodeId = GetNextNodeId();
         
         if (depth > 1)
@@ -106,7 +106,7 @@ public class StageMapGenerator
             // 마지막 깊이에서는 보스 방들 생성 (lastRoomCount만큼)
             for (int i = 0; i < stageData.lastRoomCount; i++)
             {
-                var bossNode = new StageNode(currentDepth, i, StageRoomType.Boss, random.Next());
+                var bossNode = new StageNode(currentDepth, i, StageRoomType.Boss, null, null, random.Next());
                 bossNode.nodeId = GetNextNodeId();
                 bossNode.isGoal = true;
                 parent.AddChild(bossNode);
@@ -123,7 +123,20 @@ public class StageMapGenerator
             int seed = random.Next();
             StageRoomType roomType = DetermineRoomType(currentDepth, maxDepth, seed);
             
-            var childNode = new StageNode(currentDepth, i, roomType, seed);
+            // 방 타입에 따른 세부 타입 결정
+            EventRoomType? eventType = null;
+            BattleRoomType? battleType = null;
+            
+            if (roomType == StageRoomType.Event)
+            {
+                eventType = DetermineEventType(seed);
+            }
+            else if (roomType == StageRoomType.Battle)
+            {
+                battleType = DetermineBattleType(seed);
+            }
+            
+            var childNode = new StageNode(currentDepth, i, roomType, eventType, battleType, seed);
             childNode.nodeId = GetNextNodeId();
             parent.AddChild(childNode);
             
@@ -174,7 +187,7 @@ public class StageMapGenerator
     }
 
     /// <summary>
-    /// StageNode를 StageNodeData로 변환
+    /// StageNode를 StageNodeData로 변환 (저장용 데이터만 추출)
     /// </summary>
     private StageNodeData ConvertToNodeData(StageNode node)
     {
@@ -188,8 +201,6 @@ public class StageMapGenerator
             eventType = node.eventType,
             battleType = node.battleType,
             isGoal = node.isGoal,
-            nodeName = node.roomName,
-            nodeDescription = node.roomDescription,
             childNodeIds = node.children.Select(c => c.nodeId).ToList(),
             parentNodeId = node.parent?.nodeId
         };
@@ -258,5 +269,25 @@ public class StageMapGenerator
         {
             CollectNodesAtDepth(child, targetDepth, nodes);
         }
+    }
+
+    /// <summary>
+    /// 이벤트 방 타입 결정
+    /// </summary>
+    private EventRoomType DetermineEventType(int seed)
+    {
+        var localRandom = new Random(seed);
+        var eventTypes = (EventRoomType[])Enum.GetValues(typeof(EventRoomType));
+        return eventTypes[localRandom.Next(eventTypes.Length)];
+    }
+
+    /// <summary>
+    /// 전투 방 타입 결정
+    /// </summary>
+    private BattleRoomType DetermineBattleType(int seed)
+    {
+        var localRandom = new Random(seed);
+        var battleTypes = (BattleRoomType[])Enum.GetValues(typeof(BattleRoomType));
+        return battleTypes[localRandom.Next(battleTypes.Length)];
     }
 }

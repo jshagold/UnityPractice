@@ -19,12 +19,23 @@ public class StageSceneController : MonoBehaviour
     [SerializeField] private StageManager stageManager;
     [SerializeField] private StageInputManager stageInputManager;
 
+    [Header("UI References")]
+    [SerializeField] private StageMapUI stageMapUI;
+
+    [Header("Background")]
+    [SerializeField] private SpriteRenderer backgroundRenderer;
+    [SerializeField] private Sprite stageBackground;
+
     [Header("Party Configuration")]
     [Tooltip("List of player character IDs to include in the stage")]
     [SerializeField] private List<string> playerIdList = new List<string>();
 
     [Header("Debug")]
     [SerializeField] private bool debugMode = false;
+
+    // 이벤트 핸들러들
+    private System.Action<StageNode> onNodeProcessed;
+    private System.Action<bool> onStageComplete;
 
     private void Awake()
     {
@@ -36,11 +47,85 @@ public class StageSceneController : MonoBehaviour
             stageInputManager = GetComponent<StageInputManager>();
     }
 
+    private void OnEnable()
+    {
+        // StageInputManager 이벤트 구독
+        if (stageInputManager != null)
+        {
+            stageInputManager.OnNodeClicked += HandleNodeClicked;
+        }
+    }
+
+    private void OnDisable()
+    {
+        // 이벤트 구독 해제
+        if (stageInputManager != null)
+        {
+            stageInputManager.OnNodeClicked -= HandleNodeClicked;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // 이벤트 구독 해제 (안전장치)
+        if (stageInputManager != null)
+        {
+            stageInputManager.OnNodeClicked -= HandleNodeClicked;
+        }
+    }
+
     private void Start()
     {
         Debug.Log("Stage Scene Start");
 
-        // StageData가 없으면 기본값으로 생성
+        // 1) 배경 설정
+        SetupBackground();
+
+        // 2) StageData가 없으면 기본값으로 생성
+        InitializeStageData();
+
+        // 3) 캐릭터 정보 세팅
+        var partyModels = CreatePartyModels();
+
+        // 4) 새로운 스테이지 시스템으로 초기화
+        InitializeNewStageSystem(partyModels);
+
+        // 5) UI 초기화
+        InitializeUI();
+    }
+
+    /// <summary>
+    /// 배경 설정
+    /// </summary>
+    private void SetupBackground()
+    {
+        if (backgroundRenderer != null && stageBackground != null)
+        {
+            backgroundRenderer.sprite = stageBackground;
+        }
+        else
+        {
+            if (backgroundRenderer == null)
+                Debug.LogError("backgroundRenderer가 할당되지 않았습니다!");
+
+            // 기본 배경 로드
+            Sprite tempBg = Resources.Load<Sprite>("Images/temp_battle_bg");
+            if (tempBg != null)
+            {
+                backgroundRenderer.sprite = tempBg;
+            }
+            else
+            {
+                Debug.LogError("temp_bg.png를 Resources/Images에서 찾을 수 없습니다.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// StageData 초기화
+    /// </summary>
+    private void InitializeStageData()
+    {
         if (stageData == null)
         {
             stageData = new StageData(
@@ -53,15 +138,6 @@ public class StageSceneController : MonoBehaviour
                 lastRoomCount: 3
             );
         }
-
-        // 캐릭터 정보 세팅
-        var partyModels = CreatePartyModels();
-
-        // 새로운 스테이지 시스템으로 초기화
-        InitializeNewStageSystem(partyModels);
-
-        // UI 초기화 (기존 시스템과의 호환성을 위해)
-        InitializeUI();
     }
 
     /// <summary>
@@ -80,37 +156,50 @@ public class StageSceneController : MonoBehaviour
     }
 
     /// <summary>
-    /// UI 초기화 (기존 시스템과의 호환성)
+    /// UI 초기화
     /// </summary>
     private void InitializeUI()
     {
-        // 기존 StageInputManager가 새로운 시스템과 호환되도록 수정 필요
-        // 현재는 기본적인 초기화만 수행
-        if (stageInputManager != null)
+        if (stageMapUI == null)
         {
-            // 새로운 스테이지 맵 정보를 UI에 전달
-            var currentMap = stageManager.CurrentStageMap;
-            var currentNode = stageManager.CurrentNode;
-            
-            // StageInputManager의 InitializeStageMap 메서드가 새로운 구조를 지원하도록 수정 필요
-            // stageInputManager.InitializeStageMap(currentMap, currentNode);
+            Debug.LogError("StageMapUI가 할당되지 않았습니다!");
+            return;
         }
+
+        if (stageInputManager == null)
+        {
+            Debug.LogError("StageInputManager가 할당되지 않았습니다!");
+            return;
+        }
+
+        // StageInputManager 초기화
+        stageInputManager.InitializeStageMap(stageManager.CurrentStageMap, stageManager.CurrentNode);
     }
 
     /// <summary>
-    /// 파티 모델 생성
+    /// 노드 클릭 처리
     /// </summary>
-    private List<CharacterModel> CreatePartyModels()
+    private void HandleNodeClicked(StageNode clickedNode)
     {
-        ICharacterRepository characterRepo = new LocalCharacterRepository();
-        CharacterFactory characterFactory = new(characterRepo);
+        if (!stageManager.IsStageActive)
+        {
+            Debug.LogWarning("스테이지가 활성화되지 않았습니다.");
+            return;
+        }
+
+        // 클릭된 노드가 현재 노드의 자식인지 확인
+        var availableChildren = stageManager.GetAvailableChildren();
+        int childIndex = availableChildren.IndexOf(clickedNode);
         
-        var partyModels = playerIdList.Select(id => characterFactory.Create(id)).ToList();
-        
-        // 캐릭터 설정 초기화
-        partyModels.ForEach(player => { player.SaveData.CurrentHealth = player.MaxHp; });
-        
-        return partyModels;
+        if (childIndex >= 0)
+        {
+            // 노드 이동
+            MoveToNode(childIndex);
+        }
+        else
+        {
+            Debug.LogWarning($"클릭된 노드가 접근 가능하지 않습니다: {clickedNode.roomName}");
+        }
     }
 
     /// <summary>
@@ -122,6 +211,9 @@ public class StageSceneController : MonoBehaviour
         
         if (success)
         {
+            // UI 업데이트
+            UpdateUI();
+            
             // 노드 이동 후 처리
             ProcessCurrentNode();
             
@@ -140,6 +232,17 @@ public class StageSceneController : MonoBehaviour
     }
 
     /// <summary>
+    /// UI 업데이트
+    /// </summary>
+    private void UpdateUI()
+    {
+        if (stageInputManager != null)
+        {
+            stageInputManager.UpdateCurrentNode(stageManager.CurrentNode);
+        }
+    }
+
+    /// <summary>
     /// 현재 노드 처리
     /// </summary>
     private void ProcessCurrentNode()
@@ -154,12 +257,12 @@ public class StageSceneController : MonoBehaviour
             {
                 case StageRoomType.Battle:
                     // 전투 씬으로 전환
-                    SceneManager.LoadScene("BattleScene");
+                    LoadBattleScene();
                     break;
                     
                 case StageRoomType.Boss:
                     // 보스 전투 씬으로 전환
-                    SceneManager.LoadScene("BossBattleScene");
+                    LoadBossBattleScene();
                     break;
                     
                 case StageRoomType.Event:
@@ -168,6 +271,26 @@ public class StageSceneController : MonoBehaviour
                     break;
             }
         }
+    }
+
+    /// <summary>
+    /// 전투 씬 로드
+    /// </summary>
+    private void LoadBattleScene()
+    {
+        Debug.Log("전투 씬으로 전환합니다.");
+        // TODO: 전투 씬에 필요한 데이터 전달
+        SceneManager.LoadScene("BattleScene");
+    }
+
+    /// <summary>
+    /// 보스 전투 씬 로드
+    /// </summary>
+    private void LoadBossBattleScene()
+    {
+        Debug.Log("보스 전투 씬으로 전환합니다.");
+        // TODO: 보스 전투 씬에 필요한 데이터 전달
+        SceneManager.LoadScene("BossBattleScene");
     }
 
     /// <summary>
@@ -185,7 +308,7 @@ public class StageSceneController : MonoBehaviour
                     ShowRestEventUI();
                     break;
                     
-                case EventRoomType.Shop:
+                case EventRoomType.Story:
                     // 상점 UI 표시
                     ShowShopUI();
                     break;
@@ -210,6 +333,7 @@ public class StageSceneController : MonoBehaviour
     {
         Debug.Log("휴식 이벤트 UI 표시");
         // TODO: 실제 UI 구현
+        // UI를 표시하고 플레이어가 선택할 수 있도록 함
     }
 
     /// <summary>
@@ -219,6 +343,7 @@ public class StageSceneController : MonoBehaviour
     {
         Debug.Log("상점 UI 표시");
         // TODO: 실제 UI 구현
+        // 상점 UI를 표시하고 아이템 구매 기능 제공
     }
 
     /// <summary>
@@ -228,6 +353,7 @@ public class StageSceneController : MonoBehaviour
     {
         Debug.Log("정비 UI 표시");
         // TODO: 실제 UI 구현
+        // 정비 UI를 표시하고 장비 강화 기능 제공
     }
 
     /// <summary>
@@ -237,6 +363,69 @@ public class StageSceneController : MonoBehaviour
     {
         Debug.Log("특별 이벤트 UI 표시");
         // TODO: 실제 UI 구현
+        // 특별 이벤트 UI를 표시하고 선택지 제공
+    }
+
+    /// <summary>
+    /// 스테이지 일시정지
+    /// </summary>
+    public void PauseStage()
+    {
+        SetInputEnabled(false);
+        Debug.Log("스테이지가 일시정지되었습니다.");
+    }
+
+    /// <summary>
+    /// 스테이지 재개
+    /// </summary>
+    public void ResumeStage()
+    {
+        SetInputEnabled(true);
+        Debug.Log("스테이지가 재개되었습니다.");
+    }
+
+    /// <summary>
+    /// 스테이지 재시작
+    /// </summary>
+    public void RestartStage()
+    {
+        Debug.Log("스테이지를 재시작합니다.");
+        // 현재 스테이지 데이터로 다시 시작
+        if (stageData != null)
+        {
+            stageManager.StartStage(stageData);
+            if (stageInputManager != null)
+            {
+                stageInputManager.RefreshMap();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 스테이지 포기
+    /// </summary>
+    public void AbandonStage()
+    {
+        stageManager.AbandonStage();
+        Debug.Log("스테이지를 포기했습니다.");
+        // 메인 씬으로 돌아가기
+        SceneManager.LoadScene("MainScene");
+    }
+
+    /// <summary>
+    /// 파티 모델 생성
+    /// </summary>
+    private List<CharacterModel> CreatePartyModels()
+    {
+        ICharacterRepository characterRepo = new LocalCharacterRepository();
+        CharacterFactory characterFactory = new(characterRepo);
+        
+        var partyModels = playerIdList.Select(id => characterFactory.Create(id)).ToList();
+        
+        // 캐릭터 설정 초기화
+        partyModels.ForEach(player => { player.SaveData.CurrentHealth = player.MaxHp; });
+        
+        return partyModels;
     }
 
     /// <summary>
@@ -291,6 +480,12 @@ public class StageSceneController : MonoBehaviour
             stageData.randomSeed = newSeed;
             stageManager.StartStage(stageData);
             
+            // UI 새로고침
+            if (stageInputManager != null)
+            {
+                stageInputManager.RefreshMap();
+            }
+            
             if (debugMode)
             {
                 Debug.Log($"새로운 시드({newSeed})로 스테이지 맵 재생성");
@@ -307,10 +502,92 @@ public class StageSceneController : MonoBehaviour
         stageData = newStageData;
         stageManager.StartStage(stageData);
         
+        // UI 새로고침
+        if (stageInputManager != null)
+        {
+            stageInputManager.RefreshMap();
+        }
+        
         if (debugMode)
         {
             Debug.Log($"새로운 스테이지 데이터로 시작: {stageData.stageName}");
             stageManager.PrintStageMap();
+        }
+    }
+
+    /// <summary>
+    /// 스테이지 저장
+    /// </summary>
+    public void SaveStage()
+    {
+        stageManager.SaveStage();
+    }
+
+    /// <summary>
+    /// 스테이지 로드
+    /// </summary>
+    public bool LoadStage()
+    {
+        bool success = stageManager.LoadStage();
+        if (success && stageInputManager != null)
+        {
+            stageInputManager.RefreshMap();
+        }
+        return success;
+    }
+
+    /// <summary>
+    /// UI 활성화/비활성화
+    /// </summary>
+    public void SetUIEnabled(bool enabled)
+    {
+        if (stageInputManager != null)
+        {
+            stageInputManager.SetUIEnabled(enabled);
+        }
+    }
+
+    /// <summary>
+    /// 입력 처리 활성화/비활성화
+    /// </summary>
+    public void SetInputEnabled(bool enabled)
+    {
+        if (stageInputManager != null)
+        {
+            stageInputManager.SetInputEnabled(enabled);
+        }
+    }
+
+    /// <summary>
+    /// 접근 가능한 노드들 강조 표시
+    /// </summary>
+    public void HighlightAvailableNodes()
+    {
+        if (stageInputManager != null)
+        {
+            stageInputManager.HighlightAvailableNodes();
+        }
+    }
+
+    /// <summary>
+    /// 모든 노드 강조 해제
+    /// </summary>
+    public void ClearNodeHighlights()
+    {
+        if (stageInputManager != null)
+        {
+            stageInputManager.ClearHighlights();
+        }
+    }
+
+    /// <summary>
+    /// 특정 노드 강조 표시
+    /// </summary>
+    public void HighlightNode(StageNode node, bool highlight = true)
+    {
+        if (stageInputManager != null)
+        {
+            stageInputManager.HighlightNode(node, highlight);
         }
     }
 
@@ -334,6 +611,16 @@ public class StageSceneController : MonoBehaviour
         foreach (var node in availableNodes)
         {
             Debug.Log($"  - {node.roomName}");
+        }
+
+        // UI 상태 확인
+        if (stageMapUI != null)
+        {
+            Debug.Log($"StageMapUI 활성화: {stageMapUI.gameObject.activeInHierarchy}");
+        }
+        if (stageInputManager != null)
+        {
+            Debug.Log($"StageInputManager 활성화: {stageInputManager.gameObject.activeInHierarchy}");
         }
     }
 }

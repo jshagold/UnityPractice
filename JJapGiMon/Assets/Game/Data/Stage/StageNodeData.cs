@@ -19,12 +19,8 @@ public class StageNodeData
     public List<int> childNodeIds;           // 자식 노드 ID 목록
     public int? parentNodeId;                // 부모 노드 ID
     
-    // 상태 정보
-    public bool isGoal;                      // 목표 여부
-    
-    // 🆕 노드별 기본 정보
-    public string nodeName;                  // 노드 이름
-    public string nodeDescription;           // 노드 설명
+    // 목표 여부 (스테이지 구조의 일부이므로 저장 필요)
+    public bool isGoal;                      
 
     public StageNodeData()
     {
@@ -40,6 +36,6 @@ public class StageNodeData
             _ => ""
         };
         
-        return $"{nodeName ?? type.ToString()}{subType} depth: {depth} index: {index}";
+        return $"{type}{subType} depth: {depth} index: {index}";
     }
 }

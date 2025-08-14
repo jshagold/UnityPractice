@@ -77,7 +77,7 @@ public class StageMapGenerator
         
         if (stageData.stageLength > 0)
         {
-            GenerateChildren(root, 1, stageData.stageLength + 1); // +1 for boss room
+            GenerateChildren(root, 1, stageData.stageLength);
         }
         
         return root;
@@ -149,10 +149,10 @@ public class StageMapGenerator
     {
         var localRandom = new Random(seed);
         
-        // 마지막에서 두 번째 깊이는 보스 전용 전투
-        if (currentDepth == maxDepth - 2)
+        // 마지막은 보스 전용 전투
+        if (currentDepth == maxDepth)
         {
-            return StageRoomType.Battle; // 보스 전 전투
+            return StageRoomType.Boss; // 보스 전투
         }
         
         // 첫 번째 깊이는 시작 방 다음이므로 이벤트나 전투

@@ -12,7 +12,7 @@ public class StageSceneController : MonoBehaviour
     
     [Header("Legacy Configuration (StageData가 없을 때 사용)")]
     [SerializeField] private int stageLength = 5;
-    [SerializeField] private int choicesPerStep = 3;
+    [SerializeField] private int MaxNodeCountByDepth = 3;
     [SerializeField] private int? randomSeed = null;
 
     [Header("Manager References")]
@@ -133,7 +133,7 @@ public class StageSceneController : MonoBehaviour
                 stageName: "기본 스테이지",
                 stageDescription: "기본 설정으로 생성된 스테이지",
                 stageLength: stageLength,
-                choicesPerStep: choicesPerStep,
+                MaxNodeCountByDepth: MaxNodeCountByDepth,
                 randomSeed: randomSeed,
                 lastRoomCount: 3
             );

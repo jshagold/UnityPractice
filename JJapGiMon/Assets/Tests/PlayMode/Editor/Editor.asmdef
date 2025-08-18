@@ -1,9 +1,10 @@
 {
-    "name": "PlayMode",
+    "name": "Editor",
     "optionalUnityReferences": [
         "TestAssemblies"
     ],
     "references": [
+        "PlayMode",
         "Game"
     ]
 }

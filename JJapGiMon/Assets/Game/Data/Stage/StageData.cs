@@ -12,7 +12,8 @@ public class StageData
     
     // 맵 생성 설정
     public int stageLength = 5;             // 스테이지의 총 길이 (시작, 보스 포함)
-    public int choicesPerStep = 3;          // 스테이지에서 선택 가능한 최대 노드 수
+    public int MinNodeCountByDepth = 1;     // 깊이에서 생성되는 최소 노드 수
+    public int MaxNodeCountByDepth = 5;     // 깊이에서 생성되는 최대 노드 수
     public int? randomSeed = null;          // 스테이지의 랜덤 시드
     public int lastRoomCount = 3;           // 마지막 방 개수
 
@@ -48,7 +49,8 @@ public class StageData
         string stageName, 
         string stageDescription, 
         int stageLength = 5, 
-        int choicesPerStep = 3, 
+        int MinNodeCountByDepth = 1,
+        int MaxNodeCountByDepth = 5, 
         int? randomSeed = null, 
         int lastRoomCount = 3
         )
@@ -57,7 +59,8 @@ public class StageData
         this.stageName = stageName;
         this.stageDescription = stageDescription;
         this.stageLength = stageLength;
-        this.choicesPerStep = choicesPerStep;
+        this.MinNodeCountByDepth = MinNodeCountByDepth;
+        this.MaxNodeCountByDepth = MaxNodeCountByDepth;
         this.randomSeed = randomSeed;
         this.lastRoomCount = lastRoomCount;
 
@@ -212,6 +215,6 @@ public class StageData
 
     public override string ToString()
     {
-        return $"Stage: {stageName} (ID: {stageId}, Length: {stageLength}, Choices: {choicesPerStep}, Progress: {GetProgressPercentage():F1}%)"  ;
+        return $"Stage: {stageName} (ID: {stageId}, Length: {stageLength}, Choices: {MaxNodeCountByDepth}, Progress: {GetProgressPercentage():F1}%)"  ;
     }
 }

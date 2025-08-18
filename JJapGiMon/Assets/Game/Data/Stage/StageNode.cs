@@ -10,7 +10,7 @@ public class StageNode
     public int depth;
     public int index;
     public StageRoomType type;
-    public bool isGoal; // 마지막 방에서 목표 여부 (true = 목표, false = 실패)
+    public StageStateType state; // 방 상태 (성공/실패/중립)
     public int seed; // 시드값 (전투 방의 무작위 선택에 사용)
     public List<StageNode> children = new();
 
@@ -36,6 +36,7 @@ public class StageNode
         this.seed = seed;
         this.eventType = eventRoomType;
         this.battleType = battleRoomType;
+        this.state = StageStateType.NEUTRAL; // 기본값은 중립
         this.isVisited = false;
         this.isAvailable = false;
         
@@ -160,7 +161,14 @@ public class StageNode
         };
         
         string status = isVisited ? " [방문됨]" : isAvailable ? " [접근가능]" : " [잠김]";
+        string stateStatus = state switch
+        {
+            StageStateType.SUCCESS => " [성공]",
+            StageStateType.FAIL => " [실패]",
+            StageStateType.NEUTRAL => " [중립]",
+            _ => ""
+        };
         
-        return $"{roomName}{subType}{status} depth: {depth} index: {index} seed: {seed}";
+        return $"{roomName}{subType}{status}{stateStatus} depth: {depth} index: {index} seed: {seed}";
     }
 }

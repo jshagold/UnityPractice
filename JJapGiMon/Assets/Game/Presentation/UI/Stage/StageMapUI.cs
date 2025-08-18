@@ -232,7 +232,7 @@ public class StageMapUI : MonoBehaviour
             case StageRoomType.Event:
                 return "이벤트";
             case StageRoomType.Boss:
-                return node.isGoal ? "목표" : "보스";
+                return node.state == StageStateType.SUCCESS ? "목표" : "보스";
             default:
                 return "방";
         }
@@ -251,7 +251,7 @@ public class StageMapUI : MonoBehaviour
             case StageRoomType.Event:
                 return eventRoomColor;
             case StageRoomType.Boss:
-                return node.isGoal ? goalRoomColor : bossRoomColor;
+                return node.state == StageStateType.SUCCESS ? goalRoomColor : bossRoomColor;
             default:
                 return Color.white;
         }

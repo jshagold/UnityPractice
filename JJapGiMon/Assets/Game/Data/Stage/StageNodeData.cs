@@ -19,12 +19,13 @@ public class StageNodeData
     public List<int> childNodeIds;           // 자식 노드 ID 목록
     public int? parentNodeId;                // 부모 노드 ID
     
-    // 목표 여부 (스테이지 구조의 일부이므로 저장 필요)
-    public bool isGoal;                      
+    // 방 상태 (스테이지 구조의 일부이므로 저장 필요)
+    public StageStateType state;                      
 
     public StageNodeData()
     {
         childNodeIds = new List<int>();
+        state = StageStateType.NEUTRAL; // 기본값은 중립
     }
 
     public override string ToString()

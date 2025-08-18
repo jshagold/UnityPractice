@@ -8,6 +8,4 @@
     
     // 기계
     public static readonly CharacterType Machine = new(3, "기계");
-
-    
 }

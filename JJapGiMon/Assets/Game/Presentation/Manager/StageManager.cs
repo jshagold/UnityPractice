@@ -75,7 +75,7 @@ public class StageManager : MonoBehaviour
         var node = new StageNode(nodeData.depth, nodeData.index, nodeData.type, nodeData.eventType, nodeData.battleType, nodeData.seed)
         {
             nodeId = nodeData.nodeId,
-            isGoal = nodeData.isGoal
+            state = nodeData.state
         };
 
         // 자식 노드들 복원
@@ -239,7 +239,7 @@ public class StageManager : MonoBehaviour
     {
         Debug.Log($"보스 방 처리: {currentNode.roomName}");
         
-        if (currentNode.isGoal)
+        if (currentNode.state == StageStateType.SUCCESS)
         {
             Debug.Log("목표 보스를 처치했습니다!");
             CompleteStage(true);

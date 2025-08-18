@@ -78,7 +78,7 @@ public class StageSaveLoadTest : MonoBehaviour
             stageName: "테스트 스테이지",
             stageDescription: "저장/로드 테스트용 스테이지",
             stageLength: 5,
-            choicesPerStep: 3,
+            MaxNodeCountByDepth: 3,
             randomSeed: 12345,
             lastRoomCount: 2
         );

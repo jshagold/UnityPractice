@@ -4,23 +4,19 @@ using UnityEngine;
 using Newtonsoft.Json;
 
 public class LocalStageRepository : IStageRepository
-{
-    private const string STAGE_SAVE_FILENAME = "current_stage.json";
+{   
+    private string saveFilePath;
     
-    private readonly string saveFilePath;
-    
-    public LocalStageRepository()
-    {
-        // Unity의 Application.persistentDataPath를 사용하여 플랫폼별 저장 경로 설정
-        saveFilePath = Path.Combine(Application.persistentDataPath, STAGE_SAVE_FILENAME);
-    }
+    public LocalStageRepository() {}
     
     /// <summary>
     /// 현재 스테이지 데이터를 JSON 파일로 저장합니다.
     /// </summary>
     /// <param name="saveData">저장할 스테이지 데이터</param>
-    public void Save(StageData saveData)
+    public void Save(string contentId, StageData saveData)
     {
+        SetSaveFilePath(contentId);
+
         if (saveData == null)
         {
             Debug.LogError("저장할 스테이지 데이터가 null입니다.");
@@ -56,8 +52,10 @@ public class LocalStageRepository : IStageRepository
     /// 저장된 스테이지 데이터를 로드합니다.
     /// </summary>
     /// <returns>로드된 스테이지 데이터, 없으면 null</returns>
-    public StageData Load()
+    public StageData Load(string contentId)
     {
+        SetSaveFilePath(contentId);
+
         try
         {
             if (!File.Exists(saveFilePath))
@@ -97,8 +95,10 @@ public class LocalStageRepository : IStageRepository
     /// <summary>
     /// 저장된 스테이지 데이터를 삭제합니다.
     /// </summary>
-    public void Delete()
+    public void Delete(string contentId)
     {
+        SetSaveFilePath(contentId);
+
         try
         {
             if (File.Exists(saveFilePath))
@@ -122,8 +122,16 @@ public class LocalStageRepository : IStageRepository
     /// 저장 파일이 존재하는지 확인합니다.
     /// </summary>
     /// <returns>저장 파일 존재 여부</returns>
-    public bool HasSaveData()
+    public bool HasSaveData(string contentId)
     {
+        SetSaveFilePath(contentId);
+
         return File.Exists(saveFilePath);
+    }
+
+    private void SetSaveFilePath(string contentId)
+    {
+        // Unity의 Application.persistentDataPath를 사용하여 플랫폼별 저장 경로 설정
+        saveFilePath = Path.Combine(Application.persistentDataPath, $"{contentId}.json");
     }
 }

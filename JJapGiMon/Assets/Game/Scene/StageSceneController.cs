@@ -77,18 +77,18 @@ public class StageSceneController : MonoBehaviour
     private void Start()
     {
         Debug.Log("Stage Scene Start");
-
+        
         // 1) 배경 설정
         SetupBackground();
 
-        // 2) StageData가 없으면 기본값으로 생성
+        // 2) 저장된 StageData 불러오기 / 없다면 기본값으로 생성
         InitializeStageData();
 
         // 3) 캐릭터 정보 세팅
         var partyModels = CreatePartyModels();
 
         // 4) 새로운 스테이지 시스템으로 초기화
-        InitializeNewStageSystem(partyModels);
+        InitializeNewStageSystem();
 
         // 5) UI 초기화
         InitializeUI();
@@ -143,7 +143,7 @@ public class StageSceneController : MonoBehaviour
     /// <summary>
     /// 새로운 스테이지 시스템 초기화
     /// </summary>
-    private void InitializeNewStageSystem(List<CharacterModel> partyModels)
+    private void InitializeNewStageSystem()
     {
         // StageManager에 스테이지 시작
         stageManager.StartStage(stageData);

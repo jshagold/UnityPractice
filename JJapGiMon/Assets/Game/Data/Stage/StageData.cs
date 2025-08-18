@@ -14,7 +14,7 @@ public class StageData
     public int stageLength = 5;             // 스테이지의 총 길이 (시작, 보스 포함)
     public int choicesPerStep = 3;          // 스테이지에서 선택 가능한 최대 노드 수
     public int? randomSeed = null;          // 스테이지의 랜덤 시드
-    public int lastRoomCount = 3;           // 보스 방 개수
+    public int lastRoomCount = 3;           // 마지막 방 개수
 
     // 🆕 실제 맵 데이터
     public StageNodeData rootNode;          // 시작 
@@ -63,7 +63,6 @@ public class StageData
 
         // 초기화
         allNodes = new List<StageNodeData>();
-        visitedNodeIds = new List<int>();
         visitedNodeIds = new List<int>();
         availableNodeIds = new List<int>();
         characterStates = new List<CharacterSaveData>();
@@ -200,7 +199,7 @@ public class StageData
     /// </summary>
     public bool IsCompleted()
     {
-        return isCompleted || allNodes?.Any(n => n.isGoal && visitedNodeIds.Contains(n.nodeId)) == true;
+        return isCompleted || allNodes?.Any(n => n.state == StageStateType.SUCCESS && visitedNodeIds.Contains(n.nodeId)) == true;
     }
 
     /// <summary>
@@ -213,6 +212,6 @@ public class StageData
 
     public override string ToString()
     {
-        return $"Stage: {stageName} (ID: {stageId}, Length: {stageLength}, Choices: {choicesPerStep}, Progress: {GetProgressPercentage():F1}%)";
+        return $"Stage: {stageName} (ID: {stageId}, Length: {stageLength}, Choices: {choicesPerStep}, Progress: {GetProgressPercentage():F1}%)"  ;
     }
 }

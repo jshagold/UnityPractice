@@ -20,7 +20,6 @@ public class BattleManager : MonoBehaviour
 
     // --- 상태값 --- //
     private bool battleRunning;
-    private StageEndType stageEndType;
     // 적의 공격 타겟 리스트
     private List<BattleTarget> enemyTargets = new();
     private List<BattleTarget> playerTargets = new();
@@ -57,7 +56,6 @@ public class BattleManager : MonoBehaviour
         players = playerList;
         enemies = enemyList;
 
-        stageEndType = StageEndType.NOTYET;
         battleRunning = true;
 
 
@@ -102,7 +100,7 @@ public class BattleManager : MonoBehaviour
             yield return Phase0();
         }
 
-        EndBattle(stageEndType);
+        EndBattle();
     }
 
     // --- Phase 0 캐릭터 상태 로직 계산 --- //
@@ -289,13 +287,11 @@ public class BattleManager : MonoBehaviour
         if (playerAllDead)
         {
             Debug.Log("Player All Dead");
-            stageEndType = StageEndType.CLEAR;
             battleRunning = false;
         }
         else if(enemyAllDead)
         {
             Debug.Log("Enemy All Dead");
-            stageEndType = StageEndType.FAIL;
             battleRunning = false;
         }
 
@@ -304,7 +300,7 @@ public class BattleManager : MonoBehaviour
 
 
     // --- 3. 전투 종료 --- //
-    void EndBattle(StageEndType stageEndType)
+    void EndBattle()
     {
         Debug.Log("EndBattle");
 

@@ -103,13 +103,13 @@ public class StageMapGenerator
     {
         if (currentDepth >= maxDepth)
         {
-            // 마지막 깊이에서는 보스 방들 생성 (lastRoomCount만큼)
+            // 마지막 깊이에서는 제한된 숫자의 방들 생성 (lastRoomCount만큼)
             for (int i = 0; i < stageData.lastRoomCount; i++)
             {
-                var bossNode = new StageNode(currentDepth, i, StageRoomType.Boss, null, null, random.Next());
-                bossNode.nodeId = GetNextNodeId();
-                bossNode.isGoal = true;
-                parent.AddChild(bossNode);
+                var lastNode = new StageNode(currentDepth, i, StageRoomType.Boss, null, null, random.Next());
+                lastNode.nodeId = GetNextNodeId();
+                lastNode.isGoal = true;
+                parent.AddChild(lastNode);
             }
             return;
         }
@@ -153,12 +153,6 @@ public class StageMapGenerator
         if (currentDepth == maxDepth)
         {
             return StageRoomType.Boss; // 보스 전투
-        }
-        
-        // 첫 번째 깊이는 시작 방 다음이므로 이벤트나 전투
-        if (currentDepth == 1)
-        {
-            return localRandom.Next(2) == 0 ? StageRoomType.Event : StageRoomType.Battle;
         }
         
         // 중간 깊이에서는 이벤트, 전투 중 선택

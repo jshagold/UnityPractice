@@ -13,6 +13,12 @@ public class StageManager : MonoBehaviour
     [SerializeField] private bool isStageActive = false;
     [SerializeField] private int currentDepth = 0;
 
+    // 초기화 여부
+    private bool _initialized;
+
+    // 세션 정보
+    private StageLaunchArgs args;
+
     private StageMapGenerator stageMapGenerator;
     private IStageRepository stageRepository;
 
@@ -22,24 +28,46 @@ public class StageManager : MonoBehaviour
     public bool IsStageActive => isStageActive;
     public int CurrentDepth => currentDepth;
 
+    
     void Awake()
     {
-        stageMapGenerator = new StageMapGenerator(currentStageData ?? new StageData());
+        // Awake는 최소셋업만 유지하거나 비우는걸 권장!
+    }
+
+
+    // 초기화
+    public void Initialize(StageLaunchArgs args)
+    {
+        args = args ?? new StageLaunchArgs { StageId = -1 };
+
+        // 1) Repository 준비
         stageRepository = new LocalStageRepository();
+
+        // 2) Stage 데이터 로드 (args.contentID 사용)
+        currentStageData = LoadStage(args.ContentId);
+
+        // 3) 스테이지 생성기 준비
+        stageMapGenerator = new StageMapGenerator(currentStageData ?? new StageData());
+
+        _initialized = true;
     }
 
     /// <summary>
     /// 새로운 스테이지를 시작합니다.
     /// </summary>
-    public void StartStage(StageData stageData)
+    public void StartStage()
     {
-        currentStageData = stageData;
+        if (!_initialized) 
+        {
+            Debug.LogError("StageManager 초기화 되지 않음.");
+            return;
+        }
         
         // 🆕 완전한 스테이지 데이터 생성
-        if (stageData.allNodes == null || stageData.allNodes.Count == 0)
+        if (currentStageData.allNodes == null || currentStageData.allNodes.Count == 0)
         {
             // 맵 데이터가 없으면 생성
-            stageMapGenerator = new StageMapGenerator(stageData);
+            stageMapGenerator = new StageMapGenerator(args.Seed ?? -1);
             currentStageData = stageMapGenerator.GenerateCompleteStageData();
         }
         
@@ -57,7 +85,7 @@ public class StageManager : MonoBehaviour
         currentDepth = currentNode.depth;
         isStageActive = true;
         
-        Debug.Log($"스테이지 시작: {stageData.stageName}");
+        Debug.Log($"스테이지 시작: {currentStageData.stageName}");
     }
 
     /// <summary>
@@ -325,7 +353,7 @@ public class StageManager : MonoBehaviour
         {
             try
             {
-                stageRepository.Save(currentStageData);
+                stageRepository.Save(args.ContentId, currentStageData);
                 Debug.Log("스테이지 데이터 저장 완료");
             }
             catch (System.Exception ex)
@@ -343,27 +371,26 @@ public class StageManager : MonoBehaviour
     /// 가장 최근 저장된 스테이지 데이터를 로드합니다.
     /// </summary>
     /// <returns>로드 성공 여부</returns>
-    public bool LoadStage()
+    public StageData? LoadStage(string contentId)
     {
         try
         {
-            var stageData = stageRepository.Load();
+            var stageData = stageRepository.Load(contentId);
             if (stageData != null)
             {
-                StartStage(stageData);
                 Debug.Log("스테이지 데이터 로드 완료");
-                return true;
+                return stageData;
             }
             else
             {
                 Debug.Log("저장된 스테이지 데이터가 없습니다.");
-                return false;
+                return null;
             }
         }
         catch (System.Exception ex)
         {
             Debug.LogError($"스테이지 로드 중 오류 발생: {ex.Message}");
-            return false;
+            return null;
         }
     }
 
@@ -371,19 +398,19 @@ public class StageManager : MonoBehaviour
     /// 저장된 스테이지 데이터가 있는지 확인합니다.
     /// </summary>
     /// <returns>저장 데이터 존재 여부</returns>
-    public bool HasSaveData()
+    public bool HasSaveData(string contentId)
     {
-        return stageRepository.HasSaveData();
+        return stageRepository.HasSaveData(contentId);
     }
 
     /// <summary>
     /// 저장된 스테이지 데이터를 삭제합니다.
     /// </summary>
-    public void DeleteSaveData()
+    public void DeleteSaveData(string contentId)
     {
         try
         {
-            stageRepository.Delete();
+            stageRepository.Delete(contentId);
             Debug.Log("저장된 스테이지 데이터 삭제 완료");
         }
         catch (System.Exception ex)
@@ -406,22 +433,6 @@ public class StageManager : MonoBehaviour
     }
 
     /// <summary>
-    /// JSON에서 스테이지 데이터 로드
-    /// </summary>
-    public void LoadStageDataFromJson(string json)
-    {
-        if (!string.IsNullOrEmpty(json))
-        {
-            var stageData = JsonUtility.FromJson<StageData>(json);
-            if (stageData != null)
-            {
-                stageData.InitializeNodeMap();
-                StartStage(stageData);
-            }
-        }
-    }
-
-    /// <summary>
     /// 자동 저장 (PlayerPrefs 사용)
     /// </summary>
     public void AutoSave()
@@ -433,21 +444,6 @@ public class StageManager : MonoBehaviour
             PlayerPrefs.Save();
             Debug.Log("스테이지 자동 저장 완료");
         }
-    }
-
-    /// <summary>
-    /// 자동 저장 데이터 로드 (PlayerPrefs 사용)
-    /// </summary>
-    public bool LoadAutoSave()
-    {
-        string json = PlayerPrefs.GetString("StageAutoSave", "");
-        if (!string.IsNullOrEmpty(json))
-        {
-            LoadStageDataFromJson(json);
-            Debug.Log("자동 저장 데이터 로드 완료");
-            return true;
-        }
-        return false;
     }
 
     /// <summary>

@@ -64,8 +64,8 @@ public class StageSaveLoadTest : MonoBehaviour
         if (stageManager == null) return;
         
         Debug.Log("--- 저장 데이터 확인 ---");
-        bool hasSaveData = stageManager.HasSaveData();
-        Debug.Log($"저장된 데이터 존재: {hasSaveData}");
+        //bool hasSaveData = stageManager.HasSaveData();
+        //Debug.Log($"저장된 데이터 존재: {hasSaveData}");
     }
     
     /// <summary>
@@ -83,7 +83,7 @@ public class StageSaveLoadTest : MonoBehaviour
             lastRoomCount: 2
         );
         
-        stageManager.StartStage(testStageData);
+        //stageManager.StartStage(testStageData);
         Debug.Log("테스트용 스테이지 생성 완료");
     }
     
@@ -108,7 +108,8 @@ public class StageSaveLoadTest : MonoBehaviour
         if (stageManager == null) return;
         
         Debug.Log("--- 로드 테스트 ---");
-        bool success = stageManager.LoadStage();
+        //bool success = stageManager.LoadStage();
+        bool success = false;
         
         if (success)
         {
@@ -130,7 +131,7 @@ public class StageSaveLoadTest : MonoBehaviour
         if (stageManager == null) return;
         
         Debug.Log("--- 저장 데이터 삭제 테스트 ---");
-        stageManager.DeleteSaveData();
+        //stageManager.DeleteSaveData();
     }
     
     /// <summary>
@@ -172,24 +173,5 @@ public class StageSaveLoadTest : MonoBehaviour
         stageManager.AutoSave();
     }
     
-    /// <summary>
-    /// 자동 저장 로드 테스트
-    /// </summary>
-    [ContextMenu("자동 저장 로드 테스트")]
-    public void TestAutoLoad()
-    {
-        if (stageManager == null) return;
-        
-        Debug.Log("--- 자동 저장 로드 테스트 ---");
-        bool success = stageManager.LoadAutoSave();
-        
-        if (success)
-        {
-            Debug.Log("자동 저장 데이터 로드 성공");
-        }
-        else
-        {
-            Debug.Log("자동 저장 데이터 로드 실패");
-        }
-    }
+    
 }

@@ -10,6 +10,7 @@ public sealed class StageInputManager : MonoBehaviour
     [Header("UI Components")]
     [SerializeField] private StageMapUI stageMapUI;
 
+
     [Header("Manager References")]
     [SerializeField] private StageManager stageManager;
 
@@ -70,20 +71,6 @@ public sealed class StageInputManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 스테이지 맵 초기화
-    /// </summary>
-    public void InitializeStageMap(StageNode rootNode, StageNode currentNode)
-    {
-        if (stageMapUI != null)
-        {
-            stageMapUI.UpdateMap(rootNode, currentNode);
-        }
-        else
-        {
-            Debug.LogError("StageMapUI가 할당되지 않았습니다!");
-        }
-    }
 
     /// <summary>
     /// 현재 노드 업데이트
@@ -100,20 +87,6 @@ public sealed class StageInputManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 맵 새로고침
-    /// </summary>
-    public void RefreshMap()
-    {
-        if (stageManager != null && stageMapUI != null)
-        {
-            stageMapUI.UpdateMap(stageManager.CurrentStageMap, stageManager.CurrentNode);
-        }
-        else
-        {
-            Debug.LogError("StageManager 또는 StageMapUI가 할당되지 않았습니다!");
-        }
-    }
 
     /// <summary>
     /// UI 활성화/비활성화
@@ -130,44 +103,6 @@ public sealed class StageInputManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 특정 노드 강조 표시
-    /// </summary>
-    public void HighlightNode(StageNode node, bool highlight = true)
-    {
-        if (stageMapUI != null)
-        {
-            // TODO: StageMapUI에 노드 강조 기능 추가
-            Debug.Log($"노드 강조: {node?.roomName} - {highlight}");
-        }
-    }
-
-    /// <summary>
-    /// 모든 노드 강조 해제
-    /// </summary>
-    public void ClearHighlights()
-    {
-        if (stageMapUI != null)
-        {
-            // TODO: StageMapUI에 모든 강조 해제 기능 추가
-            Debug.Log("모든 노드 강조 해제");
-        }
-    }
-
-    /// <summary>
-    /// 접근 가능한 노드들만 강조
-    /// </summary>
-    public void HighlightAvailableNodes()
-    {
-        if (stageManager != null && stageMapUI != null)
-        {
-            var availableNodes = stageManager.GetAvailableChildren();
-            foreach (var node in availableNodes)
-            {
-                HighlightNode(node, true);
-            }
-        }
-    }
 
     /// <summary>
     /// 입력 처리 활성화/비활성화

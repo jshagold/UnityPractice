@@ -6,12 +6,18 @@ using System.Collections.Generic;
 
 public class StageMapUI : MonoBehaviour
 {
+
+    [SerializeField] private StageManager stageManager;
+
     [Header("Config")]
     // 설정은 StageController에서 관리
 
     [Header("UI Refs")]
     [SerializeField] private RectTransform mapRoot;        // UIRootCanvas 하위 Panel 등
-    [SerializeField] private Button roomButtonPrefab;      // (TMP)Text 포함 프리팹
+    [SerializeField] private Button startRoomButtonPrefab;      // (TMP)Text 포함 프리팹
+    [SerializeField] private Button battleRoomButtonPrefab;      // (TMP)Text 포함 프리팹
+    [SerializeField] private Button eventRoomButtonPrefab;      // (TMP)Text 포함 프리팹
+    [SerializeField] private Button bossRoomButtonPrefab;      // (TMP)Text 포함 프리팹
     [SerializeField] private Image connectionImagePrefab;  // 얇은 Image(선으로 사용)
 
     [Header("Colors")]
@@ -29,34 +35,33 @@ public class StageMapUI : MonoBehaviour
     // 이벤트 정의
     public event Action<StageNode> OnNodeClicked;
 
+    private void OnEnable()
+    {
+        stageManager.OnStageGenerated += RenderMap;
+    }
+
+    private void OnDisable()
+    {
+        stageManager.OnStageGenerated -= RenderMap;
+    }
+
     private void Start()
     {
         // 컨트롤러에서 초기화하므로 여기서는 아무것도 하지 않음
     }
 
-    /// <summary>
-    /// 컨트롤러에서 호출하여 맵 업데이트
-    /// </summary>
-    public void UpdateMap(StageNode rootNode, StageNode currentNode)
+    private void Update()
     {
-        this.rootNode = rootNode;
-        this.currentNode = currentNode;
-        Clear();
-        RenderMap();
-        UpdateButtonStates();
+
     }
 
-    /// <summary>
-    /// 현재 노드 업데이트 (컨트롤러에서 호출)
-    /// </summary>
-    public void UpdateCurrentNode(StageNode newNode)
-    {
-        currentNode = newNode;
-        UpdateButtonStates();
-    }
 
-    private void RenderMap()
+    // 맵 렌더링
+    private void RenderMap(int stageId)
     {
+        // TODO stage id에 따른 배경 생성
+        CreateBackground(stageId);
+
         if (rootNode == null) return;
 
         // 트리 구조를 순회하며 노드들을 렌더링
@@ -73,6 +78,13 @@ public class StageMapUI : MonoBehaviour
         DrawConnections(nodePositions);
     }
 
+    // 배경 생성
+    private void CreateBackground(int stageId)
+    {
+
+    }
+
+    // 노드 위치 계산
     private Dictionary<StageNode, Vector2> CalculateNodePositions()
     {
         var positions = new Dictionary<StageNode, Vector2>();
@@ -115,9 +127,19 @@ public class StageMapUI : MonoBehaviour
         }
     }
 
+    // 방 UI 생성
     private void CreateRoomButton(StageNode node, Vector2 position)
     {
-        var button = Instantiate(roomButtonPrefab, mapRoot);
+        var button = node.type switch
+        {
+            StageRoomType.Start => Instantiate(startRoomButtonPrefab, mapRoot),
+            StageRoomType.Battle => Instantiate(battleRoomButtonPrefab, mapRoot),
+            StageRoomType.Event => Instantiate(eventRoomButtonPrefab, mapRoot),
+            StageRoomType.Boss => Instantiate(bossRoomButtonPrefab, mapRoot),
+            _ => Instantiate(startRoomButtonPrefab, mapRoot),
+        };
+
+        // var button = Instantiate(roomButtonPrefab, mapRoot);
         var rectTransform = button.GetComponent<RectTransform>();
         
         // 위치 설정
@@ -143,6 +165,7 @@ public class StageMapUI : MonoBehaviour
         roomButtons[node] = button;
     }
 
+    // 연결선 UI 생성
     private void DrawConnections(Dictionary<StageNode, Vector2> nodePositions)
     {
         // 모든 노드의 연결선 그리기
@@ -161,6 +184,7 @@ public class StageMapUI : MonoBehaviour
         }
     }
 
+    // 연결선 UI 생성
     private void DrawConnection(Vector2 startPos, Vector2 endPos)
     {
         var connection = Instantiate(connectionImagePrefab, mapRoot);
@@ -176,6 +200,15 @@ public class StageMapUI : MonoBehaviour
         rectTransform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
+
+    // 현재 노드 업데이트 (컨트롤러에서 호출)
+    public void UpdateCurrentNode(StageNode newNode)
+    {
+        currentNode = newNode;
+        UpdateButtonStates();
+    }
+
+    // 노드 상태 업데이트
     private void UpdateButtonStates()
     {
         foreach (var kvp in roomButtons)
@@ -206,6 +239,7 @@ public class StageMapUI : MonoBehaviour
         }
     }
 
+    // 노드 접근 가능 여부 확인
     private bool IsNodeAccessible(StageNode node)
     {
         if (currentNode == null) return false;
@@ -214,6 +248,7 @@ public class StageMapUI : MonoBehaviour
         return currentNode.children.Contains(node);
     }
 
+    // 노드 클릭 이벤트
     private void OnClickNode(StageNode node)
     {
         OnNodeClicked?.Invoke(node);

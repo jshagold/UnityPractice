@@ -71,23 +71,6 @@ public sealed class StageInputManager : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// 현재 노드 업데이트
-    /// </summary>
-    public void UpdateCurrentNode(StageNode newNode)
-    {
-        if (stageMapUI != null)
-        {
-            stageMapUI.UpdateCurrentNode(newNode);
-        }
-        else
-        {
-            Debug.LogError("StageMapUI가 할당되지 않았습니다!");
-        }
-    }
-
-
     /// <summary>
     /// UI 활성화/비활성화
     /// </summary>

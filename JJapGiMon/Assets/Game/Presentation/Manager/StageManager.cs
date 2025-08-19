@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class StageManager : MonoBehaviour
 {
@@ -27,6 +28,10 @@ public class StageManager : MonoBehaviour
     public StageNode CurrentNode => currentNode;
     public bool IsStageActive => isStageActive;
     public int CurrentDepth => currentDepth;
+
+
+    // 이벤트
+    public event Action<int> OnStageGenerated;
 
     
     void Awake()
@@ -86,6 +91,9 @@ public class StageManager : MonoBehaviour
         isStageActive = true;
         
         Debug.Log($"스테이지 시작: {currentStageData.stageName}");
+
+
+        OnStageGenerated?.Invoke(args.StageId);
     }
 
     /// <summary>
@@ -371,6 +379,7 @@ public class StageManager : MonoBehaviour
     /// 가장 최근 저장된 스테이지 데이터를 로드합니다.
     /// </summary>
     /// <returns>로드 성공 여부</returns>
+    #nullable enable
     public StageData? LoadStage(string contentId)
     {
         try
@@ -454,8 +463,6 @@ public class StageManager : MonoBehaviour
         isStageActive = false;
         currentStageData.isFailed = true;
         Debug.Log("스테이지를 포기했습니다.");
-        // 메인 씬으로 돌아가기
-        // SceneManager.LoadScene("MainScene");
     }
 }
 

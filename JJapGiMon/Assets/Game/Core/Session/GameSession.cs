@@ -5,7 +5,7 @@ public class GameSession : MonoBehaviour
     private static GameSession _instance;
     public static GameSession I => _instance ??= Create();
 
-    // ¼¼¼ÇÀ¸·Î ³Ñ±æ °ªµé
+    // ë„˜ê¸¸ ê°’ DTO ë“±
     public StageLaunchArgs PendingStageLaunch { get; private set; }
     public void SetStageLaunchArgs(StageLaunchArgs args) => PendingStageLaunch = args;
     public StageLaunchArgs ConsumeStageLaunchArgs() { 
@@ -22,15 +22,15 @@ public class GameSession : MonoBehaviour
         return _instance = s;
     }
 
-    // ¦¡¦¡ 'ÇÃ·¹ÀÌ ½ÃÀÛ ½Ã' ¾ÈÀüÇÏ°Ô ÃÊ±âÈ­/Àç¼³Á¤ ¦¡¦¡
-    // 1) µµ¸ŞÀÎ ¸®·Îµå ²¨µµ È£ÃâµÊ: Á¤Àû ÇÊµå ¸®¼Â¿ë
+    //  'í”Œë ˆì´ ì‹œì‘ ì‹œ' ì•ˆì „í•˜ê²Œ ì´ˆê¸°í™”/ì¬ì„¤ì •
+    // 1) ë„ë©”ì¸ ë¦¬ë¡œë“œ êº¼ë„ í˜¸ì¶œë¨: ì •ì  í•„ë“œ ë¦¬ì…‹ìš©
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics()
     {
         _instance = null;
     }
 
-    // 2) Ã¹ ¾À ·Îµå ¡®ÀÌÀü¡¯¿¡ ½ÇÇà: ÀÎ½ºÅÏ½º º¸Àå
+    // 2) ì²« ì”¬ ë¡œë“œ â€˜ì´ì „â€™ì— ì‹¤í–‰: ì¸ìŠ¤í„´ìŠ¤ ë³´ì¥
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void EnsureBeforeFirstScene()
     {

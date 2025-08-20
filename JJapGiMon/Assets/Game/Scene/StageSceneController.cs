@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(StageManager))]
 [RequireComponent(typeof(StageInputManager))]
@@ -21,6 +22,8 @@ public class StageSceneController : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private StageMapUI stageMapUI;
+    [SerializeField] private StageBackgroundTable stageBackgroundTable;
+    [SerializeField] private Image backgroundImage;
 
     [Header("Party Configuration")]
     [Tooltip("List of player character IDs to include in the stage")]
@@ -53,6 +56,10 @@ public class StageSceneController : MonoBehaviour
 
         if (stageInputManager == null)
             stageInputManager = GetComponent<StageInputManager>();
+
+        // Background Image 세팅
+        backgroundImage.preserveAspect = true;
+        backgroundImage.raycastTarget = false;
 
         // TODO StageManager, stageInputManager는 Start에서 초기(Initialize)화 하자! 여기서 작업할거라면 Bind만
     }
@@ -90,9 +97,13 @@ public class StageSceneController : MonoBehaviour
 
         // 캐릭터 정보 세팅 todo
 
+        // Background Image 세팅
+        backgroundImage.sprite = stageBackgroundTable.Get(args.StageId);
+
         // StageManager 초기화 및 시작
         stageManager.Initialize(args);
         stageManager.StartStage();
+
     }
 
     /// <summary>

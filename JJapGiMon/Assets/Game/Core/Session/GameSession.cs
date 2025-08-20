@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameSession : MonoBehaviour
 {
@@ -13,6 +14,23 @@ public class GameSession : MonoBehaviour
         PendingStageLaunch = null; 
         return x; 
     }
+
+    private readonly Dictionary<System.Type, object> _payloads = new();
+
+    public void Set<T>(T value) where T : class => _payloads[typeof(T)] = value;
+
+    public bool TryConsume<T>(out T value) where T : class
+    {
+        if (_payloads.TryGetValue(typeof(T), out var obj) && obj is T v)
+        {
+            value = v; _payloads.Remove(typeof(T));
+            return true;
+        }
+        value = null; return false;
+    }
+
+
+    // ────────────────────────── 싱글톤/수명 보장 ──────────────────────────
 
     private static GameSession Create()
     {
@@ -35,6 +53,13 @@ public class GameSession : MonoBehaviour
     private static void EnsureBeforeFirstScene()
     {
         if (_instance == null) Create();
+    }
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this) { Destroy(gameObject); return; }
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
 }

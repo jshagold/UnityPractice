@@ -13,6 +13,7 @@ public class StageMapUI : MonoBehaviour
     // 설정은 StageController에서 관리
 
     [Header("UI Refs")]
+    [SerializeField] private Image backgroundImage;
     [SerializeField] private RectTransform mapRoot;        // UIRootCanvas 하위 Panel 등
     [SerializeField] private Button startRoomButtonPrefab;      // (TMP)Text 포함 프리팹
     [SerializeField] private Button battleRoomButtonPrefab;      // (TMP)Text 포함 프리팹
@@ -52,7 +53,7 @@ public class StageMapUI : MonoBehaviour
 
     private void Update()
     {
-
+        
     }
 
 
@@ -81,7 +82,7 @@ public class StageMapUI : MonoBehaviour
     // 배경 생성
     private void CreateBackground(int stageId)
     {
-
+        
     }
 
     // 노드 위치 계산
@@ -200,14 +201,6 @@ public class StageMapUI : MonoBehaviour
         rectTransform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
-
-    // 현재 노드 업데이트 (컨트롤러에서 호출)
-    public void UpdateCurrentNode(StageNode newNode)
-    {
-        currentNode = newNode;
-        UpdateButtonStates();
-    }
-
     // 노드 상태 업데이트
     private void UpdateButtonStates()
     {
@@ -243,7 +236,7 @@ public class StageMapUI : MonoBehaviour
     private bool IsNodeAccessible(StageNode node)
     {
         if (currentNode == null) return false;
-        
+
         // 현재 노드의 자식들만 접근 가능
         return currentNode.children.Contains(node);
     }

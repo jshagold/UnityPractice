@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultSprite: {fileID: 0}
   entries:
-  - stageId: 0
-    sprite: {fileID: 0}
+  - stageId: 1
+    sprite: {fileID: 6720236472099686341, guid: 771c6e5195bc1084f9640fc4fc8e6476, type: 3}
+  - stageId: 2
+    sprite: {fileID: 9172489035796222400, guid: 0cd5ad0da64af99409711d7e8e84e37e, type: 3}

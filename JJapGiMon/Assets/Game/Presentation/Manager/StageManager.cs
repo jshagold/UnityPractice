@@ -18,7 +18,7 @@ public class StageManager : MonoBehaviour
     private bool _initialized;
 
     // 세션 정보
-    private StageLaunchArgs args;
+    private StageLaunchArgs sessionArgs;
 
     private StageMapGenerator stageMapGenerator;
     private IStageRepository stageRepository;
@@ -43,16 +43,16 @@ public class StageManager : MonoBehaviour
     // 초기화
     public void Initialize(StageLaunchArgs args)
     {
-        args = args ?? new StageLaunchArgs { StageId = -1 };
+        sessionArgs = args ?? new StageLaunchArgs { StageId = -1 };
 
         // 1) Repository 준비
         stageRepository = new LocalStageRepository();
 
         // 2) Stage 데이터 로드 (args.contentID 사용)
-        currentStageData = LoadStage(args.ContentId);
+        currentStageData = LoadStage(sessionArgs.ContentId) ?? new StageData();
 
         // 3) 스테이지 생성기 준비
-        stageMapGenerator = new StageMapGenerator(currentStageData ?? new StageData());
+        stageMapGenerator = new StageMapGenerator(currentStageData);
 
         _initialized = true;
     }
@@ -72,7 +72,7 @@ public class StageManager : MonoBehaviour
         if (currentStageData.allNodes == null || currentStageData.allNodes.Count == 0)
         {
             // 맵 데이터가 없으면 생성
-            stageMapGenerator = new StageMapGenerator(args.Seed ?? -1);
+            stageMapGenerator = new StageMapGenerator(sessionArgs.Seed ?? -1);
             currentStageData = stageMapGenerator.GenerateCompleteStageData();
         }
         
@@ -93,7 +93,7 @@ public class StageManager : MonoBehaviour
         Debug.Log($"스테이지 시작: {currentStageData.stageName}");
 
 
-        OnStageGenerated?.Invoke(args.StageId);
+        OnStageGenerated?.Invoke(sessionArgs.StageId);
     }
 
     /// <summary>
@@ -361,7 +361,7 @@ public class StageManager : MonoBehaviour
         {
             try
             {
-                stageRepository.Save(args.ContentId, currentStageData);
+                stageRepository.Save(sessionArgs.ContentId, currentStageData);
                 Debug.Log("스테이지 데이터 저장 완료");
             }
             catch (System.Exception ex)

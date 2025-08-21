@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: New Stage Background Table
   m_EditorClassIdentifier: 
   defaultSprite: {fileID: 0}
-  entries: []
+  entries:
+  - stageId: 0
+    sprite: {fileID: 0}

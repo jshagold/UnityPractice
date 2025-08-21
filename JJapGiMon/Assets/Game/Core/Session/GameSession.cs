@@ -7,13 +7,13 @@ public class GameSession : MonoBehaviour
     public static GameSession I => _instance ??= Create();
 
     // 넘길 값 DTO 등
-    public StageLaunchArgs PendingStageLaunch { get; private set; }
-    public void SetStageLaunchArgs(StageLaunchArgs args) => PendingStageLaunch = args;
-    public StageLaunchArgs ConsumeStageLaunchArgs() { 
-        var x = PendingStageLaunch; 
-        PendingStageLaunch = null; 
-        return x; 
-    }
+    // public StageLaunchArgs PendingStageLaunch { get; private set; }
+    // public void SetStageLaunchArgs(StageLaunchArgs args) => PendingStageLaunch = args;
+    // public StageLaunchArgs ConsumeStageLaunchArgs() { 
+    //     var x = PendingStageLaunch; 
+    //     PendingStageLaunch = null; 
+    //     return x; 
+    // }
 
     private readonly Dictionary<System.Type, object> _payloads = new();
 

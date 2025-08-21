@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Mono.Cecil.Cil;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -44,8 +45,12 @@ public class StageSceneController : MonoBehaviour
         Debug.Log("Stage Scene Awake");
 
         // 1) 세선에서 DTO 가져오기. (null 일때는 기본값.)
-        args = GameSession.I.ConsumeStageLaunchArgs()
-            ?? new StageLaunchArgs { StageId = -1 };
+        if (GameSession.I.TryConsume<StageLaunchArgs>(out var args))
+        {
+            this.args = args;
+        } else {
+            this.args = new StageLaunchArgs { StageId = -1 };
+        }
 
         // 2) 참조 확보 Ensure Manager references
         if (stageManager == null)

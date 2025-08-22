@@ -220,6 +220,98 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &66532773
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 66532774}
+  - component: {fileID: 66532775}
+  m_Layer: 0
+  m_Name: StageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &66532774
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66532773}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -805.29236, y: 440.90326, z: -20.961765}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1110790349}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &66532775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66532773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc714e2f509d04843b23629e41b6836d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentStageData:
+    stageName: 
+    stageDescription: 
+    stageLength: 5
+    MinNodeCountByDepth: 1
+    MaxNodeCountByDepth: 5
+    lastRoomCount: 3
+    rootNode:
+      nodeId: 0
+      depth: 0
+      index: 0
+      type: 0
+      seed: 0
+      childNodeIds: 
+      state: 0
+    allNodes: []
+    currentNodeId: 0
+    visitedNodeIds: 
+    availableNodeIds: 
+    isCompleted: 0
+    isFailed: 0
+    characterStates: []
+  currentStageMap:
+    nodeId: 0
+    depth: 0
+    index: 0
+    type: 0
+    state: 0
+    seed: 0
+    children: []
+    roomName: 
+    roomDescription: 
+    isVisited: 0
+    isAvailable: 0
+  currentNode:
+    nodeId: 0
+    depth: 0
+    index: 0
+    type: 0
+    state: 0
+    seed: 0
+    children: []
+    roomName: 
+    roomDescription: 
+    isVisited: 0
+    isAvailable: 0
+  isStageActive: 0
+  currentDepth: 0
 --- !u!1 &326728989
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,8 +660,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1110790349}
-  - component: {fileID: 1110790352}
-  - component: {fileID: 1110790351}
   - component: {fileID: 1110790350}
   m_Layer: 0
   m_Name: StageController
@@ -590,7 +680,9 @@ Transform:
   m_LocalPosition: {x: 858.29913, y: 752.8503, z: -1.3509032}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 66532774}
+  - {fileID: 1313692343}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1110790350
@@ -636,80 +728,6 @@ MonoBehaviour:
   backgroundImage: {fileID: 1020078859}
   playerIdList: []
   debugMode: 0
---- !u!114 &1110790351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1110790348}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16201038c3192594e8e1b59b2e399266, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stageMapUI: {fileID: 0}
-  stageManager: {fileID: 0}
---- !u!114 &1110790352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1110790348}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc714e2f509d04843b23629e41b6836d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentStageData:
-    stageName: 
-    stageDescription: 
-    stageLength: 5
-    MinNodeCountByDepth: 1
-    MaxNodeCountByDepth: 5
-    lastRoomCount: 3
-    rootNode:
-      nodeId: 0
-      depth: 0
-      index: 0
-      type: 0
-      seed: 0
-      childNodeIds: 
-      state: 0
-    allNodes: []
-    currentNodeId: 0
-    visitedNodeIds: 
-    availableNodeIds: 
-    isCompleted: 0
-    isFailed: 0
-    characterStates: []
-  currentStageMap:
-    nodeId: 0
-    depth: 0
-    index: 0
-    type: 0
-    state: 0
-    seed: 0
-    children: []
-    roomName: 
-    roomDescription: 
-    isVisited: 0
-    isAvailable: 0
-  currentNode:
-    nodeId: 0
-    depth: 0
-    index: 0
-    type: 0
-    state: 0
-    seed: 0
-    children: []
-    roomName: 
-    roomDescription: 
-    isVisited: 0
-    isAvailable: 0
-  isStageActive: 0
-  currentDepth: 0
 --- !u!1 &1160226990
 GameObject:
   m_ObjectHideFlags: 0
@@ -948,6 +966,52 @@ RectTransform:
   m_AnchoredPosition: {x: 960, y: 540}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1313692342
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1313692343}
+  - component: {fileID: 1313692344}
+  m_Layer: 0
+  m_Name: StageInputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1313692343
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313692342}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1110790349}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1313692344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313692342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16201038c3192594e8e1b59b2e399266, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageMapUI: {fileID: 0}
+  stageManager: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

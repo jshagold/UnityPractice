@@ -5,8 +5,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(StageManager))]
-[RequireComponent(typeof(StageInputManager))]
 public class StageSceneController : MonoBehaviour
 {
     [Header("Stage Configuration")]
@@ -54,7 +52,7 @@ public class StageSceneController : MonoBehaviour
 
         // 2) 참조 확보 Ensure Manager references
         if (stageManager == null)
-            stageManager = GetComponent<StageManager>();
+            stageManager = GetComponentInChildren<StageManager>(true);
 
         if(stageMapUI == null)
             stageMapUI = GetComponent<StageMapUI>();

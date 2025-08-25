@@ -51,7 +51,7 @@ public class StageNode
         switch (type)
         {
             case StageRoomType.Start:
-                roomName = "시작 지점";
+                roomName = "Start";
                 roomDescription = "스테이지의 시작점입니다.";
                 isAvailable = true; // 시작 방은 항상 접근 가능
                 break;
@@ -67,7 +67,7 @@ public class StageNode
                 break;
                 
             case StageRoomType.Boss:
-                roomName = "보스 방";
+                roomName = "Boss";
                 roomDescription = "강력한 보스가 기다리고 있습니다.";
                 break;
         }
@@ -101,7 +101,7 @@ public class StageNode
     {
         return battleType switch
         {
-            BattleRoomType.Normal => "일반 전투",
+            BattleRoomType.Normal => "Normal Battle",
             _ => "전투 방"
         };
     }
@@ -120,6 +120,12 @@ public class StageNode
     /// </summary>
     public void AddChild(StageNode child)
     {
+        // 중복 체크
+        if (children.Contains(child))
+        {
+            return; // 이미 존재하는 자식이면 추가하지 않음
+        }
+        
         child.parent = this;
         children.Add(child);
     }

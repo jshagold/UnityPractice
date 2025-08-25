@@ -28,7 +28,7 @@ public class MainSceneController : MonoBehaviour
         {
             StageId = 1,
             ContentId = "daily_stage_1",
-            Seed = 1000,
+            Seed = null,
             PartyCharacterIds = new string[] { "1", "2", "3" },
         };
         var questArgs = new StageLaunchArgs

@@ -1,23 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class StageMapGenerator
 {
-    private readonly Random random;
+    private readonly System.Random random;
     private readonly StageData stageData;
     private int nextNodeId = 0;
 
     public StageMapGenerator(StageData stageData)
     {
         this.stageData = stageData;
-        this.random = new Random(stageData.randomSeed ?? Environment.TickCount);
+        this.random = new System.Random(stageData.randomSeed ?? Environment.TickCount);
     }
 
     public StageMapGenerator(int seed)
     {
         this.stageData = new StageData();
-        this.random = new Random(seed);
+        this.random = new System.Random(seed);
     }
 
     /// <summary>
@@ -28,11 +29,33 @@ public class StageMapGenerator
         // 1. 깊이별 노드 생성
         var nodesByDepth = GenerateNodesByDepth();
         
+        // 디버깅: 각 depth의 노드 개수 출력
+        Debug.Log("=== 노드 생성 후 각 depth별 노드 개수 ===");
+        foreach (var kvp in nodesByDepth)
+        {
+            Debug.Log($"Depth {kvp.Key}: {kvp.Value.Count}개 노드");
+        }
+        
         // 2. 노드들 간의 무작위 연결 생성
         GenerateRandomConnections(nodesByDepth);
         
+        // 디버깅: 연결 후 각 depth의 노드 개수 출력
+        Debug.Log("=== 연결 생성 후 각 depth별 노드 개수 ===");
+        foreach (var kvp in nodesByDepth)
+        {
+            Debug.Log($"Depth {kvp.Key}: {kvp.Value.Count}개 노드");
+        }
+        
         // 3. 모든 노드를 StageNodeData로 변환
         var allNodes = ConvertAllNodesToData(nodesByDepth);
+        
+        // 디버깅: 변환 후 각 depth의 노드 개수 출력
+        Debug.Log("=== 변환 후 각 depth별 노드 개수 ===");
+        var depthGroups = allNodes.GroupBy(n => n.depth).OrderBy(g => g.Key);
+        foreach (var group in depthGroups)
+        {
+            Debug.Log($"Depth {group.Key}: {group.Count()}개 노드");
+        }
         
         // 4. 완전한 StageData 생성
         var completeStageData = new StageData
@@ -160,11 +183,17 @@ public class StageMapGenerator
             var currentNodes = nodesByDepth[depth];
             var nextNodes = nodesByDepth[depth + 1];
             
+            Debug.Log($"=== Depth {depth} -> {depth + 1} 연결 생성 ===");
+            Debug.Log($"현재 depth {depth}: {currentNodes.Count}개 노드");
+            Debug.Log($"다음 depth {depth + 1}: {nextNodes.Count}개 노드");
+            
             // 먼저 모든 노드가 최소 하나의 연결을 가지도록 보장
             EnsureMinimumConnections(currentNodes, nextNodes);
             
             // 간선 수 제한을 적용한 추가 연결 생성
             GenerateLimitedRandomConnections(currentNodes, nextNodes);
+            
+            Debug.Log($"연결 생성 후 depth {depth + 1}: {nextNodes.Count}개 노드");
         }
     }
 
@@ -206,23 +235,16 @@ public class StageMapGenerator
     /// </summary>
     private void GenerateLimitedRandomConnections(List<StageNode> currentNodes, List<StageNode> nextNodes)
     {
-        // 현재 깊이 전체가 가질 수 있는 최대 간선 수 (자식 노드 수 + 1개)
-        int maxTotalConnections = nextNodes.Count + 1;
+        // 각 노드가 가질 수 있는 자식 노드의 개수는 제한하지 않음
+        // 대신 전체적인 연결 구조를 자연스럽게 만들기 위해 추가 연결 생성
         
         // 현재 깊이의 모든 노드가 이미 가진 간선 수의 총합
         int currentTotalConnections = currentNodes.Sum(n => n.children.Count);
         
-        // 추가로 생성할 수 있는 총 간선 수
-        int remainingConnections = maxTotalConnections - currentTotalConnections;
+        // 추가 연결을 무작위로 생성 (기하급수적 증가 방지)
+        int maxAdditionalConnections = Math.Max(1, nextNodes.Count / 2); // 최대 추가 연결 수 제한
         
-        if (remainingConnections <= 0)
-        {
-            // 이미 최대 간선 수에 도달했으면 추가 연결하지 않음
-            return;
-        }
-        
-        // 추가 연결을 무작위로 분배
-        for (int i = 0; i < remainingConnections; i++)
+        for (int i = 0; i < maxAdditionalConnections; i++)
         {
             // 랜덤하게 부모 노드 선택
             var randomParent = currentNodes[random.Next(currentNodes.Count)];
@@ -293,7 +315,7 @@ public class StageMapGenerator
     /// </summary>
     private StageRoomType DetermineRoomType(int seed)
     {
-        var localRandom = new Random(seed);
+        var localRandom = new System.Random(seed);
         return localRandom.Next(2) == 0 ? StageRoomType.Event : StageRoomType.Battle;
     }
 
@@ -302,7 +324,7 @@ public class StageMapGenerator
     /// </summary>
     private EventRoomType DetermineEventType(int seed)
     {
-        var localRandom = new Random(seed);
+        var localRandom = new System.Random(seed);
         var eventTypes = (EventRoomType[])Enum.GetValues(typeof(EventRoomType));
         return eventTypes[localRandom.Next(eventTypes.Length)];
     }
@@ -312,7 +334,7 @@ public class StageMapGenerator
     /// </summary>
     private BattleRoomType DetermineBattleType(int seed)
     {
-        var localRandom = new Random(seed);
+        var localRandom = new System.Random(seed);
         var battleTypes = (BattleRoomType[])Enum.GetValues(typeof(BattleRoomType));
         return battleTypes[localRandom.Next(battleTypes.Length)];
     }

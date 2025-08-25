@@ -7,7 +7,7 @@ public class StageManager : MonoBehaviour
 {
     [Header("스테이지 설정")]
     [SerializeField] private StageData currentStageData;
-    [SerializeField] private StageNode currentStageMap;
+    [SerializeField] private StageNode rootNode;
     [SerializeField] private StageNode currentNode;
 
     [Header("스테이지 진행 상태")]
@@ -24,14 +24,14 @@ public class StageManager : MonoBehaviour
     private IStageRepository stageRepository;
 
     public StageData CurrentStageData => currentStageData;
-    public StageNode CurrentStageMap => currentStageMap;
+    public StageNode CurrentStageMap => rootNode;
     public StageNode CurrentNode => currentNode;
     public bool IsStageActive => isStageActive;
     public int CurrentDepth => currentDepth;
 
 
     // 이벤트
-    public event Action<int> OnStageGenerated;
+    public event Action<int, StageNode> OnStageGenerated;
 
     
     void Awake()
@@ -72,18 +72,18 @@ public class StageManager : MonoBehaviour
         if (currentStageData.allNodes == null || currentStageData.allNodes.Count == 0)
         {
             // 맵 데이터가 없으면 생성
-            stageMapGenerator = new StageMapGenerator(sessionArgs.Seed ?? -1);
+            stageMapGenerator = new StageMapGenerator(sessionArgs.Seed ?? Environment.TickCount);
             currentStageData = stageMapGenerator.GenerateCompleteStageData();
         }
         
         // 🆕 저장된 맵 데이터로 복원
-        currentStageMap = RestoreStageMap(currentStageData.rootNode, currentStageData.allNodes);
+        rootNode = RestoreStageMap(currentStageData.rootNode, currentStageData.allNodes);
         
         // 현재 노드 설정
         currentNode = GetNodeById(currentStageData.currentNodeId);
         if (currentNode == null)
         {
-            currentNode = currentStageMap; // 시작 노드로 설정
+            currentNode = rootNode; // 시작 노드로 설정
             currentStageData.currentNodeId = currentNode.nodeId;
         }
         
@@ -93,7 +93,7 @@ public class StageManager : MonoBehaviour
         Debug.Log($"스테이지 시작: {currentStageData.stageName}");
 
 
-        OnStageGenerated?.Invoke(sessionArgs.StageId);
+        OnStageGenerated?.Invoke(sessionArgs.StageId, rootNode);
     }
 
     /// <summary>
@@ -132,7 +132,7 @@ public class StageManager : MonoBehaviour
     /// </summary>
     private StageNode GetNodeById(int nodeId)
     {
-        return FindNodeRecursive(currentStageMap, nodeId);
+        return FindNodeRecursive(rootNode, nodeId);
     }
 
     private StageNode FindNodeRecursive(StageNode node, int targetId)
@@ -331,10 +331,10 @@ public class StageManager : MonoBehaviour
     /// </summary>
     public void PrintStageMap()
     {
-        if (currentStageMap != null)
+        if (rootNode != null)
         {
             Debug.Log("=== 현재 스테이지 맵 ===");
-            PrintNodeRecursive(currentStageMap, "");
+            PrintNodeRecursive(rootNode, "");
         }
     }
 

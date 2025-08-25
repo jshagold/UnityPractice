@@ -13,7 +13,6 @@ public class StageMapUI : MonoBehaviour
     // 설정은 StageController에서 관리
 
     [Header("UI Refs")]
-    [SerializeField] private Image backgroundImage;
     [SerializeField] private RectTransform mapRoot;        // UIRootCanvas 하위 Panel 등
     [SerializeField] private Button startRoomButtonPrefab;      // (TMP)Text 포함 프리팹
     [SerializeField] private Button battleRoomButtonPrefab;      // (TMP)Text 포함 프리팹
@@ -58,12 +57,11 @@ public class StageMapUI : MonoBehaviour
 
 
     // 맵 렌더링
-    private void RenderMap(int stageId)
+    private void RenderMap(int stageId, StageNode rootNode)
     {
-        // TODO stage id에 따른 배경 생성
-        CreateBackground(stageId);
-
+        this.rootNode = rootNode;
         if (rootNode == null) return;
+        Debug.Log("RenderMap");
 
         // 트리 구조를 순회하며 노드들을 렌더링
         var nodePositions = CalculateNodePositions();
@@ -77,12 +75,6 @@ public class StageMapUI : MonoBehaviour
 
         // 연결선 그리기
         DrawConnections(nodePositions);
-    }
-
-    // 배경 생성
-    private void CreateBackground(int stageId)
-    {
-        
     }
 
     // 노드 위치 계산
@@ -140,7 +132,6 @@ public class StageMapUI : MonoBehaviour
             _ => Instantiate(startRoomButtonPrefab, mapRoot),
         };
 
-        // var button = Instantiate(roomButtonPrefab, mapRoot);
         var rectTransform = button.GetComponent<RectTransform>();
         
         // 위치 설정
@@ -254,13 +245,13 @@ public class StageMapUI : MonoBehaviour
         switch (node.type)
         {
             case StageRoomType.Start:
-                return "시작";
+                return node.roomName;
             case StageRoomType.Battle:
-                return "전투";
+                return node.roomName;
             case StageRoomType.Event:
-                return "이벤트";
+                return node.roomName;
             case StageRoomType.Boss:
-                return node.state == StageStateType.SUCCESS ? "목표" : "보스";
+                return node.roomName;
             default:
                 return "방";
         }
@@ -279,7 +270,7 @@ public class StageMapUI : MonoBehaviour
             case StageRoomType.Event:
                 return eventRoomColor;
             case StageRoomType.Boss:
-                return node.state == StageStateType.SUCCESS ? goalRoomColor : bossRoomColor;
+                return bossRoomColor;
             default:
                 return Color.white;
         }

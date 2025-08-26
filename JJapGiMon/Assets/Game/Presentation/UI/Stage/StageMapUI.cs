@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class StageMapUI : MonoBehaviour
 {
@@ -95,6 +96,16 @@ public class StageMapUI : MonoBehaviour
         // 트리를 순회하며 depth별로 노드들을 그룹화
         CollectNodesByDepth(rootNode, depthGroups, new HashSet<StageNode>());
         
+        // 전체 맵의 크기 계산
+        int maxDepth = depthGroups.Keys.Max();
+        int minDepth = depthGroups.Keys.Min();
+        float totalWidth = (maxDepth - minDepth) * 200f;
+        
+        // 맵의 중심점 계산
+        float mapCenterX = totalWidth * 0.5f;
+        
+        Debug.Log($"맵 크기: {minDepth} ~ {maxDepth}, 총 너비: {totalWidth}, 중심점: {mapCenterX}");
+        
         // 각 depth별로 노드들의 위치 계산
         foreach (var kvp in depthGroups)
         {
@@ -104,8 +115,12 @@ public class StageMapUI : MonoBehaviour
             
             for (int i = 0; i < nodes.Count; i++)
             {
-                float xPos = depth * 200f;
+                // X 위치: depth에 따라 계산하되, 맵의 중심을 0으로 맞춤
+                float xPos = (depth - minDepth) * 200f - mapCenterX;
+                
+                // Y 위치: 각 depth 내에서 노드들을 세로로 배치
                 float yPos = (i - (nodes.Count - 1) * 0.5f) * 150f;
+                
                 positions[nodes[i]] = new Vector2(xPos, yPos);
             }
         }

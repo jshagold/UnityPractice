@@ -311,12 +311,16 @@ public class StageMapGenerator
     }
 
     /// <summary>
-    /// 방 타입 결정
+    /// 방 타입 결정 (이벤트:전투 = 3:7 비율)
     /// </summary>
     private StageRoomType DetermineRoomType(int seed)
     {
         var localRandom = new System.Random(seed);
-        return localRandom.Next(2) == 0 ? StageRoomType.Event : StageRoomType.Battle;
+        int randomValue = localRandom.Next(10); // 0~9
+        
+        // 0, 1, 2 (30%) -> 이벤트 방
+        // 3, 4, 5, 6, 7, 8, 9 (70%) -> 전투 방
+        return randomValue < 3 ? StageRoomType.Event : StageRoomType.Battle;
     }
 
     /// <summary>

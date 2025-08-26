@@ -63,13 +63,22 @@ public class StageMapUI : MonoBehaviour
         if (rootNode == null) return;
         Debug.Log("RenderMap");
 
+        // 기존 UI 요소들 정리
+        Clear();
+
+        // 디버깅: 받은 rootNode 정보 출력
+        Debug.Log($"받은 rootNode - Depth: {rootNode.depth}, Type: {rootNode.type}, Children Count: {rootNode.children?.Count ?? 0}");
+
         // 트리 구조를 순회하며 노드들을 렌더링
         var nodePositions = CalculateNodePositions();
+        
+        Debug.Log($"계산된 노드 위치 개수: {nodePositions.Count}");
         
         foreach (var kvp in nodePositions)
         {
             var node = kvp.Key;
             var position = kvp.Value;
+            Debug.Log($"노드 생성: {node.roomName} (Depth: {node.depth}, Type: {node.type}) at {position}");
             CreateRoomButton(node, position);
         }
 
@@ -91,6 +100,7 @@ public class StageMapUI : MonoBehaviour
         {
             int depth = kvp.Key;
             var nodes = kvp.Value;
+            Debug.Log($"Depth {kvp.Key}: {kvp.Value.Count}개 노드");
             
             for (int i = 0; i < nodes.Count; i++)
             {
@@ -114,9 +124,15 @@ public class StageMapUI : MonoBehaviour
         
         depthGroups[node.depth].Add(node);
         
-        foreach (var child in node.children)
+        Debug.Log($"노드 수집: {node.roomName} (ID: {node.nodeId}, Depth: {node.depth}, Children: {node.children?.Count ?? 0})");
+        
+        // 자식 노드들을 순회 (순서 유지)
+        if (node.children != null)
         {
-            CollectNodesByDepth(child, depthGroups, visited);
+            foreach (var child in node.children)
+            {
+                CollectNodesByDepth(child, depthGroups, visited);
+            }
         }
     }
 
@@ -286,12 +302,14 @@ public class StageMapUI : MonoBehaviour
         }
         roomButtons.Clear();
         
-        // 연결선들도 제거
+        // 연결선들도 제거 (mapRoot의 모든 자식 중에서 connectionImagePrefab이 아닌 것들)
         var connections = mapRoot.GetComponentsInChildren<Image>();
         foreach (var connection in connections)
         {
             if (connection != connectionImagePrefab)
                 DestroyImmediate(connection.gameObject);
         }
+        
+        Debug.Log("UI 요소들 정리 완료");
     }
 }

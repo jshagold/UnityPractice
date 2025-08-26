@@ -79,6 +79,10 @@ public class StageManager : MonoBehaviour
         // 🆕 저장된 맵 데이터로 복원
         rootNode = RestoreStageMap(currentStageData.rootNode, currentStageData.allNodes);
         
+        // 디버깅: 복원된 맵 구조 출력
+        Debug.Log("=== 복원된 맵 구조 ===");
+        PrintMapStructure(rootNode);
+        
         // 현재 노드 설정
         currentNode = GetNodeById(currentStageData.currentNodeId);
         if (currentNode == null)
@@ -102,11 +106,18 @@ public class StageManager : MonoBehaviour
     private StageNode RestoreStageMap(StageNodeData rootData, List<StageNodeData> allNodes)
     {
         var nodeMap = allNodes.ToDictionary(n => n.nodeId);
-        return RestoreNodeRecursive(rootData, nodeMap);
+        var restoredNodes = new Dictionary<int, StageNode>(); // 노드 캐싱
+        return RestoreNodeRecursive(rootData, nodeMap, restoredNodes);
     }
 
-    private StageNode RestoreNodeRecursive(StageNodeData nodeData, Dictionary<int, StageNodeData> nodeMap)
+    private StageNode RestoreNodeRecursive(StageNodeData nodeData, Dictionary<int, StageNodeData> nodeMap, Dictionary<int, StageNode> restoredNodes)
     {
+        // 이미 복원된 노드가 있으면 반환
+        if (restoredNodes.ContainsKey(nodeData.nodeId))
+        {
+            return restoredNodes[nodeData.nodeId];
+        }
+
         // StageNode 생성 (런타임 정보는 생성자에서 자동으로 설정됨)
         var node = new StageNode(nodeData.depth, nodeData.index, nodeData.type, nodeData.eventType, nodeData.battleType, nodeData.seed)
         {
@@ -114,12 +125,15 @@ public class StageManager : MonoBehaviour
             state = nodeData.state
         };
 
+        // 캐시에 추가
+        restoredNodes[nodeData.nodeId] = node;
+
         // 자식 노드들 복원
         foreach (var childId in nodeData.childNodeIds)
         {
             if (nodeMap.ContainsKey(childId))
             {
-                var childNode = RestoreNodeRecursive(nodeMap[childId], nodeMap);
+                var childNode = RestoreNodeRecursive(nodeMap[childId], nodeMap, restoredNodes);
                 node.AddChild(childNode);
             }
         }
@@ -146,6 +160,19 @@ public class StageManager : MonoBehaviour
         }
         
         return null;
+    }
+
+    /// <summary>
+    /// 맵 구조를 출력합니다 (디버깅용)
+    /// </summary>
+    private void PrintMapStructure(StageNode node, string indent = "")
+    {
+        Debug.Log($"{indent}{node.roomName} (ID: {node.nodeId}, Depth: {node.depth}, Type: {node.type})");
+        
+        foreach (var child in node.children)
+        {
+            PrintMapStructure(child, indent + "  ");
+        }
     }
 
     /// <summary>

@@ -51,6 +51,8 @@ public sealed class StageInputManager : MonoBehaviour
     {
         if (stageManager != null && stageManager.IsStageActive)
         {
+            Debug.Log($"HandleNodeClicked: {clickedNode.roomName}");
+
             // 클릭된 노드가 현재 노드의 자식인지 확인
             var availableChildren = stageManager.GetAvailableChildren();
             int childIndex = availableChildren.IndexOf(clickedNode);

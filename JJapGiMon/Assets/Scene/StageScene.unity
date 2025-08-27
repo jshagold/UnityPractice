@@ -1161,8 +1161,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16201038c3192594e8e1b59b2e399266, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageMapUI: {fileID: 0}
-  stageManager: {fileID: 0}
+  stageMapUI: {fileID: 406334465}
+  stageManager: {fileID: 66532775}
 --- !u!1 &1967855825
 GameObject:
   m_ObjectHideFlags: 0

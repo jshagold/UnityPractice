@@ -4,9 +4,10 @@ using System.Linq;
 
 public class StageConfig
 {
+    // 기본 정보
     public int stageId;
-    public string stageDisplayName;
-    public string stageDescription;
+    public string stageName;                // 스테이지 이름
+    public string stageDescription;         // 스테이지 설명
 
     // 맵 생성 설정
     public int stageLength = 5;             // 스테이지의 총 길이 (시작, 보스 포함)
@@ -14,6 +15,9 @@ public class StageConfig
     public int MaxNodeCountByDepth = 5;     // 깊이에서 생성되는 최대 노드 수
     public int? randomSeed = null;          // 스테이지의 랜덤 시드
     public int lastRoomCount = 3;           // 마지막 방 개수
+    
+    // 난이도 설정
+    public int? Difficulty { get; init; }
 
     // 방 타입 가중치
     public List<RoomTypeWeight> roomTypeWeights = new()

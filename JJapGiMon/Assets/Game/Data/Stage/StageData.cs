@@ -5,17 +5,6 @@ using System.Linq;
 [Serializable]
 public class StageData
 {
-    // 기본 정보
-    public int? stageId;                    // 스테이지의 고유 key값 (null이면 랜덤 생성)
-    public string stageName;                // 스테이지 이름
-    public string stageDescription;         // 스테이지 설명
-    
-    // 맵 생성 설정
-    public int stageLength = 5;             // 스테이지의 총 길이 (시작, 보스 포함)
-    public int MinNodeCountByDepth = 1;     // 깊이에서 생성되는 최소 노드 수
-    public int MaxNodeCountByDepth = 5;     // 깊이에서 생성되는 최대 노드 수
-    public int? randomSeed = null;          // 스테이지의 랜덤 시드
-    public int lastRoomCount = 3;           // 마지막 방 개수
 
     // 🆕 실제 맵 데이터
     public StageNodeData rootNode;          // 시작 
@@ -31,44 +20,11 @@ public class StageData
     public bool isCompleted;                // 스테이지 완료 여부
     public bool isFailed;                   // 스테이지 실패 여부   
 
-    // 🆕 캐릭터 상태 (저장/로드용)
-    public List<CharacterSaveData> characterStates; // 캐릭터들의 현재 상태
-
     public StageData()
     {
         allNodes = new List<StageNodeData>();
         visitedNodeIds = new List<int>();
         availableNodeIds = new List<int>();
-        characterStates = new List<CharacterSaveData>();
-        isCompleted = false;
-        isFailed = false;
-    }
-
-    public StageData(
-        int? stageId,
-        string stageName, 
-        string stageDescription, 
-        int stageLength = 5, 
-        int MinNodeCountByDepth = 1,
-        int MaxNodeCountByDepth = 5, 
-        int? randomSeed = null, 
-        int lastRoomCount = 3
-        )
-    {
-        this.stageId = stageId;
-        this.stageName = stageName;
-        this.stageDescription = stageDescription;
-        this.stageLength = stageLength;
-        this.MinNodeCountByDepth = MinNodeCountByDepth;
-        this.MaxNodeCountByDepth = MaxNodeCountByDepth;
-        this.randomSeed = randomSeed;
-        this.lastRoomCount = lastRoomCount;
-
-        // 초기화
-        allNodes = new List<StageNodeData>();
-        visitedNodeIds = new List<int>();
-        availableNodeIds = new List<int>();
-        characterStates = new List<CharacterSaveData>();
         isCompleted = false;
         isFailed = false;
     }
@@ -215,6 +171,6 @@ public class StageData
 
     public override string ToString()
     {
-        return $"Stage: {stageName} (ID: {stageId}, Length: {stageLength}, Choices: {MaxNodeCountByDepth}, Progress: {GetProgressPercentage():F1}%)"  ;
+        return $"Stage: {stageName} (ID: {stageId}, Progress: {GetProgressPercentage():F1}%)"  ;
     }
 }

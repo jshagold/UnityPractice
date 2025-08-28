@@ -6,18 +6,18 @@ using UnityEngine;
 public class StageMapGenerator
 {
     private readonly System.Random random;
-    private readonly StageData stageData;
+    private readonly StageConfig stageConfig;
     private int nextNodeId = 0;
 
-    public StageMapGenerator(StageData stageData)
+    public StageMapGenerator(StageConfig stageConfig)
     {
-        this.stageData = stageData;
-        this.random = new System.Random(stageData.randomSeed ?? Environment.TickCount);
+        this.stageConfig = stageConfig;
+        this.random = new System.Random(stageConfig.randomSeed ?? Environment.TickCount);
     }
 
     public StageMapGenerator(int seed)
     {
-        this.stageData = new StageData();
+        this.stageConfig = new StageConfig();
         this.random = new System.Random(seed);
     }
 
@@ -59,15 +59,7 @@ public class StageMapGenerator
         
         // 4. 완전한 StageData 생성
         var completeStageData = new StageData
-        {
-            stageId = stageData.stageId,
-            stageName = stageData.stageName,
-            stageDescription = stageData.stageDescription,
-            stageLength = stageData.stageLength,
-            MaxNodeCountByDepth = stageData.MaxNodeCountByDepth,
-            randomSeed = stageData.randomSeed,
-            lastRoomCount = stageData.lastRoomCount,
-            
+        {   
             // 맵 데이터
             rootNode = allNodes.First(n => n.depth == 0),
             allNodes = allNodes,
@@ -76,7 +68,6 @@ public class StageMapGenerator
             currentNodeId = allNodes.First(n => n.depth == 0).nodeId,
             visitedNodeIds = new List<int>(),
             availableNodeIds = new List<int>(),
-            characterStates = stageData.characterStates ?? new List<CharacterSaveData>(),
             isCompleted = false,
             isFailed = false
         };
@@ -107,9 +98,9 @@ public class StageMapGenerator
         nodesByDepth[0] = new List<StageNode> { startNode };
         
         // 깊이 1 ~ stageLength-2: 중간 노드들 (MinNodeCountByDepth~MaxNodeCountByDepth개)
-        for (int depth = 1; depth < stageData.stageLength - 1; depth++)
+        for (int depth = 1; depth < stageConfig.stageLength - 1; depth++)
         {
-            int nodeCount = random.Next(stageData.MinNodeCountByDepth, stageData.MaxNodeCountByDepth + 1);
+            int nodeCount = random.Next(stageConfig.MinNodeCountByDepth, stageConfig.MaxNodeCountByDepth + 1);
             var nodes = new List<StageNode>();
             
             for (int i = 0; i < nodeCount; i++)
@@ -122,13 +113,13 @@ public class StageMapGenerator
         }
         
         // 마지막 깊이: lastRoomCount개 노드
-        int lastDepth = stageData.stageLength - 1;
+        int lastDepth = stageConfig.stageLength - 1;
         var lastNodes = new List<StageNode>();
         
         // 보스방의 위치를 무작위로 결정
-        int bossRoomIndex = random.Next(0, stageData.lastRoomCount);
+        int bossRoomIndex = random.Next(0, stageConfig.lastRoomCount);
         
-        for (int i = 0; i < stageData.lastRoomCount; i++)
+        for (int i = 0; i < stageConfig.lastRoomCount; i++)
         {
             bool isBossRoom = (i == bossRoomIndex);
             StageRoomType roomType = isBossRoom ? StageRoomType.Boss : StageRoomType.Event;
@@ -178,7 +169,7 @@ public class StageMapGenerator
     private void GenerateRandomConnections(Dictionary<int, List<StageNode>> nodesByDepth)
     {
         // 각 깊이의 노드들을 순회하면서 인접한 깊이의 노드들과 연결
-        for (int depth = 0; depth < stageData.stageLength - 1; depth++)
+        for (int depth = 0; depth < stageConfig.stageLength - 1; depth++)
         {
             var currentNodes = nodesByDepth[depth];
             var nextNodes = nodesByDepth[depth + 1];
@@ -348,19 +339,6 @@ public class StageMapGenerator
     {
         var completeStageData = GenerateCompleteStageData();
         return ReconstructStageNode(completeStageData.rootNode, completeStageData);
-    }
-
-    public StageNode GenerateStageMap(int depth, int maxWidth = 3)
-    {
-        var tempStageData = new StageData
-        {
-            stageLength = depth,
-            MaxNodeCountByDepth = maxWidth,
-            lastRoomCount = 3
-        };
-        
-        var generator = new StageMapGenerator(tempStageData);
-        return generator.GenerateStageMap();
     }
 
     private StageNode ReconstructStageNode(StageNodeData nodeData, StageData stageData)

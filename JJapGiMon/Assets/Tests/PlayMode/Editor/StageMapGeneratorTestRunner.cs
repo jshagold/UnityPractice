@@ -42,22 +42,20 @@ public class StageMapGeneratorTestRunner : EditorWindow
     private void RunBasicTest()
     {
         Debug.Log("=== 기본 테스트 시작 ===");
+
+        var stageConfig = new StageConfig { 
+            stageId = 1,
+            stageLength = 5,
+            MinNodeCountByDepth = 2,
+            MaxNodeCountByDepth = 3,
+            randomSeed = 1,
+            lastRoomCount = 3
+        };
         
-                 var stageData = new StageData(
-             stageId: 1,
-             stageName: "기본 테스트 스테이지",
-             stageDescription: "StageMapGenerator 기본 테스트",
-             stageLength: 5,
-             MinNodeCountByDepth: 2,
-             MaxNodeCountByDepth: 3,
-             randomSeed: 1,
-             lastRoomCount: 3
-         );
-        
-        var generator = new StageMapGenerator(stageData);
+        var generator = new StageMapGenerator(stageConfig);
         var completeStageData = generator.GenerateCompleteStageData();
         
-        ValidateAndPrintResults(completeStageData, "기본 테스트");
+        ValidateAndPrintResults(stageConfig, completeStageData, "기본 테스트");
     }
     
     private void RunRandomSeedTest()
@@ -67,22 +65,20 @@ public class StageMapGeneratorTestRunner : EditorWindow
         for (int i = 0; i < 5; i++)
         {
             int seed = UnityEngine.Random.Range(1, 100000);
+
+            var stageConfig = new StageConfig { 
+                stageId = 100 + i,
+                stageLength = 5,
+                 MinNodeCountByDepth = 1,
+                 MaxNodeCountByDepth = 3,
+                 randomSeed = seed,
+                 lastRoomCount = 3
+            };
             
-                         var stageData = new StageData(
-                 stageId: 100 + i,
-                 stageName: $"랜덤 테스트 {i + 1}",
-                 stageDescription: $"랜덤 시드 {seed} 테스트",
-                 stageLength: 5,
-                 MinNodeCountByDepth: 1,
-                 MaxNodeCountByDepth: 3,
-                 randomSeed: seed,
-                 lastRoomCount: 3
-             );
-            
-            var generator = new StageMapGenerator(stageData);
+            var generator = new StageMapGenerator(stageConfig);
             var completeStageData = generator.GenerateCompleteStageData();
             
-            ValidateAndPrintResults(completeStageData, $"랜덤 테스트 {i + 1} (시드: {seed})");
+            ValidateAndPrintResults(stageConfig, completeStageData, $"랜덤 테스트 {i + 1} (시드: {seed})");
         }
     }
     
@@ -99,22 +95,23 @@ public class StageMapGeneratorTestRunner : EditorWindow
         };
         
         foreach (var testCase in testCases)
-        {
-                         var stageData = new StageData(
-                 stageId: UnityEngine.Random.Range(200, 999),
-                 stageName: testCase.name,
-                 stageDescription: $"{testCase.name} 테스트",
-                 stageLength: testCase.length,
-                 MinNodeCountByDepth: 1,
-                 MaxNodeCountByDepth: testCase.choices,
-                 randomSeed: UnityEngine.Random.Range(1, 100000),
-                 lastRoomCount: testCase.rooms
-             );
+        { 
+                //  stageName: testCase.name,
+                //  stageDescription: $"{testCase.name} 테스트",
+
+            var stageConfig = new StageConfig { 
+                stageId = UnityEngine.Random.Range(200, 999),
+                stageLength = testCase.length,
+                MinNodeCountByDepth = 1,
+                MaxNodeCountByDepth = testCase.choices,
+                randomSeed = UnityEngine.Random.Range(1, 100000),
+                lastRoomCount = 3
+            };
             
-            var generator = new StageMapGenerator(stageData);
+            var generator = new StageMapGenerator(stageConfig);
             var completeStageData = generator.GenerateCompleteStageData();
             
-            ValidateAndPrintResults(completeStageData, testCase.name);
+            ValidateAndPrintResults(stageConfig, completeStageData, testCase.name);
         }
     }
     
@@ -127,7 +124,7 @@ public class StageMapGeneratorTestRunner : EditorWindow
         Debug.Log("=== 모든 테스트 완료 ===");
     }
     
-    private void ValidateAndPrintResults(StageData stageData, string testName)
+    private void ValidateAndPrintResults(StageConfig stageConfig, StageData stageData, string testName)
     {
         Debug.Log($"\n--- {testName} 결과 ---");
         
@@ -195,13 +192,13 @@ public class StageMapGeneratorTestRunner : EditorWindow
             }
             
             // 실패 노드는 lastRoomCount - 1개 있어야 함
-            if (failNodes.Count == stageData.lastRoomCount - 1)
+            if (failNodes.Count == stageConfig.lastRoomCount - 1)
             {
                 Debug.Log($"✅ 실패 노드 개수 검증 성공: {failNodes.Count}개");
             }
             else
             {
-                Debug.LogError($"❌ 실패 노드 개수 불일치! 예상: {stageData.lastRoomCount - 1}개, 실제: {failNodes.Count}개");
+                Debug.LogError($"❌ 실패 노드 개수 불일치! 예상: {stageConfig.lastRoomCount - 1}개, 실제: {failNodes.Count}개");
             }
             
             // 보스 방은 1개만 있어야 함
@@ -221,7 +218,7 @@ public class StageMapGeneratorTestRunner : EditorWindow
             if (stageData.rootNode != null)
             {
                 Debug.Log("맵 구조:");
-                PrintStageMapStructure(stageData);
+                PrintStageMapStructure(stageConfig, stageData);
             }
         }
         
@@ -236,16 +233,16 @@ public class StageMapGeneratorTestRunner : EditorWindow
          }
          
          // 연결되지 않은 노드 검증
-         ValidateNodeConnections(stageData);
+         ValidateNodeConnections(stageConfig,stageData);
          
          // 간선 수 제한 검증
-         ValidateEdgeCountLimits(stageData);
+         ValidateEdgeCountLimits(stageConfig, stageData);
     }
     
-    private void PrintStageMapStructure(StageData stageData)
+    private void PrintStageMapStructure(StageConfig stageConfig, StageData stageData)
     {
         // 스테이지 설정 정보 출력
-        Debug.Log($"설정: 길이={stageData.stageLength}, 노드수={stageData.MinNodeCountByDepth}~{stageData.MaxNodeCountByDepth}, 마지막방={stageData.lastRoomCount}");
+        Debug.Log($"설정: 길이={stageConfig.stageLength}, 노드수={stageConfig.MinNodeCountByDepth}~{stageConfig.MaxNodeCountByDepth}, 마지막방={stageConfig.lastRoomCount}");
         
         // 깊이별로 노드들을 정리
         var nodesByDepth = new Dictionary<int, List<StageNodeData>>();
@@ -258,7 +255,7 @@ public class StageMapGeneratorTestRunner : EditorWindow
         }
         
         // 깊이별로 노드 출력
-        for (int depth = 0; depth <= stageData.stageLength - 1; depth++)
+        for (int depth = 0; depth <= stageConfig.stageLength - 1; depth++)
         {
             if (nodesByDepth.ContainsKey(depth))
             {
@@ -333,7 +330,7 @@ public class StageMapGeneratorTestRunner : EditorWindow
      /// <summary>
      /// 노드 연결 상태를 검증합니다.
      /// </summary>
-     private void ValidateNodeConnections(StageData stageData)
+     private void ValidateNodeConnections(StageConfig stageConfig, StageData stageData)
      {
          Debug.Log("=== 노드 연결 검증 ===");
          
@@ -353,7 +350,7 @@ public class StageMapGeneratorTestRunner : EditorWindow
              }
              
              // 자식이 없는 노드 (마지막 깊이 제외)
-             if (node.childNodeIds.Count == 0 && node.depth < stageData.stageLength - 1)
+             if (node.childNodeIds.Count == 0 && node.depth < stageConfig.stageLength - 1)
              {
                  isolatedNodes.Add(node);
              }
@@ -410,7 +407,7 @@ public class StageMapGeneratorTestRunner : EditorWindow
      /// <summary>
      /// 간선 수 제한을 검증합니다.
      /// </summary>
-     private void ValidateEdgeCountLimits(StageData stageData)
+     private void ValidateEdgeCountLimits(StageConfig stageConfig, StageData stageData)
      {
          Debug.Log("=== 간선 수 제한 검증 ===");
          
@@ -426,7 +423,7 @@ public class StageMapGeneratorTestRunner : EditorWindow
          }
          
          // 각 깊이의 노드들에 대해 간선 수 검증
-         for (int depth = 0; depth < stageData.stageLength - 1; depth++)
+         for (int depth = 0; depth < stageConfig.stageLength - 1; depth++)
          {
              if (!nodesByDepth.ContainsKey(depth) || !nodesByDepth.ContainsKey(depth + 1))
                  continue;

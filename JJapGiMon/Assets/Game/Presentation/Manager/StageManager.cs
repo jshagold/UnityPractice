@@ -49,10 +49,14 @@ public class StageManager : MonoBehaviour
         stageRepository = new LocalStageRepository();
 
         // 2) Stage 데이터 로드 (args.contentID 사용)
+        var stageConfig = new StageConfig { 
+            stageId = sessionArgs.StageId,
+            randomSeed = sessionArgs.Seed
+        };
         currentStageData = LoadStage(sessionArgs.ContentId) ?? new StageData();
 
         // 3) 스테이지 생성기 준비
-        stageMapGenerator = new StageMapGenerator(currentStageData);
+        stageMapGenerator = new StageMapGenerator(stageConfig);
 
         _initialized = true;
     }

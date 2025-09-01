@@ -22,8 +22,6 @@ public class StageNode
     // 방 정보
     public string roomName; // 방 이름
     public string roomDescription; // 방 설명
-    public bool isVisited; // 방 방문 여부
-    public bool isAvailable; // 방 접근 가능 여부
 
     // 🆕 부모 노드 참조
     public StageNode parent;
@@ -37,8 +35,6 @@ public class StageNode
         this.eventType = eventRoomType;
         this.battleType = battleRoomType;
         this.state = StageStateType.NEUTRAL; // 기본값은 중립
-        this.isVisited = false;
-        this.isAvailable = false;
         
         // 타입에 따라 세부 타입 초기화
         InitializeRoomInfo();
@@ -53,7 +49,6 @@ public class StageNode
             case StageRoomType.Start:
                 roomName = "Start";
                 roomDescription = "스테이지의 시작점입니다.";
-                isAvailable = true; // 시작 방은 항상 접근 가능
                 break;
                 
             case StageRoomType.Event:
@@ -130,33 +125,6 @@ public class StageNode
         children.Add(child);
     }
 
-    /// <summary>
-    /// 방을 방문 처리합니다.
-    /// </summary>
-    public void Visit()
-    {
-        isVisited = true;
-    }
-
-    /// <summary>
-    /// 방을 접근 가능하게 만듭니다.
-    /// </summary>
-    public void MakeAvailable()
-    {
-        isAvailable = true;
-    }
-
-    /// <summary>
-    /// 자식 노드들을 접근 가능하게 만듭니다.
-    /// </summary>
-    public void MakeChildrenAvailable()
-    {
-        foreach (var child in children)
-        {
-            child.MakeAvailable();
-        }
-    }
-
     public override string ToString()
     {
         string subType = type switch
@@ -166,7 +134,6 @@ public class StageNode
             _ => ""
         };
         
-        string status = isVisited ? " [방문됨]" : isAvailable ? " [접근가능]" : " [잠김]";
         string stateStatus = state switch
         {
             StageStateType.SUCCESS => " [성공]",
@@ -175,6 +142,6 @@ public class StageNode
             _ => ""
         };
         
-        return $"{roomName}{subType}{status}{stateStatus} depth: {depth} index: {index} seed: {seed}";
+        return $"{roomName}{subType}{stateStatus} depth: {depth} index: {index} seed: {seed}";
     }
 }

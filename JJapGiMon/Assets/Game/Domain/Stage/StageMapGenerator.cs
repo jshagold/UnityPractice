@@ -24,7 +24,7 @@ public class StageMapGenerator
     /// <summary>
     /// 완전한 스테이지 데이터를 생성합니다.
     /// </summary>
-    public StageData GenerateCompleteStageData()
+    public StageGraph GenerateCompleteStageData()
     {
         // 1. 깊이별 노드 생성
         var nodesByDepth = GenerateNodesByDepth();
@@ -57,31 +57,17 @@ public class StageMapGenerator
             Debug.Log($"Depth {group.Key}: {group.Count()}개 노드");
         }
         
-        // 4. 완전한 StageData 생성
-        var completeStageData = new StageData
-        {   
-            // 맵 데이터
-            rootNode = allNodes.First(n => n.depth == 0),
-            allNodes = allNodes,
-            
-            // 초기 상태 설정
-            currentNodeId = allNodes.First(n => n.depth == 0).nodeId,
-            visitedNodeIds = new List<int>(),
-            availableNodeIds = new List<int>(),
-            isCompleted = false,
-            isFailed = false
-        };
-        
-        // 5. 시작 노드의 자식들을 접근 가능하게 설정
-        foreach (var childId in completeStageData.rootNode.childNodeIds)
+
+        var stageGraph = new StageGraph
         {
-            completeStageData.MakeNodeAvailable(childId);
-        }
+            rootNodeData = allNodes.First(n => n.depth == 0),
+            allNodesData = allNodes,
+        };
+
+        stageGraph.InitializeNodeMap();
         
-        // 6. 노드 맵 초기화
-        completeStageData.InitializeNodeMap();
         
-        return completeStageData;
+        return stageGraph;
     }
 
     /// <summary>
@@ -334,31 +320,6 @@ public class StageMapGenerator
         return battleTypes[localRandom.Next(battleTypes.Length)];
     }
 
-    // 기존 호환성을 위한 메서드들
-    public StageNode GenerateStageMap()
-    {
-        var completeStageData = GenerateCompleteStageData();
-        return ReconstructStageNode(completeStageData.rootNode, completeStageData);
-    }
-
-    private StageNode ReconstructStageNode(StageNodeData nodeData, StageData stageData)
-    {
-        var node = new StageNode(nodeData.depth, nodeData.index, nodeData.type, nodeData.eventType, nodeData.battleType, nodeData.seed);
-        node.nodeId = nodeData.nodeId;
-        node.state = nodeData.state;
-        
-        foreach (var childId in nodeData.childNodeIds)
-        {
-            var childData = stageData.GetNodeById(childId);
-            if (childData != null)
-            {
-                var childNode = ReconstructStageNode(childData, stageData);
-                node.AddChild(childNode);
-            }
-        }
-        
-        return node;
-    }
 
     /// <summary>
     /// 특정 깊이의 모든 노드를 반환합니다.

@@ -49,23 +49,22 @@ public sealed class StageInputManager : MonoBehaviour
     /// </summary>
     private void HandleNodeClicked(StageNode clickedNode)
     {
-        if (stageManager != null && stageManager.IsStageActive)
+        if (stageManager != null)
         {
-            Debug.Log($"HandleNodeClicked: {clickedNode.roomName}");
+            // Debug.Log($"HandleNodeClicked: {clickedNode.roomName}");
 
-            // 클릭된 노드가 현재 노드의 자식인지 확인
-            var availableChildren = stageManager.GetAvailableChildren();
-            int childIndex = availableChildren.IndexOf(clickedNode);
+            // // 클릭된 노드가 현재 노드의 자식인지 확인
+            // int childIndex = availableChildren.IndexOf(clickedNode);
             
-            if (childIndex >= 0)
-            {
-                // 이벤트 발생
-                OnNodeClicked?.Invoke(clickedNode);
-            }
-            else
-            {
-                Debug.LogWarning($"클릭된 노드가 접근 가능하지 않습니다: {clickedNode.roomName}");
-            }
+            // if (childIndex >= 0)
+            // {
+            //     // 이벤트 발생
+            //     OnNodeClicked?.Invoke(clickedNode);
+            // }
+            // else
+            // {
+            //     Debug.LogWarning($"클릭된 노드가 접근 가능하지 않습니다: {clickedNode.roomName}");
+            // }
         }
         else
         {
@@ -115,9 +114,7 @@ public sealed class StageInputManager : MonoBehaviour
         
         if (stageManager != null)
         {
-            Debug.Log($"StageManager Active: {stageManager.IsStageActive}");
-            Debug.Log($"Current Node: {stageManager.CurrentNode?.roomName}");
-            Debug.Log($"Available Children: {stageManager.GetAvailableChildren().Count}");
+            // Debug.Log($"Current Node: {stageManager.CurrentNode?.roomName}");
         }
         else
         {

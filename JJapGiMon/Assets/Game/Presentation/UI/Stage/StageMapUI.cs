@@ -38,12 +38,10 @@ public class StageMapUI : MonoBehaviour
 
     private void OnEnable()
     {
-        stageManager.OnStageGenerated += RenderMap;
     }
 
     private void OnDisable()
     {
-        stageManager.OnStageGenerated -= RenderMap;
     }
 
     private void Start()
@@ -58,7 +56,7 @@ public class StageMapUI : MonoBehaviour
 
 
     // 맵 렌더링
-    private void RenderMap(int stageId, StageNode rootNode)
+    public void RenderMap(StageNode rootNode)
     {
         this.rootNode = rootNode;
         if (rootNode == null) return;

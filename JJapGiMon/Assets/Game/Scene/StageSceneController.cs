@@ -8,12 +8,9 @@ using UnityEngine.UI;
 public class StageSceneController : MonoBehaviour
 {
     [Header("Stage Configuration")]
-    [SerializeField] private StageData stageData;
-    
-    [Header("Legacy Configuration (StageData가 없을 때 사용)")]
-    [SerializeField] private int stageLength = 5;
-    [SerializeField] private int MaxNodeCountByDepth = 3;
-    [SerializeField] private int? randomSeed = null;
+    [SerializeField] private StageConfig stageConfig;
+    [SerializeField] private StageGraph stageGraph;
+    [SerializeField] private StageState stageState;
 
     [Header("Manager References")]
     [SerializeField] private StageManager stageManager;
@@ -28,14 +25,10 @@ public class StageSceneController : MonoBehaviour
     [Tooltip("List of player character IDs to include in the stage")]
     [SerializeField] private List<string> playerIdList = new List<string>();
 
-    [Header("Debug")]
-    [SerializeField] private bool debugMode = false;
-
     // 이전 씬에서 받은 정보 세션
-    private StageLaunchArgs args;
+    private StageLaunchArgs sessionArgs;
 
     // 이벤트 핸들러들
-    private System.Action<StageNode> onNodeProcessed;
     private System.Action<bool> onStageComplete;
 
     private void Awake()
@@ -45,9 +38,9 @@ public class StageSceneController : MonoBehaviour
         // 1) 세선에서 DTO 가져오기. (null 일때는 기본값.)
         if (GameSession.I.TryConsume<StageLaunchArgs>(out var args))
         {
-            this.args = args;
+            this.sessionArgs = args;
         } else {
-            this.args = new StageLaunchArgs { StageId = -1 };
+            this.sessionArgs = new StageLaunchArgs { StageId = -1 };
         }
 
         // 2) 참조 확보 Ensure Manager references
@@ -98,16 +91,62 @@ public class StageSceneController : MonoBehaviour
     {
         Debug.Log("Stage Scene Start");
 
+        Initialize();
+
         // 캐릭터 정보 세팅 todo
 
         // Background Image 세팅
-        backgroundImage.sprite = stageBackgroundTable.Get(args.StageId);
-
-        // StageManager 초기화 및 시작
-        stageManager.Initialize(args);
-        stageManager.StartStage();
+        backgroundImage.sprite = stageBackgroundTable.Get(sessionArgs.StageId);
 
     }
+
+
+    private void Initialize()
+    {
+        (stageConfig, stageGraph, stageState) = DataLoadOrGenerate();
+
+        // StageManager 초기화 및 시작
+        stageManager.Initialize(stageConfig, stageGraph, stageState);
+        stageMapUI.RenderMap(stageGraph.rootNode);
+
+    }
+
+    private (StageConfig, StageGraph, StageState) DataLoadOrGenerate() {
+        sessionArgs = sessionArgs ?? new StageLaunchArgs { StageId = -1 };
+
+        // 1) Repository 준비
+        IStageRepository stageRepository = new LocalStageRepository();
+
+        // 2) Stage 데이터 로드 (StageConfig, StageGraph, StageState 불러오기)
+        // currentStageData = LoadStage(sessionArgs.ContentId) ?? new StageData();
+
+        // 로드할 데이터가 없을 때, 생성
+        // 3) StageConfig 준비
+        var stageConfig = new StageConfig { 
+            stageId = sessionArgs.StageId,
+            randomSeed = sessionArgs.Seed
+        };
+
+        // 4) 스테이지 생성기 준비
+        StageMapGenerator stageMapGenerator = new StageMapGenerator(stageConfig);
+
+        // 5) 스테이지 데이터 생성
+        var stageGraph = stageMapGenerator.GenerateCompleteStageData();
+
+        // 6) StageState 준비
+        var stageState = new StageState
+        {
+            currentNodeId = stageGraph.rootNodeData.nodeId,
+            visitedNodeIds = new List<int>(),
+            isCompleted = false,
+            isFailed = false
+        };
+
+        return (stageConfig, stageGraph, stageState);
+    }
+
+
+    
 
     /// <summary>
     /// 전투 씬 로드
@@ -141,30 +180,10 @@ public class StageSceneController : MonoBehaviour
 
 
     /// <summary>
-    /// 스테이지 일시정지
-    /// </summary>
-    public void PauseStage()
-    {
-        SetInputEnabled(false);
-        Debug.Log("스테이지가 일시정지되었습니다.");
-    }
-
-    /// <summary>
-    /// 스테이지 재개
-    /// </summary>
-    public void ResumeStage()
-    {
-        SetInputEnabled(true);
-        Debug.Log("스테이지가 재개되었습니다.");
-    }
-
-
-    /// <summary>
     /// 스테이지 포기
     /// </summary>
     public void AbandonStage()
     {
-        stageManager.AbandonStage();
         Debug.Log("스테이지를 포기했습니다.");
         // 메인 씬으로 돌아가기
         SceneManager.LoadScene("MainScene");
@@ -172,28 +191,12 @@ public class StageSceneController : MonoBehaviour
 
     // TODO 스테이지 종료 결과 처리 후 씬 이동 
 
-    /// <summary>
-    /// 파티 모델 생성
-    /// </summary>
-    private List<CharacterModel> CreatePartyModels()
-    {
-        ICharacterRepository characterRepo = new LocalCharacterRepository();
-        CharacterFactory characterFactory = new(characterRepo);
-        
-        var partyModels = playerIdList.Select(id => characterFactory.Create(id)).ToList();
-        
-        // 캐릭터 설정 초기화
-        partyModels.ForEach(player => { player.SaveData.CurrentHealth = player.MaxHp; });
-        
-        return partyModels;
-    }
 
     /// <summary>
     /// 스테이지 완료 시 호출 (BattleSceneController 등에서 호출)
     /// </summary>
     public void OnStageComplete(bool cleared)
     {
-        stageManager.CompleteStage(cleared);
 
         if (!cleared)
         {
@@ -206,47 +209,4 @@ public class StageSceneController : MonoBehaviour
         SceneManager.LoadScene("StageMapScene");
     }
 
-    /// <summary>
-    /// 입력 처리 활성화/비활성화
-    /// </summary>
-    public void SetInputEnabled(bool enabled)
-    {
-        if (stageInputManager != null)
-        {
-            stageInputManager.SetInputEnabled(enabled);
-        }
-    }
-
-    /// <summary>
-    /// 디버그 정보 출력
-    /// </summary>
-    [ContextMenu("디버그 정보 출력")]
-    public void PrintDebugInfo()
-    {
-        Debug.Log("=== StageSceneController 디버그 정보 ===");
-        Debug.Log($"현재 스테이지: {stageData?.stageName ?? "없음"}");
-        Debug.Log($"현재 노드: {stageManager.CurrentNode?.roomName ?? "없음"}");
-        Debug.Log($"스테이지 활성화: {stageManager.IsStageActive}");
-        
-        var progress = stageManager.GetProgress();
-        Debug.Log($"진행률: {progress.ProgressPercentage:F1}% ({progress.visitedNodes}/{progress.totalNodes})");
-        
-        var availableNodes = stageManager.GetAvailableChildren();
-        Debug.Log($"접근 가능한 노드: {availableNodes.Count}개");
-        
-        foreach (var node in availableNodes)
-        {
-            Debug.Log($"  - {node.roomName}");
-        }
-
-        // UI 상태 확인
-        if (stageMapUI != null)
-        {
-            Debug.Log($"StageMapUI 활성화: {stageMapUI.gameObject.activeInHierarchy}");
-        }
-        if (stageInputManager != null)
-        {
-            Debug.Log($"StageInputManager 활성화: {stageInputManager.gameObject.activeInHierarchy}");
-        }
-    }
 }

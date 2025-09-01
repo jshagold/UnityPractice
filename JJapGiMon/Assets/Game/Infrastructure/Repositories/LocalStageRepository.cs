@@ -76,11 +76,6 @@ public class LocalStageRepository : IStageRepository
             // JSON을 StageData로 역직렬화
             StageData stageData = JsonConvert.DeserializeObject<StageData>(json, jsonSettings);
             
-            // 노드 맵 초기화
-            if (stageData != null)
-            {
-                stageData.InitializeNodeMap();
-            }
             
             Debug.Log($"스테이지 데이터 로드 완료: {saveFilePath}");
             return stageData;

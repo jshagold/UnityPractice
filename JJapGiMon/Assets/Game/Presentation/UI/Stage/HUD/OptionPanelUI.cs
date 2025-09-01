@@ -4,14 +4,18 @@ using TMPro;
 using System;
 using System.Collections.Generic;
 
-public class OptionWindowUI : MonoBehaviour
+public class OptionPanelUI : MonoBehaviour
 {
     [SerializeField] private GameObject optionButtonContainer;
     [SerializeField] private Transform buttonContainer;
     [SerializeField] private Button buttonPrefab;
 
+    public Action OnClickSetting;
+    public Action OnClickSaveAndExit;
+    public Action OnClickGiveUp;
 
-    public void Show(Action OnClickOption, Action OnClickSaveAndExit, Action OnClickGiveUp)
+
+    public void Show()
     {
 
         optionButtonContainer.SetActive(true);
@@ -20,7 +24,7 @@ public class OptionWindowUI : MonoBehaviour
         var optionButton = Instantiate(buttonPrefab, buttonContainer);
         var optionlabel = optionButton.GetComponentInChildren<TextMeshProUGUI>(true);
         optionlabel.text = "설정";
-        optionButton.onClick.AddListener(() => OnClickOption?.Invoke());
+        optionButton.onClick.AddListener(() => OnClickSetting?.Invoke());
         optionButton.gameObject.SetActive(true);
 
         var saveAndExitButton = Instantiate(buttonPrefab, buttonContainer);

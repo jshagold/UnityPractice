@@ -18,6 +18,7 @@ public class StageSceneController : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private StageMapUI stageMapUI;
+    [SerializeField] private StageHUDController stageHUDController;
     [SerializeField] private StageBackgroundTable stageBackgroundTable;
     [SerializeField] private Image backgroundImage;
 
@@ -47,11 +48,14 @@ public class StageSceneController : MonoBehaviour
         if (stageManager == null)
             stageManager = GetComponentInChildren<StageManager>(true);
 
+        if (stageInputManager == null)
+            stageInputManager = GetComponent<StageInputManager>();
+
         if(stageMapUI == null)
             stageMapUI = GetComponent<StageMapUI>();
 
-        if (stageInputManager == null)
-            stageInputManager = GetComponent<StageInputManager>();
+        if (stageHUDController == null)
+            stageHUDController = GetComponent<StageHUDController>();
 
         // Background Image 세팅
         backgroundImage.preserveAspect = true;
@@ -62,10 +66,12 @@ public class StageSceneController : MonoBehaviour
 
     private void OnEnable()
     {
-        // StageInputManager 이벤트 구독
-        if (stageInputManager != null)
+        // StageManager 이벤트 구독
+        if (stageManager != null)
         {
-
+            stageManager.OnEventRoomEntered += HandleEventRoomEntered;
+            stageManager.OnBattleRoomEntered += HandleBattleRoomEntered;
+            stageManager.OnBossRoomEntered += HandleBossRoomEntered;
         }
     }
 
@@ -93,6 +99,9 @@ public class StageSceneController : MonoBehaviour
 
         Initialize();
 
+        // 고정 UI (HUD) 세팅
+        stageHUDController.SetStageTitle(sessionArgs.StageName);
+
         // 캐릭터 정보 세팅 todo
 
         // Background Image 세팅
@@ -107,6 +116,8 @@ public class StageSceneController : MonoBehaviour
 
         // StageManager 초기화 및 시작
         stageManager.Initialize(stageConfig, stageGraph, stageState);
+        Debug.Log($"StageManager Initialize: {stageGraph.rootNode}");
+        Debug.Log($"StageManager Initialize: {stageGraph.rootNodeData.nodeId}");
         stageMapUI.RenderMap(stageGraph.rootNode);
 
     }
@@ -122,27 +133,27 @@ public class StageSceneController : MonoBehaviour
 
         // 로드할 데이터가 없을 때, 생성
         // 3) StageConfig 준비
-        var stageConfig = new StageConfig { 
+        var config = new StageConfig { 
             stageId = sessionArgs.StageId,
             randomSeed = sessionArgs.Seed
         };
 
         // 4) 스테이지 생성기 준비
-        StageMapGenerator stageMapGenerator = new StageMapGenerator(stageConfig);
+        StageMapGenerator stageMapGenerator = new StageMapGenerator(config);
 
         // 5) 스테이지 데이터 생성
-        var stageGraph = stageMapGenerator.GenerateCompleteStageData();
+        var graph = stageMapGenerator.GenerateCompleteStageData();
 
         // 6) StageState 준비
-        var stageState = new StageState
+        var state = new StageState
         {
-            currentNodeId = stageGraph.rootNodeData.nodeId,
+            currentNodeId = graph.rootNodeData.nodeId,
             visitedNodeIds = new List<int>(),
             isCompleted = false,
             isFailed = false
         };
 
-        return (stageConfig, stageGraph, stageState);
+        return (config, graph, state);
     }
 
 
@@ -151,9 +162,15 @@ public class StageSceneController : MonoBehaviour
     /// <summary>
     /// 전투 씬 로드
     /// </summary>
-    private void LoadBattleScene()
+    private void HandleBattleRoomEntered(StageNode node)
     {
         Debug.Log("전투 씬으로 전환합니다.");
+        switch (node.battleType)
+        {
+            case BattleRoomType.Normal:
+                break;
+        }
+
         // TODO: 전투 씬에 필요한 데이터 전달
         SceneManager.LoadScene("BattleScene");
     }
@@ -161,9 +178,10 @@ public class StageSceneController : MonoBehaviour
     /// <summary>
     /// 보스 전투 씬 로드
     /// </summary>
-    private void LoadBossBattleScene()
+    private void HandleBossRoomEntered(StageNode node)
     {
         Debug.Log("보스 전투 씬으로 전환합니다.");
+        
         // TODO: 보스 전투 씬에 필요한 데이터 전달
         SceneManager.LoadScene("BossBattleScene");
     }
@@ -171,9 +189,21 @@ public class StageSceneController : MonoBehaviour
     /// <summary>
     /// 이벤트 씬 처리
     /// </summary>
-    private void LoadEventScene()
-    {
-        Debug.Log("이벤트 씬으로 전환합니다.");
+    private void HandleEventRoomEntered(StageNode node)
+    {   
+        Debug.Log($"이벤트 씬으로 전환합니다: {node.roomName}");
+        switch (node.eventType)
+        {
+            case EventRoomType.Event:
+                break;
+            case EventRoomType.Maintenance:
+                break;
+            case EventRoomType.Rest:
+                break;
+            case EventRoomType.Story:
+                break;
+        }
+
         // TODO: 이벤트 씬에 필요한 데이터 전달
         SceneManager.LoadScene("EventScene");
     }

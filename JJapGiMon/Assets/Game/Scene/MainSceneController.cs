@@ -27,6 +27,7 @@ public class MainSceneController : MonoBehaviour
         var dailyArgs = new StageLaunchArgs
         {
             StageId = 1,
+            StageName = "Daily Stage",
             ContentId = "daily_stage_1",
             Seed = null,
             PartyCharacterIds = new string[] { "1", "2", "3" },
@@ -34,6 +35,7 @@ public class MainSceneController : MonoBehaviour
         var questArgs = new StageLaunchArgs
         {
             StageId = 2,
+            StageName = "Quest Stage",
             ContentId = "quest_stage_1",
             Seed = 1001,
             PartyCharacterIds = new string[] { "1", "2", "3" },

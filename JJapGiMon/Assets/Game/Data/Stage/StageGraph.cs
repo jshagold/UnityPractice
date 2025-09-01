@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 [Serializable]
 public class StageGraph
@@ -34,7 +35,7 @@ public class StageGraph
     public StageNode GetNodeById(int nodeId)
     {
         nodeMap.TryGetValue(nodeId, out var nodeData);
-        
+
         if (nodeData == null) return null;
         var node = new StageNode(nodeData.depth, nodeData.index, nodeData.type, nodeData.eventType, nodeData.battleType, nodeData.seed)
         {
@@ -49,6 +50,8 @@ public class StageGraph
     /// 저장된 맵 데이터로 StageNode 구조 복원
     private StageNode RestoreStageMap(StageNodeData rootData, List<StageNodeData> allNodes)
     {
+        Debug.Log($"RootNode RestoreStageMap: {rootData.nodeId}");
+
         var nodeMap = allNodes.ToDictionary(n => n.nodeId);
         var restoredNodes = new Dictionary<int, StageNode>(); // 노드 캐싱
         return RestoreNodeRecursive(rootData, nodeMap, restoredNodes);

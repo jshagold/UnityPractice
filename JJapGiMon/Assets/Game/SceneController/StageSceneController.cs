@@ -73,23 +73,54 @@ public class StageSceneController : MonoBehaviour
             stageManager.OnBattleRoomEntered += HandleBattleRoomEntered;
             stageManager.OnBossRoomEntered += HandleBossRoomEntered;
         }
+
+        // StageHUDController 이벤트 구독
+        if (stageHUDController != null)
+        {
+            stageHUDController.OpenOptionRequested += HandleOpenOptionRequested;
+            stageHUDController.OnSaveAndExitStage += HandleSaveAndExitStage;
+            stageHUDController.OnGiveUpStage += HandleGiveUpStage;
+            stageHUDController.OpenSettingRequested += HandleOpenSettingRequested;
+        }
     }
 
     private void OnDisable()
     {
         // 이벤트 구독 해제
-        if (stageInputManager != null)
+        if (stageManager != null)
         {
+            stageManager.OnEventRoomEntered -= HandleEventRoomEntered;
+            stageManager.OnBattleRoomEntered -= HandleBattleRoomEntered;
+            stageManager.OnBossRoomEntered -= HandleBossRoomEntered;
+        }
 
+        // StageHUDController 이벤트 구독 해제      
+        if (stageHUDController != null)
+        {
+            stageHUDController.OpenOptionRequested -= HandleOpenOptionRequested;
+            stageHUDController.OnSaveAndExitStage -= HandleSaveAndExitStage;
+            stageHUDController.OnGiveUpStage -= HandleGiveUpStage;
+            stageHUDController.OpenSettingRequested -= HandleOpenSettingRequested;
         }
     }
 
     private void OnDestroy()
     {
         // 이벤트 구독 해제 (안전장치)
-        if (stageInputManager != null)
+        if (stageManager != null)
         {
-
+            stageManager.OnEventRoomEntered -= HandleEventRoomEntered;
+            stageManager.OnBattleRoomEntered -= HandleBattleRoomEntered;
+            stageManager.OnBossRoomEntered -= HandleBossRoomEntered;
+        }
+        
+        // StageHUDController 이벤트 구독 해제      
+        if (stageHUDController != null)
+        {
+            stageHUDController.OpenOptionRequested -= HandleOpenOptionRequested;
+            stageHUDController.OnSaveAndExitStage -= HandleSaveAndExitStage;
+            stageHUDController.OnGiveUpStage -= HandleGiveUpStage;
+            stageHUDController.OpenSettingRequested -= HandleOpenSettingRequested;
         }
     }
 
@@ -157,11 +188,10 @@ public class StageSceneController : MonoBehaviour
     }
 
 
-    
+    // 이벤트 처리
 
-    /// <summary>
+    // StageManager 이벤트 처리
     /// 전투 씬 로드
-    /// </summary>
     private void HandleBattleRoomEntered(StageNode node)
     {
         Debug.Log("전투 씬으로 전환합니다.");
@@ -175,9 +205,7 @@ public class StageSceneController : MonoBehaviour
         SceneManager.LoadScene("BattleScene");
     }
 
-    /// <summary>
     /// 보스 전투 씬 로드
-    /// </summary>
     private void HandleBossRoomEntered(StageNode node)
     {
         Debug.Log("보스 전투 씬으로 전환합니다.");
@@ -186,9 +214,7 @@ public class StageSceneController : MonoBehaviour
         SceneManager.LoadScene("BossBattleScene");
     }
 
-    /// <summary>
     /// 이벤트 씬 처리
-    /// </summary>
     private void HandleEventRoomEntered(StageNode node)
     {   
         Debug.Log($"이벤트 씬으로 전환합니다: {node.roomName}");
@@ -208,6 +234,24 @@ public class StageSceneController : MonoBehaviour
         SceneManager.LoadScene("EventScene");
     }
 
+    // StageHUDController 이벤트 처리
+    private void HandleOpenOptionRequested()
+    {
+        Debug.Log("옵션 창이 열렸습니다.");
+    }
+    
+    private void HandleSaveAndExitStage()
+    {
+        Debug.Log("저장 후 메인화면으로 이동합니다.");
+    }
+    private void HandleGiveUpStage()
+    {
+        Debug.Log("스테이지를 포기합니다.");
+    }
+    private void HandleOpenSettingRequested()
+    {
+        Debug.Log("게임 설정 창이 열렸습니다.");
+    }
 
     /// <summary>
     /// 스테이지 포기

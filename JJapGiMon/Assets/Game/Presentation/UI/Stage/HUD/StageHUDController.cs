@@ -6,12 +6,13 @@ public class StageHUDController : MonoBehaviour
     [SerializeField] private StageTitleUI stageTitleUI;
     [SerializeField] private OptionButtonUI optionButtonUI;
     [SerializeField] private OptionPanelUI optionPanelUI;
+    [SerializeField] private SettingPanelUI settingPanelUI;
 
     
-    public Action OnOpenOption; // 옵션 창
-    public Action OnSaveAndExitStage; // 저장 후 메인화면으로
-    public Action OnGiveUpStage; // 스테이지 포기
-    public Action OnClickSetting; // 게임 설정 창
+    public event Action OpenOptionRequested; // 옵션창 열림 알림
+    public event Action OnSaveAndExitStage; // 저장 후 메인화면으로
+    public event Action OnGiveUpStage; // 스테이지 포기
+    public event Action OpenSettingRequested; // 게임 설정 창 열림 알림
 
     private void Awake()
     {
@@ -20,19 +21,51 @@ public class StageHUDController : MonoBehaviour
 
     private void OnEnable()
     {
-        optionButtonUI.OnClicked += OnOpenOption;
-        optionPanelUI.OnClickSaveAndExit += () => OnSaveAndExitStage?.Invoke();
-        optionPanelUI.OnClickGiveUp += () => OnGiveUpStage?.Invoke();
-        optionPanelUI.OnClickSetting += () => OnClickSetting?.Invoke();
+        optionButtonUI.OnClicked += HandleOpenOptionPanel;
+        optionPanelUI.OnClickSaveAndExit += HandleSaveAndExitStage;
+        optionPanelUI.OnClickGiveUp += HandleGiveUpStage;
+        optionPanelUI.OnClickSetting += HandleOpenSettingPanel;
     }
     
     private void OnDisable()
     {
-        optionButtonUI.OnClicked -= OnOpenOption;
-        optionPanelUI.OnClickSaveAndExit -= () => OnSaveAndExitStage?.Invoke();
-        optionPanelUI.OnClickGiveUp -= () => OnGiveUpStage?.Invoke();
-        optionPanelUI.OnClickSetting -= () => OnClickSetting?.Invoke();
+        optionButtonUI.OnClicked -= HandleOpenOptionPanel;
+        optionPanelUI.OnClickSaveAndExit -= HandleSaveAndExitStage;
+        optionPanelUI.OnClickGiveUp -= HandleGiveUpStage;
+        optionPanelUI.OnClickSetting -= HandleOpenSettingPanel;
+    }
+
+    private void Start()
+    {
+        optionPanelUI.Hide();
     }
 
     public void SetStageTitle(string title) => stageTitleUI.SetTitle(title);
+
+
+    // --- Handler
+    private void HandleOpenOptionPanel()
+    {
+        optionPanelUI.Show();
+        OpenOptionRequested?.Invoke();
+    }
+    
+    private void HandleSaveAndExitStage()
+    {
+        OnSaveAndExitStage?.Invoke();
+    }
+    
+    private void HandleGiveUpStage()
+    {
+        OnGiveUpStage?.Invoke();
+    }
+    
+    private void HandleOpenSettingPanel()
+    {
+        // todo setting panel 구성하고 열기
+        // settingPanelUI.Show();
+        OpenSettingRequested?.Invoke();
+    }
+    
+    
 }

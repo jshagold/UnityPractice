@@ -21,6 +21,12 @@ public class StageMapUI : MonoBehaviour
     [SerializeField] private Button bossRoomButtonPrefab;      // (TMP)Text 포함 프리팹
     [SerializeField] private Image connectionImagePrefab;  // 얇은 Image(선으로 사용)
 
+    [Header("LocationMarkers")]
+    [SerializeField] private RectTransform playerMarkerPrefab;
+    [SerializeField] private Vector2 markerOffset = new Vector2(0f, 40f);
+    private RectTransform playerMarker;
+
+
     [Header("Colors")]
     [SerializeField] private Color startRoomColor = Color.green;
     [SerializeField] private Color battleRoomColor = Color.red;
@@ -221,45 +227,6 @@ public class StageMapUI : MonoBehaviour
         rectTransform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
-    // 노드 상태 업데이트
-    private void UpdateButtonStates()
-    {
-        foreach (var kvp in roomButtons)
-        {
-            var node = kvp.Key;
-            var button = kvp.Value;
-            
-            // 현재 노드 강조
-            if (node == currentNode)
-            {
-                button.transform.localScale = Vector3.one * 1.2f;
-            }
-            else
-            {
-                button.transform.localScale = Vector3.one;
-            }
-            
-            // 접근 가능한 노드만 활성화
-            bool isAccessible = IsNodeAccessible(node);
-            button.interactable = isAccessible;
-            
-            // 비활성화된 노드는 회색 처리
-            var image = button.GetComponent<Image>();
-            if (image != null && !isAccessible)
-            {
-                image.color = Color.gray;
-            }
-        }
-    }
-
-    // 노드 접근 가능 여부 확인
-    private bool IsNodeAccessible(StageNode node)
-    {
-        if (currentNode == null) return false;
-
-        // 현재 노드의 자식들만 접근 가능
-        return currentNode.children.Contains(node);
-    }
 
     // 노드 클릭 이벤트
     private void OnClickNode(StageNode node)
@@ -304,6 +271,32 @@ public class StageMapUI : MonoBehaviour
                 return Color.white;
         }
     }
+
+
+    // --- 캐릭터 마커 ---
+    public void SetCurrentNode(StageNode node)
+    {
+        currentNode = node;
+        EnsureMarker();
+
+        
+
+    }
+
+    private void EnsureMarker()
+    {
+        if(playerMarker == null && playerMarkerPrefab != null)
+        {
+            playerMarker = Instantiate(playerMarkerPrefab, mapRoot);
+            playerMarker.gameObject.SetActive(true);
+        }
+    }
+
+
+
+
+
+
 
     private void Clear()
     {

@@ -407,6 +407,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 173395115}
+  - component: {fileID: 173395116}
   m_Layer: 5
   m_Name: ModalLayer
   m_TagString: Untagged
@@ -435,6 +436,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &173395116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173395114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa69c99b92b036144981a34619f3cc97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backdrop: {fileID: 1889506533}
 --- !u!1 &200602615
 GameObject:
   m_ObjectHideFlags: 0
@@ -1092,12 +1106,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 671647992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 528ffe5d0175dd74ebd2060a2529d298, type: 3}
+  m_Script: {fileID: 11500000, guid: ce72f77b38508074b90704abfec0f27f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  panel: {fileID: 671647992}
+  closeOnBackdrop: 1
   optionButtonContainer: {fileID: 168910314}
   buttonContainer: {fileID: 168910315}
   buttonPrefab: {fileID: 7337824492844356114, guid: 48ef7ed426911cd49bf7060129d15ff0, type: 3}
+  BtnClose: {fileID: 8060654835955308410, guid: dde4be7e8ebe43449bf124aca753ff5a, type: 3}
+  modalManager: {fileID: 173395116}
 --- !u!1 &778696517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1150,7 +1168,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageTitleUI: {fileID: 669197825}
   optionButtonUI: {fileID: 200602620}
-  optionPanelUI: {fileID: 0}
+  modalManager: {fileID: 173395116}
+  optionPanelUI: {fileID: 671647994}
   settingPanelUI: {fileID: 0}
 --- !u!1001 &1020078857
 PrefabInstance:
@@ -1988,6 +2007,7 @@ GameObject:
   - component: {fileID: 1889506534}
   - component: {fileID: 1889506536}
   - component: {fileID: 1889506535}
+  - component: {fileID: 1889506537}
   m_Layer: 5
   m_Name: Backdrop
   m_TagString: Untagged
@@ -2052,6 +2072,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1889506533}
   m_CullTransparentMesh: 1
+--- !u!114 &1889506537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1889506533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95726ef125bbb3044b83a7a9e55a0b36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modalManager: {fileID: 173395116}
 --- !u!1 &1967855825
 GameObject:
   m_ObjectHideFlags: 0

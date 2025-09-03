@@ -64,6 +64,10 @@ public class OptionPanelUI : ModalBase
         giveUpLabel.text = "포기";
         giveUpButton.onClick.AddListener(() => OnClickGiveUp?.Invoke());
         giveUpButton.gameObject.SetActive(true);
+
+        var closeButton = Instantiate(BtnClose, buttonContainer);
+        closeButton.onClick.AddListener(() => HandleCloseClicked());
+        closeButton.gameObject.SetActive(true);
     }
 
     private void HandleCloseClicked()

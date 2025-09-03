@@ -27,6 +27,12 @@ public class ModalManager : MonoBehaviour
     public void Show(ModalBase modal)
     {
         if (modal == null) return;
+        if(!_modalStack.Contains(modal)) _modalStack.Push(modal);
+
+        modal.transform.SetAsLastSibling();
+        if(backdrop != null && !backdrop.activeSelf) backdrop.SetActive(true);
+
+        modal.Show();
     }
 
     public void Hide(ModalBase modal)
@@ -43,7 +49,7 @@ public class ModalManager : MonoBehaviour
         else 
         {
             var top = _modalStack.Peek();
-            // if(top != null) top.transform.SetAsLastSibling();
+            if(top != null) top.transform.SetAsLastSibling();
         }
     }
 

@@ -5,6 +5,9 @@ public class StageHUDController : MonoBehaviour
 {
     [SerializeField] private StageTitleUI stageTitleUI;
     [SerializeField] private OptionButtonUI optionButtonUI;
+
+    [Header("Modal Panels")]
+    [SerializeField] private ModalManager modalManager;
     [SerializeField] private OptionPanelUI optionPanelUI;
     [SerializeField] private SettingPanelUI settingPanelUI;
 
@@ -16,7 +19,8 @@ public class StageHUDController : MonoBehaviour
 
     private void Awake()
     {
-        
+        if(modalManager == null)
+            modalManager = GetComponent<ModalManager>();
     }
 
     private void OnEnable()
@@ -46,17 +50,19 @@ public class StageHUDController : MonoBehaviour
     // --- Handler
     private void HandleOpenOptionPanel()
     {
-        optionPanelUI.Show();
+        modalManager.Show(optionPanelUI);
         OpenOptionRequested?.Invoke();
     }
     
     private void HandleSaveAndExitStage()
     {
+        modalManager.Hide(optionPanelUI);
         OnSaveAndExitStage?.Invoke();
     }
     
     private void HandleGiveUpStage()
     {
+        modalManager.Hide(optionPanelUI);
         OnGiveUpStage?.Invoke();
     }
     

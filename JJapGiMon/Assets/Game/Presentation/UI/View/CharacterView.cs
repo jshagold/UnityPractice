@@ -68,7 +68,7 @@ public class CharacterView : MonoBehaviour
         cachedSpawnPos = spawnPos;
     }                                                                                                                                                              
 
-private void OnDestroy()
+    private void OnDestroy()
     {
         // 이벤트 해제
         model.OnHpChanged -= HandleHpChanged;

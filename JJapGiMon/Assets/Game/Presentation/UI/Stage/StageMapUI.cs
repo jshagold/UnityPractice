@@ -4,6 +4,7 @@ using TMPro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 
 public class StageMapUI : MonoBehaviour
 {
@@ -21,10 +22,13 @@ public class StageMapUI : MonoBehaviour
     [SerializeField] private Button bossRoomButtonPrefab;      // (TMP)Text 포함 프리팹
     [SerializeField] private Image connectionImagePrefab;  // 얇은 Image(선으로 사용)
 
-    [Header("LocationMarkers")]
+    [Header("Player Marker")]
     [SerializeField] private RectTransform playerMarkerPrefab;
     [SerializeField] private Vector2 markerOffset = new Vector2(0f, 40f);
+    [SerializeField] private float markerMoveDuration = 0.25f;
+    [SerializeField] private Ease markerMoveEase = Ease.InOutSine;
     private RectTransform playerMarker;
+    private Tween markerMoveTween;
 
 
     [Header("Colors")]
@@ -48,6 +52,8 @@ public class StageMapUI : MonoBehaviour
 
     private void OnDisable()
     {
+        markerMoveTween?.Kill();
+        markerMoveTween = null;
     }
 
     private void Start()
@@ -279,7 +285,11 @@ public class StageMapUI : MonoBehaviour
         currentNode = node;
         EnsureMarker();
 
-        
+        if(node != null && roomButtons.TryGetValue(node, out var button))
+        {
+            var rectTransform = button.GetComponent<RectTransform>();
+
+        }
 
     }
 
@@ -292,9 +302,13 @@ public class StageMapUI : MonoBehaviour
         }
     }
 
-
-
-
+    private void SnapMarkerTo(RectTransform target)
+    {
+        if(playerMarker == null) return;
+        playerMarker.anchoredPosition = target.anchoredPosition + markerOffset;
+    }
+    // --- 캐릭터 마커 ---
+ 
 
 
 

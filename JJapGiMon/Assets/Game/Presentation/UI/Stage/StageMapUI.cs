@@ -41,7 +41,7 @@ public class StageMapUI : MonoBehaviour
 
     private StageNode rootNode;
     private StageNode currentNode;
-    private readonly Dictionary<StageNode, Button> roomButtons = new();
+    private readonly Dictionary<int, Button> roomButtons = new();
 
     // 이벤트 정의
     public event Action<StageNode> OnNodeClicked;
@@ -68,17 +68,17 @@ public class StageMapUI : MonoBehaviour
 
 
     // 맵 렌더링
-    public void RenderMap(StageNode rootNode)
+    public void RenderMap(StageNode inputRootNode)
     {
-        this.rootNode = rootNode;
-        if (rootNode == null) return;
+        this.rootNode = inputRootNode;
+        if (inputRootNode == null) return;
         Debug.Log("RenderMap");
 
         // 기존 UI 요소들 정리
         Clear();
 
         // 디버깅: 받은 rootNode 정보 출력
-        Debug.Log($"받은 rootNode - Depth: {rootNode.depth}, Type: {rootNode.type}, Children Count: {rootNode.children?.Count ?? 0}");
+        Debug.Log($"받은 rootNode - Depth: {inputRootNode.depth}, Type: {inputRootNode.type}, Children Count: {inputRootNode.children?.Count ?? 0}");
 
         // 트리 구조를 순회하며 노드들을 렌더링
         var nodePositions = CalculateNodePositions();
@@ -195,7 +195,7 @@ public class StageMapUI : MonoBehaviour
         // 클릭 이벤트 설정
         button.onClick.AddListener(() => OnClickNode(node));
         
-        roomButtons[node] = button;
+        roomButtons[node.nodeId] = button;
     }
 
     // 연결선 UI 생성
@@ -285,11 +285,53 @@ public class StageMapUI : MonoBehaviour
         currentNode = node;
         EnsureMarker();
 
-        if(node != null && roomButtons.TryGetValue(node, out var button))
-        {
-            var rectTransform = button.GetComponent<RectTransform>();
+        Debug.Log($"SetCurrentNode: {node}");
+        Debug.Log($"roomButtons Count: {roomButtons.Count}");
 
+        foreach (var btn in roomButtons)
+        {
+            Debug.Log($"SetCurrentNode: {btn.Key} {btn.Value.name}");
         }
+
+        if(node != null && roomButtons.TryGetValue(node.nodeId, out var button))
+        {
+            Debug.Log($"SetCurrentNode: {node.roomName} {button.name}");
+            var rectTransform = button.GetComponent<RectTransform>();
+            SnapMarkerTo(rectTransform);
+        }
+    }
+
+    public void SetCurrentNodeById(int nodeId, StageGraph stageGraph)
+    {
+        if(stageGraph == null) return;
+
+        var node = stageGraph.GetNodeById(nodeId);
+        if(node != null) SetCurrentNode(node);
+    }
+
+    // 트윈으로 마커 이동
+    public void MoveMarkerTo(StageNode node, bool withAnimation = true)
+    {
+        if(node == null) return;
+        if(!roomButtons.TryGetValue(node.nodeId, out var button)) return;
+
+        EnsureMarker();
+
+        var targetRectTransform = button.GetComponent<RectTransform>();
+        var targetPosition = targetRectTransform.anchoredPosition + markerOffset;
+
+        markerMoveTween?.Kill();
+
+        if(withAnimation)
+        {
+            markerMoveTween = playerMarker.DOAnchorPos(targetPosition, markerMoveDuration)
+                .SetEase(markerMoveEase);
+        }
+        else
+        {
+            playerMarker.anchoredPosition = targetPosition;
+        }
+        currentNode = node;
 
     }
 

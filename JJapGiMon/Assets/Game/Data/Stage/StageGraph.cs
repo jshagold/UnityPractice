@@ -37,11 +37,17 @@ public class StageGraph
         nodeMap.TryGetValue(nodeId, out var nodeData);
 
         if (nodeData == null) return null;
-        var node = new StageNode(nodeData.depth, nodeData.index, nodeData.type, nodeData.eventType, nodeData.battleType, nodeData.seed)
-        {
-            nodeId = nodeData.nodeId,
-            state = nodeData.state
-        };
+        var node = new StageNode(
+            nodeId: nodeData.nodeId, 
+            depth: nodeData.depth, 
+            index: nodeData.index, 
+            type: nodeData.type, 
+            eventRoomType: nodeData.eventType, 
+            battleRoomType: nodeData.battleType, 
+            children: nodeData.childNodeIds.Select(id => GetNodeById(id)).ToList(), 
+            state: nodeData.state,
+            seed: nodeData.seed
+        );
 
         return node;
     }
@@ -66,11 +72,17 @@ public class StageGraph
         }
 
         // StageNode 생성 (런타임 정보는 생성자에서 자동으로 설정됨)
-        var node = new StageNode(nodeData.depth, nodeData.index, nodeData.type, nodeData.eventType, nodeData.battleType, nodeData.seed)
-        {
-            nodeId = nodeData.nodeId,
-            state = nodeData.state
-        };
+        var node = new StageNode(
+            nodeId: nodeData.nodeId, 
+            depth: nodeData.depth, 
+            index: nodeData.index, 
+            type: nodeData.type, 
+            eventRoomType: nodeData.eventType, 
+            battleRoomType: nodeData.battleType, 
+            children: new(), 
+            state: nodeData.state,
+            seed: nodeData.seed
+        );
 
         // 캐시에 추가
         restoredNodes[nodeData.nodeId] = node;

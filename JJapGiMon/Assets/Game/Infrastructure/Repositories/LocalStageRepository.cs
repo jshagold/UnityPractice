@@ -12,12 +12,11 @@ public class LocalStageRepository : IStageRepository
     /// <summary>
     /// 현재 스테이지 데이터를 JSON 파일로 저장합니다.
     /// </summary>
-    /// <param name="saveData">저장할 스테이지 데이터</param>
-    public void Save(string contentId, StageData saveData)
+    public void Save(string contentId, StageConfig saveConfig, StageState saveState, StageGraph saveGraph)
     {
         SetSaveFilePath(contentId);
 
-        if (saveData == null)
+        if (saveConfig == null)
         {
             Debug.LogError("저장할 스테이지 데이터가 null입니다.");
             return;
@@ -34,7 +33,7 @@ public class LocalStageRepository : IStageRepository
             };
             
             // StageData를 JSON으로 직렬화
-            string json = JsonConvert.SerializeObject(saveData, jsonSettings);
+            string json = JsonConvert.SerializeObject(saveConfig, jsonSettings);
             
             // 파일에 저장 (덮어쓰기)
             File.WriteAllText(saveFilePath, json);
@@ -52,7 +51,7 @@ public class LocalStageRepository : IStageRepository
     /// 저장된 스테이지 데이터를 로드합니다.
     /// </summary>
     /// <returns>로드된 스테이지 데이터, 없으면 null</returns>
-    public StageData Load(string contentId)
+    public StageConfig LoadConfig(string contentId)
     {
         SetSaveFilePath(contentId);
 
@@ -74,11 +73,11 @@ public class LocalStageRepository : IStageRepository
             };
             
             // JSON을 StageData로 역직렬화
-            StageData stageData = JsonConvert.DeserializeObject<StageData>(json, jsonSettings);
+            StageConfig stageConfig = JsonConvert.DeserializeObject<StageConfig>(json, jsonSettings);
             
             
             Debug.Log($"스테이지 데이터 로드 완료: {saveFilePath}");
-            return stageData;
+            return stageConfig;
         }
         catch (Exception ex)
         {
@@ -128,5 +127,15 @@ public class LocalStageRepository : IStageRepository
     {
         // Unity의 Application.persistentDataPath를 사용하여 플랫폼별 저장 경로 설정
         saveFilePath = Path.Combine(Application.persistentDataPath, $"{contentId}.json");
+    }
+
+    public StageState LoadState(string contentId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public StageGraph LoadGraph(string contentId)
+    {
+        throw new NotImplementedException();
     }
 }

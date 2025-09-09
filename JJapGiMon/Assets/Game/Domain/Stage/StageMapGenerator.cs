@@ -78,9 +78,18 @@ public class StageMapGenerator
         var nodesByDepth = new Dictionary<int, List<StageNode>>();
         
         // 깊이 0: 시작 노드 (1개)
-        var startNode = new StageNode(0, 0, StageRoomType.Start, null, null, random.Next());
+        var startNode = new StageNode(
+            nodeId: 0, 
+            depth: 0, 
+            index: 0, 
+            type: StageRoomType.Start, 
+            eventRoomType: null, 
+            battleRoomType: null, 
+            children: new List<StageNode>(), 
+            state: StageStateType.NEUTRAL, 
+            seed: random.Next()
+            );
         startNode.nodeId = GetNextNodeId();
-        startNode.state = StageStateType.NEUTRAL;
         nodesByDepth[0] = new List<StageNode> { startNode };
         
         // 깊이 1 ~ stageLength-2: 중간 노드들 (MinNodeCountByDepth~MaxNodeCountByDepth개)
@@ -111,9 +120,17 @@ public class StageMapGenerator
             StageRoomType roomType = isBossRoom ? StageRoomType.Boss : StageRoomType.Event;
             EventRoomType? eventType = isBossRoom ? null : DetermineEventType(random.Next());
             
-            var node = new StageNode(lastDepth, i, roomType, eventType, null, random.Next());
-            node.nodeId = GetNextNodeId();
-            node.state = isBossRoom ? StageStateType.SUCCESS : StageStateType.FAIL;
+            var node = new StageNode(
+                nodeId: GetNextNodeId(), 
+                depth: lastDepth, 
+                index: i, 
+                type: roomType, 
+                eventRoomType: eventType, 
+                battleRoomType: null, 
+                children: new List<StageNode>(), 
+                state: isBossRoom ? StageStateType.SUCCESS : StageStateType.FAIL, 
+                seed: random.Next()
+            );
             lastNodes.Add(node);
         }
         
@@ -142,9 +159,17 @@ public class StageMapGenerator
             battleType = DetermineBattleType(seed);
         }
         
-        var node = new StageNode(depth, index, roomType, eventType, battleType, seed);
-        node.nodeId = GetNextNodeId();
-        node.state = StageStateType.NEUTRAL;
+        var node = new StageNode(
+            nodeId: GetNextNodeId(), 
+            depth: depth, 
+            index: index, 
+            type: roomType, 
+            eventRoomType: eventType, 
+            battleRoomType: null, 
+            children: new List<StageNode>(), 
+            state: StageStateType.NEUTRAL, 
+            seed: random.Next()
+        );
         
         return node;
     }

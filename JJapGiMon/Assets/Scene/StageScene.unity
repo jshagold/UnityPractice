@@ -877,6 +877,10 @@ MonoBehaviour:
   eventRoomButtonPrefab: {fileID: 3395881226656163716, guid: 3f35d3c59501332429f6f4419d1e83aa, type: 3}
   bossRoomButtonPrefab: {fileID: 3395881226656163716, guid: 3f35d3c59501332429f6f4419d1e83aa, type: 3}
   connectionImagePrefab: {fileID: 1355105521990521720, guid: 086627610e34fe54f9a86aeed9bdaa78, type: 3}
+  playerMarkerPrefab: {fileID: 7407751777659679331, guid: 9c7589257fd12434eb5d5f52cdfab3f7, type: 3}
+  markerOffset: {x: 0, y: 40}
+  markerMoveDuration: 0.25
+  markerMoveEase: 4
   startRoomColor: {r: 0, g: 1, b: 0, a: 1}
   battleRoomColor: {r: 1, g: 0, b: 0, a: 1}
   eventRoomColor: {r: 0, g: 0, b: 1, a: 1}

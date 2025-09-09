@@ -26,15 +26,17 @@ public class StageNode
     // 🆕 부모 노드 참조
     public StageNode parent;
 
-    public StageNode(int depth, int index, StageRoomType type, EventRoomType? eventRoomType, BattleRoomType? battleRoomType, int seed = 0)
+    public StageNode(int nodeId, int depth, int index, StageRoomType type, EventRoomType? eventRoomType, BattleRoomType? battleRoomType, List<StageNode> children, StageStateType state = StageStateType.NEUTRAL, int seed = 0)
     {
+        this.nodeId = nodeId;
         this.depth = depth;
         this.index = index;
         this.type = type;
         this.seed = seed;
         this.eventType = eventRoomType;
         this.battleType = battleRoomType;
-        this.state = StageStateType.NEUTRAL; // 기본값은 중립
+        this.state = state; // 기본값은 중립
+        this.children = children;
         
         // 타입에 따라 세부 타입 초기화
         InitializeRoomInfo();

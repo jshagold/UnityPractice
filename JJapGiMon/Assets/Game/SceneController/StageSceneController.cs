@@ -82,6 +82,9 @@ public class StageSceneController : MonoBehaviour
             stageHUDController.OnGiveUpStage += HandleGiveUpStage;
             stageHUDController.OpenSettingRequested += HandleOpenSettingRequested;
         }
+
+        if (stageMapUI != null)
+            stageMapUI.OnNodeClicked += HandleNodeClicked;
     }
 
     private void OnDisable()
@@ -102,6 +105,9 @@ public class StageSceneController : MonoBehaviour
             stageHUDController.OnGiveUpStage -= HandleGiveUpStage;
             stageHUDController.OpenSettingRequested -= HandleOpenSettingRequested;
         }
+
+        if (stageMapUI != null)
+            stageMapUI.OnNodeClicked -= HandleNodeClicked;
     }
 
     private void OnDestroy()
@@ -151,6 +157,10 @@ public class StageSceneController : MonoBehaviour
         Debug.Log($"StageManager Initialize: {stageGraph.rootNodeData.nodeId}");
         stageMapUI.RenderMap(stageGraph.rootNode);
 
+        Debug.Log($"StageManager Initialize: {stageState.currentNodeId}");
+        var savedNodeId = stageGraph.rootNodeData.nodeId;
+        var savedNode = stageGraph.GetNodeById(savedNodeId);
+        stageMapUI.SetCurrentNode(savedNode);
     }
 
     private (StageConfig, StageGraph, StageState) DataLoadOrGenerate() {
@@ -252,6 +262,42 @@ public class StageSceneController : MonoBehaviour
     {
         Debug.Log("게임 설정 창이 열렸습니다.");
     }
+
+
+
+    private void HandleNodeClicked(StageNode nextNode)
+    {
+        Debug.Log($"HandleNodeClicked: StageSceneController");
+        Debug.Log($"HandleNodeClicked: currentNodeId: {stageState.currentNodeId}");
+
+        Debug.Log($"HandleNodeClicked: Id: {nextNode.nodeId}");
+        var cur = stageGraph.GetNodeById(stageState.currentNodeId);
+        
+        Debug.Log($"HandleNodeClicked: cur: {cur.roomName}");
+        Debug.Log($"HandleNodeClicked: cur.children: {cur.children.Count}");
+
+        foreach (var child in cur.children)
+        {
+            Debug.Log($"HandleNodeClicked: child: {child.roomName}");
+        }
+    
+        if (cur == null || cur.children == null || !cur.children.Contains(nextNode))
+            return; // 현재 노드의 자식만 이동 허용
+
+        // 상태 갱신
+        stageState.visitedNodeIds.Add(stageState.currentNodeId);
+        stageState.currentNodeId = nextNode.nodeId;
+
+        // 트윈으로 말 이동
+        stageMapUI.MoveMarkerTo(nextNode, withAnimation: true);
+
+        // TODO: 방 타입별 후속 처리(전투/이벤트/보스) 연결 지점
+        // switch (nextNode.type) { ... }
+    }
+
+
+
+
 
     /// <summary>
     /// 스테이지 포기

@@ -29,19 +29,19 @@ public sealed class StageInputManager : MonoBehaviour
     private void Start()
     {
         // UI 이벤트 구독
-        if (stageMapUI != null)
-        {
-            stageMapUI.OnNodeClicked += HandleNodeClicked;
-        }
+        // if (stageMapUI != null)
+        // {
+        //     stageMapUI.OnNodeClicked += HandleNodeClicked;
+        // }
     }
 
     private void OnDestroy()
     {
         // UI 이벤트 구독 해제
-        if (stageMapUI != null)
-        {
-            stageMapUI.OnNodeClicked -= HandleNodeClicked;
-        }
+        // if (stageMapUI != null)
+        // {
+        //     stageMapUI.OnNodeClicked -= HandleNodeClicked;
+        // }
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public sealed class StageInputManager : MonoBehaviour
     {
         if (stageManager != null)
         {
-            // Debug.Log($"HandleNodeClicked: {clickedNode.roomName}");
+            Debug.Log($"HandleNodeClicked: {clickedNode.roomName}");
 
             // // 클릭된 노드가 현재 노드의 자식인지 확인
             // int childIndex = availableChildren.IndexOf(clickedNode);

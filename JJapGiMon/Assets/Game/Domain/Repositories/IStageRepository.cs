@@ -5,14 +5,16 @@ public interface IStageRepository
     /// </summary>
     /// <param name="contentId">저장할 스테이지 데이터의 컨텐츠 ID</param>
     /// <param name="saveData">저장할 스테이지 데이터</param>
-    void Save(string contentId, StageData saveData);
+    void Save(string contentId, StageConfig saveConfig, StageState saveState, StageGraph saveGraph);
     
     /// <summary>
     /// 저장된 스테이지 데이터를 로드합니다.
     /// </summary>
-    /// <param name="contentId">불러올 스테이지 데이터의 컨텐츠 ID</param>
-    /// <returns>로드된 스테이지 데이터, 없으면 null</returns>
-    StageData Load(string contentId);
+    StageConfig LoadConfig(string contentId);
+
+    StageState LoadState(string contentId);
+
+    StageGraph LoadGraph(string contentId);
     
     /// <summary>
     /// 저장된 스테이지 데이터를 삭제합니다.

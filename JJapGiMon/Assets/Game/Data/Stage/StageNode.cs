@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Unity.Profiling;
 
 [Serializable]
-public class StageNode
+public class StageNode : IEquatable<StageNode>
 {
-    public int nodeId;                       // 🆕 노드 고유 ID
+    public int nodeId { get; private set; }                       // 🆕 노드 고유 ID
     public int depth;
     public int index;
     public StageRoomType type;
@@ -42,7 +42,11 @@ public class StageNode
         InitializeRoomInfo();
     }
 
- 
+    public bool Equals(StageNode other) => other != null && nodeId == other.nodeId;
+    public override bool Equals(object obj) => obj is StageNode o && Equals(o);
+    public override int GetHashCode() => nodeId; // nodeId는 불변이어야 안전
+
+
 
     private void InitializeRoomInfo()
     {

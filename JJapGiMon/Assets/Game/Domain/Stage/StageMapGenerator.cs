@@ -79,7 +79,7 @@ public class StageMapGenerator
         
         // 깊이 0: 시작 노드 (1개)
         var startNode = new StageNode(
-            nodeId: 0, 
+            nodeId: GetNextNodeId(), 
             depth: 0, 
             index: 0, 
             type: StageRoomType.Start, 
@@ -89,7 +89,6 @@ public class StageMapGenerator
             state: StageStateType.NEUTRAL, 
             seed: random.Next()
             );
-        startNode.nodeId = GetNextNodeId();
         nodesByDepth[0] = new List<StageNode> { startNode };
         
         // 깊이 1 ~ stageLength-2: 중간 노드들 (MinNodeCountByDepth~MaxNodeCountByDepth개)

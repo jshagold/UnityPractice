@@ -267,19 +267,7 @@ public class StageSceneController : MonoBehaviour
 
     private void HandleNodeClicked(StageNode nextNode)
     {
-        Debug.Log($"HandleNodeClicked: StageSceneController");
-        Debug.Log($"HandleNodeClicked: currentNodeId: {stageState.currentNodeId}");
-
-        Debug.Log($"HandleNodeClicked: Id: {nextNode.nodeId}");
         var cur = stageGraph.GetNodeById(stageState.currentNodeId);
-        
-        Debug.Log($"HandleNodeClicked: cur: {cur.roomName}");
-        Debug.Log($"HandleNodeClicked: cur.children: {cur.children.Count}");
-
-        foreach (var child in cur.children)
-        {
-            Debug.Log($"HandleNodeClicked: child: {child.roomName}");
-        }
     
         if (cur == null || cur.children == null || !cur.children.Contains(nextNode))
             return; // 현재 노드의 자식만 이동 허용

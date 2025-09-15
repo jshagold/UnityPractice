@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Mono.Cecil.Cil;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,6 +18,7 @@ public class StageSceneController : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private StageMapUI stageMapUI;
     [SerializeField] private StageHUDController stageHUDController;
+    [SerializeField] private RoomInfoPanelUI roomInfoPanelUI;
     [SerializeField] private StageBackgroundTable stageBackgroundTable;
     [SerializeField] private Image backgroundImage;
 
@@ -57,6 +57,9 @@ public class StageSceneController : MonoBehaviour
         if (stageHUDController == null)
             stageHUDController = GetComponent<StageHUDController>();
 
+        if (roomInfoPanelUI == null)
+            roomInfoPanelUI = GetComponent<RoomInfoPanelUI>();
+
         // Background Image 세팅
         backgroundImage.preserveAspect = true;
         backgroundImage.raycastTarget = false;
@@ -85,6 +88,9 @@ public class StageSceneController : MonoBehaviour
 
         if (stageMapUI != null)
             stageMapUI.OnNodeClicked += HandleNodeClicked;
+
+        if (roomInfoPanelUI != null)
+            roomInfoPanelUI.OnClickEnter += HandleRoomInfoPanelEntered;
     }
 
     private void OnDisable()
@@ -108,6 +114,10 @@ public class StageSceneController : MonoBehaviour
 
         if (stageMapUI != null)
             stageMapUI.OnNodeClicked -= HandleNodeClicked;
+
+            
+        if (roomInfoPanelUI != null)
+            roomInfoPanelUI.OnClickEnter -= HandleRoomInfoPanelEntered;
     }
 
     private void OnDestroy()
@@ -128,6 +138,9 @@ public class StageSceneController : MonoBehaviour
             stageHUDController.OnGiveUpStage -= HandleGiveUpStage;
             stageHUDController.OpenSettingRequested -= HandleOpenSettingRequested;
         }
+
+        if (roomInfoPanelUI != null)
+            roomInfoPanelUI.OnClickEnter -= HandleRoomInfoPanelEntered;
     }
 
     private void Start()
@@ -285,6 +298,10 @@ public class StageSceneController : MonoBehaviour
 
 
 
+    private void HandleRoomInfoPanelEntered()
+    {
+        Debug.Log($"방 정보 창이 열렸습니다");
+    }
 
 
     /// <summary>

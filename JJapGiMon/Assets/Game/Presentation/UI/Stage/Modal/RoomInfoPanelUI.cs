@@ -9,8 +9,8 @@ public class RoomInfoPanelUI : ModalBase
     [SerializeField] private Transform contentsContainer;
     [SerializeField] private Button buttonPrefab;
     [SerializeField] private Button BtnClose;
-    [SerializeField] private TextMeshProUGUI roomNameText;
-    [SerializeField] private TextMeshProUGUI roomDescriptionText;
+    [SerializeField] private TextMeshProUGUI roomNameTextPrefab;
+    [SerializeField] private TextMeshProUGUI roomDescriptionTextPrefab;
 
     [Header("Manager Hook")]
     [SerializeField] private ModalManager modalManager;
@@ -45,7 +45,15 @@ public class RoomInfoPanelUI : ModalBase
     private void RebuildButtons()
     {
         Clear();
+
+        var roomNameText = Instantiate(roomNameTextPrefab, contentsContainer);
+        roomNameText.text = "방 이름";
+        roomNameText.gameObject.SetActive(true);
         
+        var roomDescriptionText = Instantiate(roomDescriptionTextPrefab, contentsContainer);
+        roomDescriptionText.text = "방 설명";
+        roomDescriptionText.gameObject.SetActive(true);
+
         var enterButton = Instantiate(buttonPrefab, contentsContainer);
         var enterlabel = enterButton.GetComponentInChildren<TextMeshProUGUI>(true);
         enterlabel.text = "입장";

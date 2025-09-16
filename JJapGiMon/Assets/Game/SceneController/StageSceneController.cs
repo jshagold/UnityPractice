@@ -301,6 +301,9 @@ public class StageSceneController : MonoBehaviour
     private void HandleRoomInfoPanelEntered()
     {
         Debug.Log($"방 정보 창이 열렸습니다");
+
+
+        SceneManager.LoadScene("");
     }
 
 

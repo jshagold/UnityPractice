@@ -14,6 +14,11 @@ public class MainSceneController : MonoBehaviour
     {
     }
 
+    private void OnEnable()
+    {
+        
+    }
+
     public void Start()
     {
         Show();

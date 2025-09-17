@@ -15,14 +15,17 @@ public class MainHUDController : MonoBehaviour
     [SerializeField] private ModalManager modalManager;
     [SerializeField] private MainOptionPanel optionPanelUI;
 
-    private event Action OpenOptionRequested;
-    private event Action OnActionRequested;
+    public event Action OpenOptionRequested;
+    public event Action OnActionRequested;
     
     private void Awake()
     {
         if(modalManager == null)
             modalManager = GetComponent<ModalManager>();
 
+        if(actionCountHUD == null)
+            actionCountHUD = GetComponent<ActionCountHUD>();
+            
         optionButton.onClick.AddListener(HandleOpenOptionPanel);
         actionButton.onClick.AddListener(HandleOpenActionPanel);
     }
@@ -30,7 +33,6 @@ public class MainHUDController : MonoBehaviour
     private void Start()
     {
         optionPanelUI.Hide();
-
 
     }
 
@@ -47,5 +49,14 @@ public class MainHUDController : MonoBehaviour
         OnActionRequested?.Invoke();
     }
 
+    // -------
+    public void SetSamsaraLevel(int level) => actionCountHUD.SetSamsaraLevel(level);
+    public void SetProgress(int remaining, int max) => actionCountHUD.SetProgress(remaining, max);
+    public void SetActionCount(int remaining, int max) => actionCountHUD.SetActionCount(remaining, max);
+    public void SetAllActionCountHUD(int level, int progressRemaining, int progressMax, int actionRemaining, int actionMax) {
+        SetSamsaraLevel(level);
+        SetProgress(progressRemaining, progressMax);
+        SetActionCount(actionRemaining, actionMax);
+    }
 
 }

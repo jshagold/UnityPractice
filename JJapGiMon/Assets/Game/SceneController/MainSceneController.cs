@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,6 +9,7 @@ public class MainSceneController : MonoBehaviour
     [SerializeField] private GameObject playerContainer;
     [SerializeField] private Transform buttonContainer;
     [SerializeField] private Button buttonPrefab;
+    [SerializeField] private MainHUDController mainHUDController;
 
 
     private void Awake()
@@ -16,13 +18,35 @@ public class MainSceneController : MonoBehaviour
 
     private void OnEnable()
     {
-        
+        mainHUDController.OnActionRequested += HandleOpenActionPanel;
+        mainHUDController.OpenOptionRequested += HandleOpenOptionPanel;
+    }
+
+    private void OnDisable()
+    {
+        mainHUDController.OnActionRequested -= HandleOpenActionPanel;
+        mainHUDController.OpenOptionRequested -= HandleOpenOptionPanel;
     }
 
     public void Start()
     {
         Show();
     }
+
+    // --- Handler ---
+    private void HandleOpenActionPanel()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void HandleOpenOptionPanel()
+    {
+        throw new NotImplementedException();
+    }
+
+    //
+
+
 
     public void Show()
     {
@@ -61,7 +85,6 @@ public class MainSceneController : MonoBehaviour
 
     public void SendDataToStageScene(StageLaunchArgs args)
     {
-        
 
         GameSession.I.Set<StageLaunchArgs>(args);
 

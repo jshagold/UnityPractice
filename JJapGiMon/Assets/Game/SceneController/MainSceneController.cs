@@ -18,37 +18,48 @@ public class MainSceneController : MonoBehaviour
 
     private void OnEnable()
     {
-        mainHUDController.OnActionRequested += HandleOpenActionPanel;
+        mainHUDController.OnNextDayRequested += HandleOnNextDay;
         mainHUDController.OpenOptionRequested += HandleOpenOptionPanel;
     }
 
     private void OnDisable()
     {
-        mainHUDController.OnActionRequested -= HandleOpenActionPanel;
+        mainHUDController.OnNextDayRequested -= HandleOnNextDay;
         mainHUDController.OpenOptionRequested -= HandleOpenOptionPanel;
     }
 
     public void Start()
     {
-        Show();
+        ShowActionPanel();
     }
 
     // --- Handler ---
-    private void HandleOpenActionPanel()
+    private void HandleOnNextDay()
     {
-        throw new NotImplementedException();
+        SendDataToNextDayScene();
     }
 
     private void HandleOpenOptionPanel()
     {
         throw new NotImplementedException();
     }
-
     //
 
+    public void SendDataToNextDayScene()
+    {
+        Debug.Log("SendDataToNextDayScene");
+        // SceneManager.LoadScene("NextDayScene");
+    }
 
 
-    public void Show()
+    public void SendDataToActionScene()
+    {
+        SceneManager.LoadScene("ActionScene");
+    }
+
+
+
+    public void ShowActionPanel()
     {
         playerContainer.SetActive(true);
         Clear();

@@ -8,7 +8,7 @@ public class MainHUDController : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private Button optionButton;
-    [SerializeField] private Button actionButton;
+    [SerializeField] private Button nextDayButton;
     [SerializeField] private ActionCountHUD actionCountHUD;
 
     [Header("Modal Panels")]
@@ -16,7 +16,7 @@ public class MainHUDController : MonoBehaviour
     [SerializeField] private MainOptionPanel optionPanelUI;
 
     public event Action OpenOptionRequested;
-    public event Action OnActionRequested;
+    public event Action OnNextDayRequested;
     
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class MainHUDController : MonoBehaviour
             actionCountHUD = GetComponent<ActionCountHUD>();
             
         optionButton.onClick.AddListener(HandleOpenOptionPanel);
-        actionButton.onClick.AddListener(HandleOpenActionPanel);
+        nextDayButton.onClick.AddListener(HandleOpenActionPanel);
     }
 
     private void Start()
@@ -46,7 +46,7 @@ public class MainHUDController : MonoBehaviour
 
     private void HandleOpenActionPanel()
     {
-        OnActionRequested?.Invoke();
+        OnNextDayRequested?.Invoke();
     }
 
     // -------
